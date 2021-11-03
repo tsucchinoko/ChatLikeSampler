@@ -1,0 +1,66 @@
+{
+  "Mac" : [
+    {
+      "hash" : "3392d7b21d5b9da24d766f86029b57f1c1108a9b03d02cb7055aa00193badc2b",
+      "name" : "FirebaseABTesting",
+      "container" : "FirebaseABTesting.xcframework",
+      "identifier" : "macos-arm64_x86_64"
+    }
+  ],
+  "watchOS" : [
+
+  ],
+  "tvOS" : [
+    {
+      "hash" : "ff57b68f6c01b3e8ffdd739b0ad402969215e43f4d68d792b4896a703831398e",
+      "name" : "FirebaseABTesting",
+      "container" : "FirebaseABTesting.xcframework",
+      "identifier" : "tvos-arm64"
+    },
+    {
+      "hash" : "9cdb7fa86831496211c6ca65e85c636e2170a6c84299f2b410dc99e26d6ace9e",
+      "name" : "FirebaseABTesting",
+      "container" : "FirebaseABTesting.xcframework",
+      "identifier" : "tvos-arm64_x86_64-simulator"
+    }
+  ],
+  "commitish" : "8.9.0",
+  "iOS" : [
+    {
+      "hash" : "bd59ad1e994007ab409b380b269b54db2f4dc907eb671edd2434ec7531402dd8",
+      "name" : "FirebaseABTesting",
+      "container" : "FirebaseABTesting.xcframework",
+      "identifier" : "ios-arm64_armv7"
+    },
+    {
+      "hash" : "8a2a091251e638d613b008169a337b4b71821fd396ef705d2d96cbe40025576e",
+      "name" : "FirebaseABTesting",
+      "container" : "FirebaseABTesting.xcframework",
+      "identifier" : "ios-arm64_x86_64-maccatalyst"
+    },
+    {
+      "hash" : "f637aaed96b0adbe9b8d21b82fa2dc3d2fdfda16d39d2edccdc953efa98ab50b",
+      "name" : "FirebaseABTesting",
+      "container" : "FirebaseABTesting.xcframework",
+      "identifier" : "ios-arm64_i386_x86_64-simulator"
+    },
+    {
+      "hash" : "d7f1a6551bbd4eb758ccb118241342dfa1b3915b5721f07aad80f720b0a77f0f",
+      "name" : "FirebaseInAppMessaging",
+      "container" : "FirebaseInAppMessaging.xcframework",
+      "identifier" : "ios-arm64_x86_64-maccatalyst"
+    },
+    {
+      "hash" : "0c5606dba344c9c376582c5a0e8fbf842aaa14771bf69d123ffb2712a9ba8174",
+      "name" : "FirebaseInAppMessaging",
+      "container" : "FirebaseInAppMessaging.xcframework",
+      "identifier" : "ios-arm64_i386_x86_64-simulator"
+    },
+    {
+      "hash" : "21f559804a6fa9bc0887b83a5a1f5d9094bf91e0688b8734ce5c9805646d58fb",
+      "name" : "FirebaseInAppMessaging",
+      "container" : "FirebaseInAppMessaging.xcframework",
+      "identifier" : "ios-arm64_armv7"
+    }
+  ]
+}

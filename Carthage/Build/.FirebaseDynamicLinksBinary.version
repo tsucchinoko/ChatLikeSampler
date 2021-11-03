@@ -1,0 +1,32 @@
+{
+  "Mac" : [
+
+  ],
+  "watchOS" : [
+
+  ],
+  "tvOS" : [
+
+  ],
+  "commitish" : "8.9.0",
+  "iOS" : [
+    {
+      "hash" : "932dda6b64ba9bafecaef86d4d1a70e16c50efff0988c250a671abc8821e97b4",
+      "name" : "FirebaseDynamicLinks",
+      "container" : "FirebaseDynamicLinks.xcframework",
+      "identifier" : "ios-arm64_i386_x86_64-simulator"
+    },
+    {
+      "hash" : "92eab72ade628980b0c66f86ffa4b3c48552243a66e34c824cbc7c3737dd6737",
+      "name" : "FirebaseDynamicLinks",
+      "container" : "FirebaseDynamicLinks.xcframework",
+      "identifier" : "ios-arm64_x86_64-maccatalyst"
+    },
+    {
+      "hash" : "5fa193d040b56414581182fdfd5e631e934e2a6058a996e4d0ae1ccc823458b9",
+      "name" : "FirebaseDynamicLinks",
+      "container" : "FirebaseDynamicLinks.xcframework",
+      "identifier" : "ios-arm64_armv7"
+    }
+  ]
+}

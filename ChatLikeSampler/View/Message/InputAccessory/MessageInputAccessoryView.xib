@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MessageInputAccessoryView" customModule="ChatLikeSampler" customModuleProvider="target">
+            <connections>
+                <outlet property="fileAddButton" destination="kFV-Ur-c5k" id="JmG-fa-tBL"/>
+                <outlet property="messageTextView" destination="l3U-BO-sqi" id="Odk-ol-7M7"/>
+                <outlet property="sendButton" destination="Wfs-rh-r4L" id="PWz-JN-gil"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="762" height="105"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kFV-Ur-c5k">
+                    <rect key="frame" x="10" y="22.5" width="60" height="60"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="60" id="IUk-HH-6aE"/>
+                        <constraint firstAttribute="width" secondItem="kFV-Ur-c5k" secondAttribute="height" multiplier="1:1" id="YRe-2M-0BT"/>
+                    </constraints>
+                    <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain" image="arrow.up.doc" catalog="system"/>
+                    <connections>
+                        <action selector="tappedFileAddButton:" destination="-1" eventType="touchUpInside" id="r56-F7-JUi"/>
+                    </connections>
+                </button>
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" text="message is here!!" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="l3U-BO-sqi">
+                    <rect key="frame" x="80" y="25" width="602" height="55"/>
+                    <color key="backgroundColor" red="0.93333333333333335" green="0.93333333333333335" blue="0.93333333333333335" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="textColor" systemColor="labelColor"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                </textView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wfs-rh-r4L">
+                    <rect key="frame" x="692" y="37" width="60" height="31"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="60" id="K6a-F6-mxJ"/>
+                        <constraint firstItem="l3U-BO-sqi" firstAttribute="width" secondItem="Wfs-rh-r4L" secondAttribute="height" multiplier="1:1" id="Uzs-Dy-uWz"/>
+                    </constraints>
+                    <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain" image="paperplane.fill" catalog="system"/>
+                    <connections>
+                        <action selector="tappedSendButton:" destination="-1" eventType="touchUpInside" id="BH7-AA-QR4"/>
+                    </connections>
+                </button>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="kFV-Ur-c5k" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="10" id="EKa-WQ-CAX"/>
+                <constraint firstItem="l3U-BO-sqi" firstAttribute="leading" secondItem="kFV-Ur-c5k" secondAttribute="trailing" constant="10" id="IzJ-N6-RKL"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="Wfs-rh-r4L" secondAttribute="trailing" constant="10" id="Kdi-6E-InO"/>
+                <constraint firstItem="kFV-Ur-c5k" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="b3W-nY-bdn"/>
+                <constraint firstItem="Wfs-rh-r4L" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="jFq-wq-sOW"/>
+                <constraint firstItem="Wfs-rh-r4L" firstAttribute="leading" secondItem="l3U-BO-sqi" secondAttribute="trailing" constant="10" id="mah-jO-XJz"/>
+                <constraint firstItem="l3U-BO-sqi" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="25" id="nYU-ye-Fc6"/>
+                <constraint firstItem="l3U-BO-sqi" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="zbG-1P-O4u"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="402.89855072463769" y="78.683035714285708"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="arrow.up.doc" catalog="system" width="115" height="128"/>
+        <image name="paperplane.fill" catalog="system" width="128" height="118"/>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
