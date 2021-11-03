@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="kfX-CH-wwA">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="kfX-CH-wwA">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -47,7 +47,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rAQ-1q-SCr">
-                                                    <rect key="frame" x="368.5" y="31" width="35.5" height="17"/>
+                                                    <rect key="frame" x="368.5" y="21" width="35.5" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
@@ -55,7 +55,7 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="eW0-bb-Y16" firstAttribute="leading" secondItem="GAB-az-2Sh" secondAttribute="trailing" constant="10" id="0Bm-kk-JPP"/>
-                                                <constraint firstItem="rAQ-1q-SCr" firstAttribute="top" secondItem="Ldr-WX-7NV" secondAttribute="topMargin" constant="20" id="4Az-kd-NzS"/>
+                                                <constraint firstItem="rAQ-1q-SCr" firstAttribute="top" secondItem="Ldr-WX-7NV" secondAttribute="topMargin" constant="10" id="4Az-kd-NzS"/>
                                                 <constraint firstItem="GAB-az-2Sh" firstAttribute="leading" secondItem="Ldr-WX-7NV" secondAttribute="leading" constant="10" id="7OG-bH-XGB"/>
                                                 <constraint firstItem="GAB-az-2Sh" firstAttribute="centerY" secondItem="Ldr-WX-7NV" secondAttribute="centerY" id="AqX-e2-ylO"/>
                                                 <constraint firstItem="cnm-0b-dKQ" firstAttribute="top" secondItem="Ldr-WX-7NV" secondAttribute="topMargin" constant="10" id="QTx-mh-PEx"/>

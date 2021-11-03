@@ -6,10 +6,12 @@
 //
 
 import UIKit
+import Firebase
 
 class MessageListViewController: UIViewController {
     
     private let cellId = "cellId"
+    private var roomMessages = [Message]()
     
     @IBOutlet weak var messageListTableView: UITableView!
     
@@ -25,9 +27,32 @@ class MessageListViewController: UIViewController {
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
         
         
-        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        fetchMessageRoomInfoFromFirestore()
+    }
+    
+    
+    // メッセージ一覧画面の情報を取得
+    private func fetchMessageRoomInfoFromFirestore(){
+        Firestore.firestore().collection("rooms").getDocuments{ (snapshots, err) in
+            if let err = err {
+                print("ルーム情報の取得失敗: \(err)")
+                return
+            }
+            
+            snapshots?.documents.forEach({ (snapshot) in
+                let data = snapshot.data()
+                let message = Message.init(data: data)
+                self.roomMessages.append(message)
+                self.messageListTableView.reloadData()
+            })
+        }
     }
 }
+
+
 
 extension MessageListViewController: UITableViewDelegate, UITableViewDataSource {
     
@@ -36,11 +61,12 @@ extension MessageListViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return roomMessages.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = messageListTableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+        let cell = messageListTableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! MessageListTableViewCell
+        cell.roomMessage = roomMessages[indexPath.row]
         
         return cell
     }
@@ -58,6 +84,17 @@ extension MessageListViewController: UITableViewDelegate, UITableViewDataSource 
 
 class MessageListTableViewCell: UITableViewCell {
     
+    
+    var roomMessage: Message? {
+        didSet {
+            if let roomMessage = roomMessage {
+                partnerLabel.text = roomMessage.author
+                dateLabel.text = dateFormatterForDateLabel(date: roomMessage.created_at.dateValue())
+                latestMessageLabel.text = roomMessage.text
+            }
+        }
+    }
+    
     @IBOutlet weak var latestMessageLabel: UILabel!
     @IBOutlet weak var partnerLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
@@ -71,6 +108,15 @@ class MessageListTableViewCell: UITableViewCell {
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
+    }
+    
+    private func dateFormatterForDateLabel(date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .full
+        formatter.timeStyle = .short
+        formatter.locale = Locale(identifier: "ja_JP")
+        
+        return formatter.string(from: date)
     }
 }
 
