@@ -14,6 +14,8 @@ class MessageRoomViewController: UIViewController {
     let email = "dev_tsuchiya@gmail.com"
     let password = "123456"
     
+    var documentId = ""
+    
     private let partnerCellId = "partnerCellId"
     private let myCellId = "myCellId"
     private var messages = [String]()
@@ -108,7 +110,7 @@ extension MessageRoomViewController: MessageInputAccessoryViewDelegate {
         print("uid!: \(uid)")
         let sendTime = Timestamp()
         let sendData = [
-            "author": uid,
+            "author": "テスト",
             "text": text,
             "image": "image",
             "read": false,
@@ -116,19 +118,38 @@ extension MessageRoomViewController: MessageInputAccessoryViewDelegate {
             "updated_at": sendTime,
         ] as [String : Any]
         
-        let db = Firestore.firestore()
-        if db == nil {
-            print("DB == nil !!!")
-        }
-        // Add a new document with a generated ID
-        var ref: DocumentReference? = nil
-        ref = Firestore.firestore().collection("rooms").addDocument(data: sendData) { err in
+        //        let sendData = Message(
+        //            author: "テスト",
+        //            image: "",
+        //            read: false,
+        //            text: text,
+        //            created_at: sendTime,
+        //            updated_at: sendTime
+        //        )
+        
+        // Add a new document with a pointed ID
+        print("documentId: \(documentId)")
+        //        Firestore.firestore().collection("rooms").document(documentId).setData(sendData) { err in
+        //            if let err = err {
+        //                print("Error adding document: \(err)")
+        //            } else {
+        //                print("Document successfully written!")
+        //            }
+        //        }
+        
+        let documentRef = Firestore.firestore().collection("rooms").document(documentId)
+        documentRef.setData([
+            "name": "test",
+            "messages": FieldValue.arrayUnion([sendData])
+        ], merge: true){ err in
             if let err = err {
                 print("Error adding document: \(err)")
             } else {
-                print("Document added with ID: \(ref!.documentID)")
+                print("Document successfully written!")
             }
         }
+        
+        
         messageInputAccessoryView.removeText()
         messageRoomTableView.reloadData()
     }

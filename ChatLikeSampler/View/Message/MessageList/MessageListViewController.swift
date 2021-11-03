@@ -12,6 +12,7 @@ class MessageListViewController: UIViewController {
     
     private let cellId = "cellId"
     private var roomMessages = [Message]()
+    var documentIds = [String]()
     
     @IBOutlet weak var messageListTableView: UITableView!
     
@@ -35,7 +36,7 @@ class MessageListViewController: UIViewController {
     
     
     // メッセージ一覧画面の情報を取得
-    private func fetchMessageRoomInfoFromFirestore(){
+    private func fetchMessageRoomInfoFromFirestore() {
         Firestore.firestore().collection("rooms").getDocuments{ (snapshots, err) in
             if let err = err {
                 print("ルーム情報の取得失敗: \(err)")
@@ -43,6 +44,9 @@ class MessageListViewController: UIViewController {
             }
             
             snapshots?.documents.forEach({ (snapshot) in
+                let documentId = snapshot.documentID
+                self.documentIds.append(documentId)
+                
                 let data = snapshot.data()
                 let message = Message.init(data: data)
                 self.roomMessages.append(message)
@@ -56,14 +60,17 @@ class MessageListViewController: UIViewController {
 
 extension MessageListViewController: UITableViewDelegate, UITableViewDataSource {
     
+    // セルの高さ
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 80
     }
     
+    // セルの数
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return roomMessages.count
     }
     
+    // カスタムセルを設定
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = messageListTableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! MessageListTableViewCell
         cell.roomMessage = roomMessages[indexPath.row]
@@ -71,11 +78,16 @@ extension MessageListViewController: UITableViewDelegate, UITableViewDataSource 
         return cell
     }
     
+    // セル選択時
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let documentId = documentIds[indexPath.row]
+        print("documentId: \(documentId)")
         
         let storyBoard = UIStoryboard.init(name: "MessageRoom", bundle: nil)
         // ストーリーボードIDを指定して画面遷移
-        let messageVC = storyBoard.instantiateViewController(withIdentifier: "MessageRoomViewController")
+        let messageVC = storyBoard.instantiateViewController(withIdentifier: "MessageRoomViewController") as! MessageRoomViewController
+        messageVC.documentId = documentId
         navigationController?.pushViewController(messageVC, animated: true)
     }
     
