@@ -46,6 +46,33 @@ class MessageRoomViewController: UIViewController {
         //        }
     }
     
+    private func uploadImageToFireStorage(imageView: UIImageView) {
+        guard let image = imageView.image else { return }
+        guard let uploadImage = image.jpegData(compressionQuality: 0.3) else { return }
+        
+        let fileName = NSUUID().uuidString
+        let storageRef = Storage.storage().reference().child("sendImage").child(fileName)
+        
+        storageRef.putData(uploadImage, metadata: nil) { (metadata, err) in
+            if let err = err {
+                print("FireStorageへの保存失敗: \(err)")
+                return
+            }
+            
+            print("FireStoregeへの保存成功")
+            storageRef.downloadURL(completion: {(url, err) in
+                if let err = err {
+                    print("FireStorageからのダウンロード失敗: \(err)")
+                    return
+                }
+                
+                guard let urlString = url?.absoluteString else { return }
+                print("URLString: \(urlString)")
+            })
+        }
+        
+    }
+    
     // messageInputAccessoryViewとキーボードを紐付け
     override var inputAccessoryView: UIView? {
         get {
@@ -104,34 +131,6 @@ extension MessageRoomViewController: MessageInputAccessoryViewDelegate {
         }
         messageInputAccessoryView.removeText()
         messageRoomTableView.reloadData()
-        
-        /*
-         "rooms" : {
-         "0" : {
-         "name" : "test room",
-         "messages" : {
-         "0" : {
-         "author" : "test",
-         "text" : "message test",
-         "image" : "https://xxx.com/images/room/0/messages/0/message.png",
-         "read" : false,
-         "created_at" : "2021-09-13 18:10:00",
-         "updated_at" : "2021-09-13 18:20:00"
-         }
-         },
-         "creator" : "test@example.com",
-         "created_at" : "2021-09-13 18:10:00",
-         "updated_at" : "2021-09-13 18:20:00"
-         }
-         },
-         
-         */
-        // TODO
-        // rooms[0]["messages"][0]["author"]で判断する？
-        // rooms[0]["messages"][0]["text"] = text
-        // rooms[0]["messages"][x]["author"]がuidと一致するかどうか！
-        
-
     }
     
     
@@ -165,6 +164,13 @@ extension MessageRoomViewController: UITableViewDelegate, UITableViewDataSource 
 }
 
 extension MessageRoomViewController: UIImagePickerControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let origialImage = info[.originalImage] as? UIImage {
+            print("originalImage!!")
+        }
+        
+        dismiss(animated: true, completion: nil)
+    }
 }
 
 extension MessageRoomViewController: UINavigationControllerDelegate {
