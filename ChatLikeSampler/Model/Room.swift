@@ -15,6 +15,11 @@ class Room {
     let creator: String
     let created_at: Timestamp
     let updated_at: Timestamp
+    
+    var partnerUser: User?
+    var roomId: String?
+    var latestMessage: Message?
+    let latestMessageId: String
         
     init(data: [String: Any]) {
         self.name = data["name"] as? String ?? ""
@@ -23,5 +28,6 @@ class Room {
         self.creator = data["creator"] as? String ?? ""
         self.created_at = data["created_at"] as? Timestamp ?? Timestamp()
         self.updated_at = data["updated_at"] as? Timestamp ?? Timestamp()
+        self.latestMessageId = data["latestMessageId"] as? String ?? ""
     }
 }

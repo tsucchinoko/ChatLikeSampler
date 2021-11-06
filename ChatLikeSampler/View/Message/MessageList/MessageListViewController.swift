@@ -13,7 +13,6 @@ class MessageListViewController: UIViewController {
     private let cellId = "cellId"
     private var roomMessages = [Message]()
     private var rooms = [Room]()
-    var roomIds = [String]()
     var roomNames = [String]()
     
     @IBOutlet weak var messageListTableView: UITableView!
@@ -64,43 +63,49 @@ class MessageListViewController: UIViewController {
     private func handleAddedDocumentChange(documentChange: DocumentChange) {
         let data = documentChange.document.data()
         let room = Room(data: data)
+        room.roomId = documentChange.document.documentID
         
-        Firestore.firestore().collection("users").getDocuments{ (snapshots, err) in
-            if let err = err {
-                print("user faital: \(err)")
-            }
-            
-            // この辺要修正
-            snapshots?.documents.forEach({ userSnapshot in
-                
-                // 自分の参加しているルームのみ表示
-                guard let uid = Auth.auth().currentUser?.uid else { return }
-                let isContain = room.members.contains(uid)
-                if !isContain { return }
-                
-                
-                // userSnapshot = User/<documentId>
-                let partnerUid = userSnapshot.documentID
-                let data = userSnapshot.data()
-                let user = User(data: data)
-                
-                //自分の名前はメッセージ一覧に表示しない
-                if uid != partnerUid {
-                    // documentChange = Rooms/<documentId>
-                    let roomId = documentChange.document.documentID
-                    self.roomIds.append(roomId)
+        // 自分の参加しているルームのみ表示
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let isContain = room.members.contains(uid)
+        if !isContain { return }
+        
+        room.members.forEach{ (memberUid) in
+            if memberUid != uid {
+                Firestore.firestore().collection("users").document(memberUid).getDocument{ (snapshot, err) in
+                    if let err = err {
+                        print("ユーザー情報取得失敗: \(err)")
+                        return
+                    }
                     
-                    let partnerName = user.username
-                    self.roomNames.append(partnerName)
-                    print("partnerName!! : \(partnerName)")
+                    guard let data = snapshot?.data() else { return }
+                    let user = User(data: data)
+                    user.uid = documentChange.document.documentID
+                    room.partnerUser = user
                     
-                    self.rooms.append(room)
-                    print("rooms!! :\(self.rooms.description)")
-                    print("documentIds!! \(userSnapshot.documentID)")
+                    guard let roomId = room.roomId else { return }
+                    let latestMessageId = room.latestMessageId
                     
-                    self.messageListTableView.reloadData()
+                    if latestMessageId == "" {
+                        self.rooms.append(room)
+                        self.messageListTableView.reloadData()
+                        return
+                    }
+                    
+                    Firestore.firestore().collection("rooms").document(roomId).collection("messages").document(latestMessageId).getDocument{ (messageSnapshot, err) in
+                        if let err = err {
+                            print("最新メッセージの取得失敗: \(err)")
+                            return
+                        }
+                        guard let data = messageSnapshot?.data() else { return }
+                        let message = Message(data: data)
+                        room.latestMessage = message
+                        
+                        self.rooms.append(room)
+                        self.messageListTableView.reloadData()
+                    }
                 }
-            })
+            }
         }
     }
 }
@@ -123,8 +128,6 @@ extension MessageListViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = messageListTableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! MessageListTableViewCell
         cell.room = rooms[indexPath.row]
-        // TODO 仮置のため治す
-        cell.name = roomNames[indexPath.row]
         
         return cell
     }
@@ -132,13 +135,11 @@ extension MessageListViewController: UITableViewDelegate, UITableViewDataSource 
     // セル選択時
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let roomIds = roomIds[indexPath.row]
-        print("roomIds: \(roomIds)")
-        
         let storyBoard = UIStoryboard.init(name: "MessageRoom", bundle: nil)
         // ストーリーボードIDを指定して画面遷移
         let messageVC = storyBoard.instantiateViewController(withIdentifier: "MessageRoomViewController") as! MessageRoomViewController
-        messageVC.roomIds = roomIds
+        messageVC.roomIds = rooms[indexPath.row].roomId ?? ""
+        
         navigationController?.pushViewController(messageVC, animated: true)
     }
 }
@@ -149,17 +150,9 @@ class MessageListTableViewCell: UITableViewCell {
     var room: Room? {
         didSet {
             if let room = room {
-                //                partnerLabel.text = room.name
-                dateLabel.text = dateFormatterForDateLabel(date: room.created_at.dateValue())
-                latestMessageLabel.text = room.messages?.text
-            }
-        }
-    }
-    
-    var name: String? {
-        didSet {
-            if let name = name {
-                partnerLabel.text = name
+                partnerLabel.text = room.partnerUser?.username
+                dateLabel.text = dateFormatterForDateLabel(date: room.latestMessage?.created_at.dateValue() ?? Date())
+                latestMessageLabel.text = room.latestMessage?.text
             }
         }
     }

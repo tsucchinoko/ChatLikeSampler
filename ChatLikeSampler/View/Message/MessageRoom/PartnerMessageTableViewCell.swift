@@ -19,7 +19,7 @@ class PartnerMessageTableViewCell: UITableViewCell {
     var message: Message? {
         didSet {
             guard let message = message else { return }
-            let width = estimateFrameForTextView(text: message.text).width + 10
+            let width = estimateFrameForTextView(text: message.text).width + 20
             
             // テキストの長さにより、messageTextViewの幅を変化させる
             messageTextViewWithConstraint.constant = width

@@ -13,6 +13,8 @@ class User {
     let password: String
     let username: String
     
+    var uid: String?
+    
     init(data: [String: Any]) {
         self.email = data["email"] as? String ?? ""
         self.password = data["password"] as? String ?? ""
