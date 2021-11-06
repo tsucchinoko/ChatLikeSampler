@@ -14,7 +14,7 @@ class MessageRoomViewController: UIViewController {
     private let partnerCellId = "partnerCellId"
     private let myCellId = "myCellId"
     
-    var documentId = ""
+    var roomIds = ""
     private var roomMessages = [Message]()
 
     private lazy var messageInputAccessoryView: MessageInputAccessoryView = {
@@ -54,16 +54,31 @@ class MessageRoomViewController: UIViewController {
         // tableViewにセルを登録
         messageRoomTableView.register(UINib(nibName: "PartnerMessageTableViewCell", bundle: nil), forCellReuseIdentifier: partnerCellId)
         messageRoomTableView.register(UINib(nibName: "MyMessageTableViewCell", bundle: nil), forCellReuseIdentifier: myCellId)
+        
+        // セルが見切れないように位置を微調整
+        messageRoomTableView.contentInset = .init(top: 0, left: 0, bottom: 60, right: 0)
+        // スクロールバーの位置を微調整
+        messageRoomTableView.scrollIndicatorInsets = .init(top: 0, left: 0, bottom: 60, right: 0)
     }
     
-    private func checkWitchUserMessage() {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        print("uid: \(uid)")
+    // メッセージ送信者の判別
+    private func checkWitchUserMessage(indexPath: IndexPath) -> UITableViewCell {
+        guard let uid = Auth.auth().currentUser?.uid else { return UITableViewCell() }
+        
+        if uid == roomMessages[indexPath.row].author {
+            let myCell = messageRoomTableView.dequeueReusableCell(withIdentifier: myCellId, for: indexPath) as! MyMessageTableViewCell
+            myCell.message = roomMessages[indexPath.row]
+            return myCell
+        } else {
+            let partnerCell = messageRoomTableView.dequeueReusableCell(withIdentifier: partnerCellId, for: indexPath) as! PartnerMessageTableViewCell
+            partnerCell.message = roomMessages[indexPath.row]
+            return partnerCell
+        }
     }
     
     // メッセージ情報を取得
     private func fetchMessageInfoFromFirestore() {
-        Firestore.firestore().collection("rooms").document(documentId).collection("messages")
+        Firestore.firestore().collection("rooms").document(roomIds).collection("messages")
             .addSnapshotListener{ (snapshots, err) in
                 if let err = err {
                     print("メッセージ取得失敗: \(err)")
@@ -79,6 +94,7 @@ class MessageRoomViewController: UIViewController {
                 })
                 
                 self.messageRoomTableView.reloadData()
+                self.messageRoomTableView.scrollToRow(at: IndexPath(row: self.roomMessages.count - 1, section: 0), at: .bottom, animated: true)
             }
     }
     
@@ -87,6 +103,12 @@ class MessageRoomViewController: UIViewController {
         let data = documentChange.document.data()
         let message = Message(data: data)
         self.roomMessages.append(message)
+        // 日付順にソート
+        self.roomMessages.sort{ (m1, m2) -> Bool in
+            let m1Date = m1.created_at.dateValue()
+            let m2Date = m2.created_at.dateValue()
+            return m1Date < m2Date
+        }
     }
     
     // Firestoreにメッセージを送信
@@ -105,7 +127,7 @@ class MessageRoomViewController: UIViewController {
         
         
         // ここ重要！！
-        Firestore.firestore().collection("rooms").document(documentId).collection("messages").document()
+        Firestore.firestore().collection("rooms").document(roomIds).collection("messages").document()
             .setData(sendData, merge: true){ err in
                 if let err = err {
                     print("Error adding document: \(err)")
@@ -181,13 +203,9 @@ extension MessageRoomViewController: UITableViewDelegate, UITableViewDataSource 
     
     // カスタムセルを設定
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let partnerCell = messageRoomTableView.dequeueReusableCell(withIdentifier: partnerCellId, for: indexPath) as! PartnerMessageTableViewCell
-        partnerCell.message = roomMessages[indexPath.row]
+        let cell = checkWitchUserMessage(indexPath: indexPath)
         
-        let myCell = messageRoomTableView.dequeueReusableCell(withIdentifier: myCellId, for: indexPath) as! MyMessageTableViewCell
-        myCell.message = roomMessages[indexPath.row]
-        
-        return myCell
+        return cell
     }
 }
 

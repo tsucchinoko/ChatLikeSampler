@@ -10,13 +10,15 @@ import Firebase
 
 class Room {
     let name: String
+    let members: [String]
     let messages: Message?
     let creator: String
     let created_at: Timestamp
     let updated_at: Timestamp
-    
+        
     init(data: [String: Any]) {
         self.name = data["name"] as? String ?? ""
+        self.members = data["members"] as? [String] ?? [String]()
         self.messages = data["messages"] as? Message
         self.creator = data["creator"] as? String ?? ""
         self.created_at = data["created_at"] as? Timestamp ?? Timestamp()
