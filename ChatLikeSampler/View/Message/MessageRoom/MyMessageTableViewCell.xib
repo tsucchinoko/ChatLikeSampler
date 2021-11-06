@@ -27,17 +27,17 @@
                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                     </textView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="12:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ULC-Vy-RC1">
-                        <rect key="frame" x="158" y="82" width="43" height="21"/>
+                        <rect key="frame" x="428" y="108" width="43" height="21"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
                 <constraints>
+                    <constraint firstItem="ULC-Vy-RC1" firstAttribute="top" secondItem="VuQ-8s-td3" secondAttribute="bottom" constant="5" id="8zW-44-gaC"/>
                     <constraint firstAttribute="bottom" secondItem="VuQ-8s-td3" secondAttribute="bottom" constant="25" id="B6u-qi-jp8"/>
-                    <constraint firstItem="VuQ-8s-td3" firstAttribute="leading" secondItem="ULC-Vy-RC1" secondAttribute="trailing" constant="20" id="VHF-fO-rI2"/>
-                    <constraint firstItem="VuQ-8s-td3" firstAttribute="bottom" secondItem="ULC-Vy-RC1" secondAttribute="bottom" id="b7U-oN-SSJ"/>
                     <constraint firstAttribute="trailing" secondItem="VuQ-8s-td3" secondAttribute="trailing" constant="20" id="ejp-WP-2TY"/>
+                    <constraint firstAttribute="trailing" secondItem="ULC-Vy-RC1" secondAttribute="trailing" constant="20" id="ibL-pr-1bD"/>
                     <constraint firstItem="VuQ-8s-td3" firstAttribute="top" secondItem="DXt-5a-sQR" secondAttribute="top" constant="25" id="nDw-e1-5ER"/>
                 </constraints>
             </tableViewCellContentView>

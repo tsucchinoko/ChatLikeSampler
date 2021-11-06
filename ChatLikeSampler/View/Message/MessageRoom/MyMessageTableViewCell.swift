@@ -14,16 +14,17 @@ class MyMessageTableViewCell: UITableViewCell {
     @IBOutlet weak var dateLabel: UILabel!
     
     @IBOutlet weak var messageTextViewWithConstraint: NSLayoutConstraint!
-    
-    var messageText: String? {
+        
+    // messageに値がセットされたら呼ばれる
+    var message: Message? {
         didSet {
-            guard let text = messageText else { return }
-            let width = estimateFrameForTextView(text: text).width + 10
-            
+            guard let message = message else { return }
+            let width = estimateFrameForTextView(text: message.text).width + 10
             // テキストの長さにより、messageTextViewの幅を変化させる
             messageTextViewWithConstraint.constant = width
-            messageTextView.text = text
+            messageTextView.text = message.text
             
+            dateLabel.text = dateFormatterForDateLabel(date: message.created_at.dateValue())
         }
     }
     
@@ -48,5 +49,15 @@ class MyMessageTableViewCell: UITableViewCell {
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         
         return NSString(string: text).boundingRect(with: maxSize, options: options, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14)], context: nil)
+    }
+    
+    // 日付をフォーマットする
+    private func dateFormatterForDateLabel(date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .full
+        formatter.timeStyle = .short
+        formatter.locale = Locale(identifier: "ja_JP")
+        
+        return formatter.string(from: date)
     }
 }

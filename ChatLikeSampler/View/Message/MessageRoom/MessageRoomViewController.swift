@@ -11,15 +11,12 @@ import FirebaseAuth
 
 class MessageRoomViewController: UIViewController {
     
-    let email = "dev_tsuchiya@gmail.com"
-    let password = "123456"
-    
-    var documentId = ""
-    
     private let partnerCellId = "partnerCellId"
     private let myCellId = "myCellId"
-    private var messages = [String]()
     
+    var documentId = ""
+    private var roomMessages = [Message]()
+
     private lazy var messageInputAccessoryView: MessageInputAccessoryView = {
         let view = MessageInputAccessoryView()
         view.frame = .init(x: 0, y: 0, width: view.frame.width, height: 100)
@@ -28,10 +25,30 @@ class MessageRoomViewController: UIViewController {
     }()
     
     @IBOutlet weak var messageRoomTableView: UITableView!
+
+    // messageInputAccessoryViewとキーボードを紐付け
+    override var inputAccessoryView: UIView? {
+        get {
+            return messageInputAccessoryView
+        }
+    }
+    
+    // messageInputAccessoryViewがfirstResponderになれるよう設定
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        setupViews()
+        fetchMessageInfoFromFirestore()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+    }
+    
+    // Viewのセットアップ
+    private func setupViews(){
         messageRoomTableView.delegate = self
         messageRoomTableView.dataSource = self
         // tableViewにセルを登録
@@ -42,10 +59,60 @@ class MessageRoomViewController: UIViewController {
     private func checkWitchUserMessage() {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         print("uid: \(uid)")
+    }
+    
+    // メッセージ情報を取得
+    private func fetchMessageInfoFromFirestore() {
+        Firestore.firestore().collection("rooms").document(documentId).collection("messages")
+            .addSnapshotListener{ (snapshots, err) in
+                if let err = err {
+                    print("メッセージ取得失敗: \(err)")
+                }
+                snapshots?.documentChanges.forEach( {(documentChange) in
+                    switch documentChange.type {
+                    case .added:
+                        self.handleAddedDocumentChange(documentChange: documentChange)
+                        
+                    case .modified, .removed:
+                        print("nothing to do")
+                    }
+                })
+                
+                self.messageRoomTableView.reloadData()
+            }
+    }
+    
+    // ドキュメント追加時のハンドラー
+    private func handleAddedDocumentChange(documentChange: DocumentChange) {
+        let data = documentChange.document.data()
+        let message = Message(data: data)
+        self.roomMessages.append(message)
+    }
+    
+    // Firestoreにメッセージを送信
+    private func sendMessageToFirestore(text: String) {
+        // UID取得
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let sendTime = Timestamp()
+        let sendData = [
+            "author": uid,
+            "text": text,
+            "image": "image",
+            "read": false,
+            "created_at": sendTime,
+            "updated_at": sendTime,
+        ] as [String : Any]
         
-        //        if uid == PartnerMessageTableViewCell().messageText?.uid{
         
-        //        }
+        // ここ重要！！
+        Firestore.firestore().collection("rooms").document(documentId).collection("messages").document()
+            .setData(sendData, merge: true){ err in
+                if let err = err {
+                    print("Error adding document: \(err)")
+                } else {
+                    print("Document successfully written!")
+                }
+            }
     }
     
     private func uploadImageToFireStorage(imageView: UIImageView) {
@@ -72,19 +139,6 @@ class MessageRoomViewController: UIViewController {
                 print("URLString: \(urlString)")
             })
         }
-        
-    }
-    
-    // messageInputAccessoryViewとキーボードを紐付け
-    override var inputAccessoryView: UIView? {
-        get {
-            return messageInputAccessoryView
-        }
-    }
-    
-    // messageInputAccessoryViewがfirstResponderになれるよう設定
-    override var canBecomeFirstResponder: Bool {
-        return true
     }
 }
 
@@ -103,58 +157,11 @@ extension MessageRoomViewController: MessageInputAccessoryViewDelegate {
     
     // 送信ボタン押下時
     func tappedSendButton(text: String) {
-        messages.append(text)
         
-        // UID取得
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        print("uid!: \(uid)")
-        let sendTime = Timestamp()
-        let sendData = [
-            "author": "テスト",
-            "text": text,
-            "image": "image",
-            "read": false,
-            "created_at": sendTime,
-            "updated_at": sendTime,
-        ] as [String : Any]
-        
-        //        let sendData = Message(
-        //            author: "テスト",
-        //            image: "",
-        //            read: false,
-        //            text: text,
-        //            created_at: sendTime,
-        //            updated_at: sendTime
-        //        )
-        
-        // Add a new document with a pointed ID
-        print("documentId: \(documentId)")
-        //        Firestore.firestore().collection("rooms").document(documentId).setData(sendData) { err in
-        //            if let err = err {
-        //                print("Error adding document: \(err)")
-        //            } else {
-        //                print("Document successfully written!")
-        //            }
-        //        }
-        
-        let documentRef = Firestore.firestore().collection("rooms").document(documentId)
-        documentRef.setData([
-            "name": "test",
-            "messages": FieldValue.arrayUnion([sendData])
-        ], merge: true){ err in
-            if let err = err {
-                print("Error adding document: \(err)")
-            } else {
-                print("Document successfully written!")
-            }
-        }
-        
-        
+        sendMessageToFirestore(text: text)
         messageInputAccessoryView.removeText()
         messageRoomTableView.reloadData()
     }
-    
-    
 }
 
 extension MessageRoomViewController: UITableViewDelegate, UITableViewDataSource {
@@ -169,16 +176,16 @@ extension MessageRoomViewController: UITableViewDelegate, UITableViewDataSource 
     
     // セルの数
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return messages.count
+        return roomMessages.count
     }
     
     // カスタムセルを設定
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let partnerCell = messageRoomTableView.dequeueReusableCell(withIdentifier: partnerCellId, for: indexPath) as! PartnerMessageTableViewCell
-        partnerCell.messageText = messages[indexPath.row]
+        partnerCell.message = roomMessages[indexPath.row]
         
         let myCell = messageRoomTableView.dequeueReusableCell(withIdentifier: myCellId, for: indexPath) as! MyMessageTableViewCell
-        myCell.messageText = messages[indexPath.row]
+        myCell.message = roomMessages[indexPath.row]
         
         return myCell
     }

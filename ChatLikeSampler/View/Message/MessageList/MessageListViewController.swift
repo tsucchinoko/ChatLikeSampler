@@ -12,6 +12,7 @@ class MessageListViewController: UIViewController {
     
     private let cellId = "cellId"
     private var roomMessages = [Message]()
+    private var rooms = [Room]()
     var documentIds = [String]()
     
     @IBOutlet weak var messageListTableView: UITableView!
@@ -19,38 +20,64 @@ class MessageListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        setupViews()
+        fetchMessageRoomInfoFromFirestore()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+    }
+    
+    // Viewのセットアップ
+    private func setupViews() {
+        messageListTableView.tableFooterView = UIView()
         messageListTableView.delegate = self
         messageListTableView.dataSource = self
         
         navigationController?.navigationBar.barTintColor =  UIColor.rgb(red: 39, green: 49, blue: 69)
         navigationItem.title = "トーク"
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
-        
-        
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        fetchMessageRoomInfoFromFirestore()
     }
     
     
     // メッセージ一覧画面の情報を取得
     private func fetchMessageRoomInfoFromFirestore() {
-        Firestore.firestore().collection("rooms").getDocuments{ (snapshots, err) in
+        Firestore.firestore().collection("rooms").addSnapshotListener { (snapshots, err) in
             if let err = err {
                 print("ルーム情報の取得失敗: \(err)")
                 return
             }
             
-            snapshots?.documents.forEach({ (snapshot) in
-                let documentId = snapshot.documentID
-                self.documentIds.append(documentId)
+            snapshots?.documentChanges.forEach( { (documentChange) in
+                switch documentChange.type {
+                case .added:
+                    self.handleAddedDocumentChange(documentChange: documentChange)
+                case .modified, .removed:
+                    print("nothing to do")
+                }
+            })
+        }
+    }
+    
+    // ドキュメント追加時のハンドラー
+    private func handleAddedDocumentChange(documentChange: DocumentChange) {
+        let data = documentChange.document.data()
+        let room = Room(data: data)
+        
+        Firestore.firestore().collection("users").getDocuments{ (userSnapshots, err) in
+            if let err = err {
+                print("user faital: \(err)")
+            }
+            userSnapshots?.documents.forEach({userSnapshot in
+                let userId = userSnapshot.documentID
                 
-                let data = snapshot.data()
-                let message = Message.init(data: data)
-                self.roomMessages.append(message)
-                self.messageListTableView.reloadData()
+                if room.name == userId {
+                    let documentId = documentChange.document.documentID
+                    self.documentIds.append(documentId)
+                    self.rooms.append(room)
+                    print("rooms!! :\(self.rooms.description)")
+                    print("documentIds!! \(userSnapshot.documentID)")
+                    self.messageListTableView.reloadData()
+                }
             })
         }
     }
@@ -67,13 +94,13 @@ extension MessageListViewController: UITableViewDelegate, UITableViewDataSource 
     
     // セルの数
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return roomMessages.count
+        return rooms.count
     }
     
     // カスタムセルを設定
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = messageListTableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! MessageListTableViewCell
-        cell.roomMessage = roomMessages[indexPath.row]
+        cell.room = rooms[indexPath.row]
         
         return cell
     }
@@ -90,19 +117,17 @@ extension MessageListViewController: UITableViewDelegate, UITableViewDataSource 
         messageVC.documentId = documentId
         navigationController?.pushViewController(messageVC, animated: true)
     }
-    
-    
 }
 
 class MessageListTableViewCell: UITableViewCell {
     
-    
-    var roomMessage: Message? {
+    // roomに値がセットされたら呼ばれる
+    var room: Room? {
         didSet {
-            if let roomMessage = roomMessage {
-                partnerLabel.text = roomMessage.author
-                dateLabel.text = dateFormatterForDateLabel(date: roomMessage.created_at.dateValue())
-                latestMessageLabel.text = roomMessage.text
+            if let room = room {
+                partnerLabel.text = room.creator
+                dateLabel.text = dateFormatterForDateLabel(date: room.created_at.dateValue())
+                latestMessageLabel.text = room.messages?.text
             }
         }
     }
@@ -112,16 +137,19 @@ class MessageListTableViewCell: UITableViewCell {
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var userImageView: UIImageView!
     
+    // カスタムセルを初期化
     override func awakeFromNib() {
         super.awakeFromNib()
         
         userImageView.layer.cornerRadius = userImageView.frame.width / 2
     }
     
+    // カスタムセル選択時
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
     
+    // 日付をフォーマットする
     private func dateFormatterForDateLabel(date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .full
