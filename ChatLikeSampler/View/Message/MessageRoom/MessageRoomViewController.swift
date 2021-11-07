@@ -59,6 +59,8 @@ class MessageRoomViewController: UIViewController {
         messageRoomTableView.contentInset = .init(top: 0, left: 0, bottom: 60, right: 0)
         // スクロールバーの位置を微調整
         messageRoomTableView.scrollIndicatorInsets = .init(top: 0, left: 0, bottom: 60, right: 0)
+        // スクロール時にキーボードを閉じる
+        messageRoomTableView.keyboardDismissMode = .interactive
     }
     
     // メッセージ送信者の判別
@@ -94,7 +96,7 @@ class MessageRoomViewController: UIViewController {
                 })
                 
                 self.messageRoomTableView.reloadData()
-                self.messageRoomTableView.scrollToRow(at: IndexPath(row: self.roomMessages.count - 1, section: 0), at: .bottom, animated: true)
+                self.messageRoomTableView.scrollToRow(at: IndexPath(row: self.roomMessages.count - 1, section: 0), at: .bottom, animated: false)
             }
     }
     
@@ -115,6 +117,9 @@ class MessageRoomViewController: UIViewController {
     private func sendMessageToFirestore(text: String) {
         // UID取得
         guard let uid = Auth.auth().currentUser?.uid else { return }
+        
+        // 最新メッセージの取得を簡略化するため、アプリ側でIDを生成
+        let messageId = randomString(length: 20)
         let sendTime = Timestamp()
         let sendData = [
             "author": uid,
@@ -125,10 +130,22 @@ class MessageRoomViewController: UIViewController {
             "updated_at": sendTime,
         ] as [String : Any]
         
-        
-        // ここ重要！！
-        Firestore.firestore().collection("rooms").document(roomIds).collection("messages").document()
+        // Firestoreにメッセージを送信
+        Firestore.firestore().collection("rooms").document(roomIds).collection("messages").document(messageId)
             .setData(sendData, merge: true){ err in
+                if let err = err {
+                    print("Error adding document: \(err)")
+                } else {
+                    print("Document successfully written!")
+                }
+            }
+        
+        let latestMessageData = [
+            "latestMessageId": messageId
+        ]
+        
+        // FirestoreのlatestMessageを更新
+        Firestore.firestore().collection("rooms").document(roomIds).updateData(latestMessageData) { err in
                 if let err = err {
                     print("Error adding document: \(err)")
                 } else {
@@ -137,6 +154,7 @@ class MessageRoomViewController: UIViewController {
             }
     }
     
+    // 画像送信時
     private func uploadImageToFireStorage(imageView: UIImageView) {
         guard let image = imageView.image else { return }
         guard let uploadImage = image.jpegData(compressionQuality: 0.3) else { return }
@@ -161,6 +179,20 @@ class MessageRoomViewController: UIViewController {
                 print("URLString: \(urlString)")
             })
         }
+    }
+    
+    // ランダムな文字列を生成
+    func randomString(length: Int) -> String {
+            let letters : NSString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+            let len = UInt32(letters.length)
+
+            var randomString = ""
+            for _ in 0 ..< length {
+                let rand = arc4random_uniform(len)
+                var nextChar = letters.character(at: Int(rand))
+                randomString += NSString(characters: &nextChar, length: 1) as String
+            }
+            return randomString
     }
 }
 

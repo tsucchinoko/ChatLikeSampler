@@ -20,6 +20,7 @@ class Room {
     var roomId: String?
     var latestMessage: Message?
     let latestMessageId: String
+    var unreadCount  =  0
         
     init(data: [String: Any]) {
         self.name = data["name"] as? String ?? ""

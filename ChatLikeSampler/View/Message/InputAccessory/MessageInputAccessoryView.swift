@@ -80,7 +80,6 @@ class MessageInputAccessoryView: UIView, UIImagePickerControllerDelegate & UINav
     @IBAction func tappedSendButton(_ sender: Any) {
         guard let text = messageTextView.text else { return }
         delegate?.tappedSendButton(text: text)
-        
     }
 }
 

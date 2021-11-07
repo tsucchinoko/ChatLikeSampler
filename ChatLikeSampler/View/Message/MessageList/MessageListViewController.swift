@@ -42,12 +42,14 @@ class MessageListViewController: UIViewController {
     
     // メッセージ一覧画面の情報を取得
     private func fetchMessageRoomInfoFromFirestore() {
+        // ルーム情報の取得
         Firestore.firestore().collection("rooms").addSnapshotListener { (snapshots, err) in
             if let err = err {
                 print("ルーム情報の取得失敗: \(err)")
                 return
             }
             
+            // ルーム内の変化を監視
             snapshots?.documentChanges.forEach( { (documentChange) in
                 switch documentChange.type {
                 case .added:
@@ -65,13 +67,15 @@ class MessageListViewController: UIViewController {
         let room = Room(data: data)
         room.roomId = documentChange.document.documentID
         
-        // 自分の参加しているルームのみ表示
         guard let uid = Auth.auth().currentUser?.uid else { return }
+        // 自分の参加しているルームのみ表示
         let isContain = room.members.contains(uid)
         if !isContain { return }
         
+        // ルーム内のユーザー情報を取得
         room.members.forEach{ (memberUid) in
             if memberUid != uid {
+                // ユーザー情報取得
                 Firestore.firestore().collection("users").document(memberUid).getDocument{ (snapshot, err) in
                     if let err = err {
                         print("ユーザー情報取得失敗: \(err)")
@@ -92,6 +96,7 @@ class MessageListViewController: UIViewController {
                         return
                     }
                     
+                    // 最新メッセージの取得
                     Firestore.firestore().collection("rooms").document(roomId).collection("messages").document(latestMessageId).getDocument{ (messageSnapshot, err) in
                         if let err = err {
                             print("最新メッセージの取得失敗: \(err)")
@@ -100,10 +105,30 @@ class MessageListViewController: UIViewController {
                         guard let data = messageSnapshot?.data() else { return }
                         let message = Message(data: data)
                         room.latestMessage = message
+                        print("latestMessage: \(message)")
                         
+//                        self.rooms.append(room)
+//                        self.messageListTableView.reloadData()
+                    }
+                    
+                    // 未読数の取得
+                    Firestore.firestore().collection("rooms").document(roomId).collection("messages").whereField("read", isEqualTo: false).getDocuments { (querySnapshot, err) in
+                        if let err = err {
+                            print("未読数の取得失敗: \(err)")
+                            return
+                        }
+                        
+                        for _ in querySnapshot!.documents {
+                            room.unreadCount += 1
+                            print("未読数: \(room.unreadCount)")
+                        }
+                        
+                        print("roomCount: \(room.unreadCount)")
                         self.rooms.append(room)
                         self.messageListTableView.reloadData()
                     }
+                    
+                    
                 }
             }
         }
@@ -153,6 +178,7 @@ class MessageListTableViewCell: UITableViewCell {
                 partnerLabel.text = room.partnerUser?.username
                 dateLabel.text = dateFormatterForDateLabel(date: room.latestMessage?.created_at.dateValue() ?? Date())
                 latestMessageLabel.text = room.latestMessage?.text
+                unreadLabel.text = String(room.unreadCount)
             }
         }
     }
@@ -161,12 +187,15 @@ class MessageListTableViewCell: UITableViewCell {
     @IBOutlet weak var partnerLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var userImageView: UIImageView!
+    @IBOutlet weak var unreadLabel: UILabel!
     
     // カスタムセルを初期化
     override func awakeFromNib() {
         super.awakeFromNib()
         
         userImageView.layer.cornerRadius = userImageView.frame.width / 2
+        unreadLabel.layer.cornerRadius = unreadLabel.frame.width / 2
+        unreadLabel.clipsToBounds = true
     }
     
     // カスタムセル選択時
