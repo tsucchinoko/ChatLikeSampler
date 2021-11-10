@@ -14,9 +14,9 @@ class MessageRoomViewController: UIViewController {
     private let partnerCellId = "partnerCellId"
     private let myCellId = "myCellId"
     
-    var roomIds = ""
+    var roomId = ""
     private var roomMessages = [Message]()
-
+    
     private lazy var messageInputAccessoryView: MessageInputAccessoryView = {
         let view = MessageInputAccessoryView()
         view.frame = .init(x: 0, y: 0, width: view.frame.width, height: 100)
@@ -25,7 +25,7 @@ class MessageRoomViewController: UIViewController {
     }()
     
     @IBOutlet weak var messageRoomTableView: UITableView!
-
+    
     // messageInputAccessoryViewとキーボードを紐付け
     override var inputAccessoryView: UIView? {
         get {
@@ -42,6 +42,7 @@ class MessageRoomViewController: UIViewController {
         super.viewDidLoad()
         setupViews()
         fetchMessageInfoFromFirestore()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -70,6 +71,9 @@ class MessageRoomViewController: UIViewController {
         if uid == roomMessages[indexPath.row].author {
             let myCell = messageRoomTableView.dequeueReusableCell(withIdentifier: myCellId, for: indexPath) as! MyMessageTableViewCell
             myCell.message = roomMessages[indexPath.row]
+            if roomMessages[indexPath.row].read == true {
+                myCell.readLabel.isHidden = false
+            }
             return myCell
         } else {
             let partnerCell = messageRoomTableView.dequeueReusableCell(withIdentifier: partnerCellId, for: indexPath) as! PartnerMessageTableViewCell
@@ -80,7 +84,7 @@ class MessageRoomViewController: UIViewController {
     
     // メッセージ情報を取得
     private func fetchMessageInfoFromFirestore() {
-        Firestore.firestore().collection("rooms").document(roomIds).collection("messages")
+        Firestore.firestore().collection("rooms").document(roomId).collection("messages")
             .addSnapshotListener{ (snapshots, err) in
                 if let err = err {
                     print("メッセージ取得失敗: \(err)")
@@ -89,8 +93,13 @@ class MessageRoomViewController: UIViewController {
                     switch documentChange.type {
                     case .added:
                         self.handleAddedDocumentChange(documentChange: documentChange)
+                        self.updateUnreadFlagOfFirestore(documentChange: documentChange)
+
                         
-                    case .modified, .removed:
+                    case .modified:
+                        print("update  label")
+                        
+                    case .removed:
                         print("nothing to do")
                     }
                 })
@@ -113,6 +122,29 @@ class MessageRoomViewController: UIViewController {
         }
     }
     
+    // 既読時
+    private func updateUnreadFlagOfFirestore(documentChange: DocumentChange) {
+
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let documentId = documentChange.document.documentID
+        let data = documentChange.document.data()
+        let message = Message(data: data)
+        let author = message.author
+
+        // 相手のメッセージの既読フラグをTrueに更新
+        if author != uid {
+            Firestore.firestore().collection("rooms").document(self.roomId)
+                .collection("messages").document(documentId).updateData(["read": true])
+        }
+    }
+    
+    // 既読ラベルの表示
+    private func showReadLabel(indexPath: IndexPath) {
+//        let indexPath = IndexPath(row: row, section: section)
+//        self.messageRoomTableView.reloadRows(at: [indexPath], with: .fade)
+    }
+
+    
     // Firestoreにメッセージを送信
     private func sendMessageToFirestore(text: String) {
         // UID取得
@@ -131,7 +163,7 @@ class MessageRoomViewController: UIViewController {
         ] as [String : Any]
         
         // Firestoreにメッセージを送信
-        Firestore.firestore().collection("rooms").document(roomIds).collection("messages").document(messageId)
+        Firestore.firestore().collection("rooms").document(roomId).collection("messages").document(messageId)
             .setData(sendData, merge: true){ err in
                 if let err = err {
                     print("Error adding document: \(err)")
@@ -145,13 +177,13 @@ class MessageRoomViewController: UIViewController {
         ]
         
         // FirestoreのlatestMessageを更新
-        Firestore.firestore().collection("rooms").document(roomIds).updateData(latestMessageData) { err in
-                if let err = err {
-                    print("Error adding document: \(err)")
-                } else {
-                    print("Document successfully written!")
-                }
+        Firestore.firestore().collection("rooms").document(roomId).updateData(latestMessageData) { err in
+            if let err = err {
+                print("Error adding document: \(err)")
+            } else {
+                print("Document successfully written!")
             }
+        }
     }
     
     // 画像送信時
@@ -183,16 +215,16 @@ class MessageRoomViewController: UIViewController {
     
     // ランダムな文字列を生成
     func randomString(length: Int) -> String {
-            let letters : NSString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-            let len = UInt32(letters.length)
-
-            var randomString = ""
-            for _ in 0 ..< length {
-                let rand = arc4random_uniform(len)
-                var nextChar = letters.character(at: Int(rand))
-                randomString += NSString(characters: &nextChar, length: 1) as String
-            }
-            return randomString
+        let letters : NSString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        let len = UInt32(letters.length)
+        
+        var randomString = ""
+        for _ in 0 ..< length {
+            let rand = arc4random_uniform(len)
+            var nextChar = letters.character(at: Int(rand))
+            randomString += NSString(characters: &nextChar, length: 1) as String
+        }
+        return randomString
     }
 }
 

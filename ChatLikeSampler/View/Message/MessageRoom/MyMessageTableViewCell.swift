@@ -13,6 +13,7 @@ class MyMessageTableViewCell: UITableViewCell {
     @IBOutlet weak var messageTextView: UITextView!
     @IBOutlet weak var dateLabel: UILabel!
     
+    @IBOutlet weak var readLabel: UILabel!
     @IBOutlet weak var messageTextViewWithConstraint: NSLayoutConstraint!
         
     // messageに値がセットされたら呼ばれる
@@ -36,6 +37,7 @@ class MyMessageTableViewCell: UITableViewCell {
         backgroundColor = .clear
         // アイコンを円にする
         messageTextView.layer.cornerRadius = 15
+        readLabel.isHidden = true
     }
     
     // カスタムセルが選択されたことを検知

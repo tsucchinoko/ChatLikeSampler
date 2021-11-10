@@ -13,7 +13,6 @@ class MessageListViewController: UIViewController {
     private let cellId = "cellId"
     private var roomMessages = [Message]()
     private var rooms = [Room]()
-    var roomNames = [String]()
     
     @IBOutlet weak var messageListTableView: UITableView!
     
@@ -54,7 +53,10 @@ class MessageListViewController: UIViewController {
                 switch documentChange.type {
                 case .added:
                     self.handleAddedDocumentChange(documentChange: documentChange)
-                case .modified, .removed:
+                case .modified:
+                    self.fetchLatestMessage(documentChange: documentChange)
+                    self.getUnreadCount(documentChange: documentChange)
+                case .removed:
                     print("nothing to do")
                 }
             })
@@ -107,8 +109,8 @@ class MessageListViewController: UIViewController {
                         room.latestMessage = message
                         print("latestMessage: \(message)")
                         
-//                        self.rooms.append(room)
-//                        self.messageListTableView.reloadData()
+                        //                        self.rooms.append(room)
+                        self.messageListTableView.reloadData()
                     }
                     
                     // 未読数の取得
@@ -120,10 +122,8 @@ class MessageListViewController: UIViewController {
                         
                         for _ in querySnapshot!.documents {
                             room.unreadCount += 1
-                            print("未読数: \(room.unreadCount)")
                         }
                         
-                        print("roomCount: \(room.unreadCount)")
                         self.rooms.append(room)
                         self.messageListTableView.reloadData()
                     }
@@ -131,6 +131,55 @@ class MessageListViewController: UIViewController {
                     
                 }
             }
+        }
+    }
+    
+    // 最新メッセージの取得
+    private func fetchLatestMessage(documentChange: DocumentChange){
+        let data = documentChange.document.data()
+        let room = Room(data: data)
+        room.roomId = documentChange.document.documentID
+        
+        guard let roomId = room.roomId else { return }
+        let latestMessageId = room.latestMessageId
+        
+        // 最新メッセージの取得
+        Firestore.firestore().collection("rooms").document(roomId).collection("messages").document(latestMessageId).getDocument{ (messageSnapshot, err) in
+            if let err = err {
+                print("最新メッセージの取得失敗: \(err)")
+                return
+            }
+            guard let data = messageSnapshot?.data() else { return }
+            let message = Message(data: data)
+            room.latestMessage = message
+            print("latestMessage: \(message)")
+            
+            self.rooms.append(room)
+            self.messageListTableView.reloadData()
+        }
+    }
+    
+    // 未読数の取得
+    private func getUnreadCount(documentChange: DocumentChange){
+        let data = documentChange.document.data()
+        let room = Room(data: data)
+        room.roomId = documentChange.document.documentID
+        
+        guard let roomId = room.roomId else { return }
+        
+        // 未読数の取得
+        Firestore.firestore().collection("rooms").document(roomId).collection("messages").whereField("read", isEqualTo: false).getDocuments { (querySnapshot, err) in
+            if let err = err {
+                print("未読数の取得失敗: \(err)")
+                return
+            }
+            
+            for _ in querySnapshot!.documents {
+                room.unreadCount += 1
+            }
+            
+            self.rooms.append(room)
+            self.messageListTableView.reloadData()
         }
     }
 }
@@ -163,7 +212,7 @@ extension MessageListViewController: UITableViewDelegate, UITableViewDataSource 
         let storyBoard = UIStoryboard.init(name: "MessageRoom", bundle: nil)
         // ストーリーボードIDを指定して画面遷移
         let messageVC = storyBoard.instantiateViewController(withIdentifier: "MessageRoomViewController") as! MessageRoomViewController
-        messageVC.roomIds = rooms[indexPath.row].roomId ?? ""
+        messageVC.roomId = rooms[indexPath.row].roomId ?? ""
         
         navigationController?.pushViewController(messageVC, animated: true)
     }
@@ -178,7 +227,11 @@ class MessageListTableViewCell: UITableViewCell {
                 partnerLabel.text = room.partnerUser?.username
                 dateLabel.text = dateFormatterForDateLabel(date: room.latestMessage?.created_at.dateValue() ?? Date())
                 latestMessageLabel.text = room.latestMessage?.text
-                unreadLabel.text = String(room.unreadCount)
+                if room.unreadCount == 0 {
+                    unreadLabel.isHidden = true
+                } else {
+                    unreadLabel.text = String(room.unreadCount)
+                }
             }
         }
     }
