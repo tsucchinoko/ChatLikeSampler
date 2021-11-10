@@ -2,7 +2,7 @@
 //  User.swift
 //  ChatLikeSampler
 //
-//  Created by Daichi Tsuchiya on 2021/11/05.
+//  Created by Daichi Tsuchiya on 2021/11/10.
 //
 
 import Foundation
