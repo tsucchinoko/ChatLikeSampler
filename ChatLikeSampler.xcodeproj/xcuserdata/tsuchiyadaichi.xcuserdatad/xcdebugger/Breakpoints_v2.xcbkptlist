@@ -23,17 +23,17 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "F28C626B-2E74-4965-81F9-6CBF1604D5CB"
-            shouldBeEnabled = "No"
+            uuid = "6353C53E-2230-42E9-AB19-4042B5F2406F"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ChatLikeSampler/View/Message/MessageRoom/MessageRoomViewController.swift"
+            filePath = "ChatLikeSampler/View/Message/MessageList/MessageListViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "97"
-            endingLineNumber = "97"
-            landmarkName = "MessageRoomViewController"
-            landmarkType = "21">
+            startingLineNumber = "174"
+            endingLineNumber = "174"
+            landmarkName = "handleUpdatedDocumentChange(documentChange:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

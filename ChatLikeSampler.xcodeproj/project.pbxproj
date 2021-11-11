@@ -51,6 +51,9 @@
 		24D317472721A8C70078E326 /* UIColorExtention.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24D317462721A8C70078E326 /* UIColorExtention.swift */; };
 		24D317492721A9650078E326 /* MessageInputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24D317482721A9650078E326 /* MessageInputAccessoryView.swift */; };
 		24D3174B2721A9840078E326 /* MessageInputAccessoryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24D3174A2721A9840078E326 /* MessageInputAccessoryView.xib */; };
+		24D5E63A273B668D007C73D3 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24D5E637273B668D007C73D3 /* Message.swift */; };
+		24D5E63B273B668D007C73D3 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24D5E638273B668D007C73D3 /* User.swift */; };
+		24D5E63C273B668D007C73D3 /* Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24D5E639273B668D007C73D3 /* Room.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -101,6 +104,9 @@
 		24D317462721A8C70078E326 /* UIColorExtention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtention.swift; sourceTree = "<group>"; };
 		24D317482721A9650078E326 /* MessageInputAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageInputAccessoryView.swift; sourceTree = "<group>"; };
 		24D3174A2721A9840078E326 /* MessageInputAccessoryView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MessageInputAccessoryView.xib; sourceTree = "<group>"; };
+		24D5E637273B668D007C73D3 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		24D5E638273B668D007C73D3 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		24D5E639273B668D007C73D3 /* Room.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Room.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,6 +167,7 @@
 		248F09F827217A84002A02B1 /* ChatLikeSampler */ = {
 			isa = PBXGroup;
 			children = (
+				24D5E636273B668D007C73D3 /* Model */,
 				24AD7C4A2730E73C00C708C8 /* View */,
 				248F09F927217A84002A02B1 /* AppDelegate.swift */,
 				248F09FB27217A84002A02B1 /* SceneDelegate.swift */,
@@ -258,6 +265,16 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		24D5E636273B668D007C73D3 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				24D5E637273B668D007C73D3 /* Message.swift */,
+				24D5E638273B668D007C73D3 /* User.swift */,
+				24D5E639273B668D007C73D3 /* Room.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -339,10 +356,13 @@
 				24A8F27727219B4400F5B9F7 /* MessageRoomViewController.swift in Sources */,
 				248F0A0E27217BE7002A02B1 /* MessageListViewController.swift in Sources */,
 				24C108F2272514E3004E1CB9 /* MyMessageTableViewCell.swift in Sources */,
+				24D5E63B273B668D007C73D3 /* User.swift in Sources */,
 				2410DAD62721A1ED00BE20B4 /* PartnerMessageTableViewCell.swift in Sources */,
 				24D317472721A8C70078E326 /* UIColorExtention.swift in Sources */,
+				24D5E63A273B668D007C73D3 /* Message.swift in Sources */,
 				24D317492721A9650078E326 /* MessageInputAccessoryView.swift in Sources */,
 				248F09FC27217A84002A02B1 /* SceneDelegate.swift in Sources */,
+				24D5E63C273B668D007C73D3 /* Room.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
