@@ -1,0 +1,48 @@
+{
+  "Mac" : [
+    {
+      "hash" : "a545a9e93d02f5665465c590ebe3403fc2e159049b8bca2fcd1ed3a6575da93d",
+      "name" : "FirebaseAppCheck",
+      "container" : "FirebaseAppCheck.xcframework",
+      "identifier" : "macos-arm64_x86_64"
+    }
+  ],
+  "watchOS" : [
+
+  ],
+  "tvOS" : [
+    {
+      "hash" : "4db859e3639011f79c099f8fd56dc2b073e8e4297f4850016e19e152ea9b00cf",
+      "name" : "FirebaseAppCheck",
+      "container" : "FirebaseAppCheck.xcframework",
+      "identifier" : "tvos-arm64_x86_64-simulator"
+    },
+    {
+      "hash" : "ea245a6d9869baf562453faf69bd42273420dfd600a9e3477a2216de9fb17996",
+      "name" : "FirebaseAppCheck",
+      "container" : "FirebaseAppCheck.xcframework",
+      "identifier" : "tvos-arm64"
+    }
+  ],
+  "commitish" : "8.9.0",
+  "iOS" : [
+    {
+      "hash" : "1eed4524dec7e275336d97adb95b8741122ada09c76a8074a67b9df93a129c29",
+      "name" : "FirebaseAppCheck",
+      "container" : "FirebaseAppCheck.xcframework",
+      "identifier" : "ios-arm64_x86_64-maccatalyst"
+    },
+    {
+      "hash" : "672908faf64da30e7a36122da7c9cec1ee2152355cdb883a71439de847866f00",
+      "name" : "FirebaseAppCheck",
+      "container" : "FirebaseAppCheck.xcframework",
+      "identifier" : "ios-arm64"
+    },
+    {
+      "hash" : "f065d36f4f326dd64afabd7482033fe8ceb6debed2c1e9d851a80c29df899e0e",
+      "name" : "FirebaseAppCheck",
+      "container" : "FirebaseAppCheck.xcframework",
+      "identifier" : "ios-arm64_x86_64-simulator"
+    }
+  ]
+}

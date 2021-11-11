@@ -1,0 +1,32 @@
+{
+  "Mac" : [
+
+  ],
+  "watchOS" : [
+
+  ],
+  "tvOS" : [
+
+  ],
+  "commitish" : "8.9.0",
+  "iOS" : [
+    {
+      "hash" : "f27c652126349c89c20344d02ee5014386438580632f2dcef5d64e49bdb5c5f4",
+      "name" : "FirebaseAppDistribution",
+      "container" : "FirebaseAppDistribution.xcframework",
+      "identifier" : "ios-arm64_x86_64-maccatalyst"
+    },
+    {
+      "hash" : "d753631def5f70fa924e09a121fc064e0ed5c43441b9c01a0faac8f8a630e160",
+      "name" : "FirebaseAppDistribution",
+      "container" : "FirebaseAppDistribution.xcframework",
+      "identifier" : "ios-arm64_i386_x86_64-simulator"
+    },
+    {
+      "hash" : "f40e9d1351610e9f91a23c2d4c00d67fa6d6366c31f0ed36c8c3c69149d06e4b",
+      "name" : "FirebaseAppDistribution",
+      "container" : "FirebaseAppDistribution.xcframework",
+      "identifier" : "ios-arm64_armv7"
+    }
+  ]
+}

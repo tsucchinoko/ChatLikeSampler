@@ -1,0 +1,84 @@
+{
+  "Mac" : [
+    {
+      "hash" : "94f9e6d9c987b24ff40f6152ea9a14bfc4ed354bc035a190498bb4ca3dde4820",
+      "name" : "FirebaseDatabase",
+      "container" : "FirebaseDatabase.xcframework",
+      "identifier" : "macos-arm64_x86_64"
+    },
+    {
+      "hash" : "af6ad5ba7d3e1e7e3ffaab089ffe49b337969fa9c03fbeca2b7dac06b6379329",
+      "name" : "leveldb-library",
+      "container" : "leveldb-library.xcframework",
+      "identifier" : "macos-arm64_x86_64"
+    }
+  ],
+  "watchOS" : [
+
+  ],
+  "tvOS" : [
+    {
+      "hash" : "175a3f8cf152cbf521a3566609abdfa9ce5685ea237d5073ae0987badf6248f6",
+      "name" : "FirebaseDatabase",
+      "container" : "FirebaseDatabase.xcframework",
+      "identifier" : "tvos-arm64_x86_64-simulator"
+    },
+    {
+      "hash" : "84df77623196142efe81d1e80aac383e0f1c208d6b3ade79c36c984af2e38c64",
+      "name" : "FirebaseDatabase",
+      "container" : "FirebaseDatabase.xcframework",
+      "identifier" : "tvos-arm64"
+    },
+    {
+      "hash" : "1b657a248acaf94045b6d3d88b8ad037cfa63e04975c996ac1b296781d64b31c",
+      "name" : "leveldb-library",
+      "container" : "leveldb-library.xcframework",
+      "identifier" : "tvos-arm64_x86_64-simulator"
+    },
+    {
+      "hash" : "298dd35e902bea17ce355c6ee7ebf0347b4e0402b805bb26cb822d0ad41d129d",
+      "name" : "leveldb-library",
+      "container" : "leveldb-library.xcframework",
+      "identifier" : "tvos-arm64"
+    }
+  ],
+  "commitish" : "8.9.0",
+  "iOS" : [
+    {
+      "hash" : "56c7e3d7b8192af1a90d95631179bfcccfa486a2e8849afaa60fcc199d55418d",
+      "name" : "FirebaseDatabase",
+      "container" : "FirebaseDatabase.xcframework",
+      "identifier" : "ios-arm64_x86_64-maccatalyst"
+    },
+    {
+      "hash" : "5cb84fc3266aa6947a076bd9e2ff2cb5095accab9e846a006acd25190e560772",
+      "name" : "FirebaseDatabase",
+      "container" : "FirebaseDatabase.xcframework",
+      "identifier" : "ios-arm64_i386_x86_64-simulator"
+    },
+    {
+      "hash" : "ae244340ab0197c98fb0527607440b949b4b94064d7f1f082943779246b45a00",
+      "name" : "FirebaseDatabase",
+      "container" : "FirebaseDatabase.xcframework",
+      "identifier" : "ios-arm64_armv7"
+    },
+    {
+      "hash" : "6d776fd5bcfa373f2bdb704929776f315d3e8fab7cb1a65d390053da42aa53b0",
+      "name" : "leveldb-library",
+      "container" : "leveldb-library.xcframework",
+      "identifier" : "ios-arm64_i386_x86_64-simulator"
+    },
+    {
+      "hash" : "44468fff93288cf5d31935720329a7743faf7e8ed59c3ad4feeae0bf70121b16",
+      "name" : "leveldb-library",
+      "container" : "leveldb-library.xcframework",
+      "identifier" : "ios-arm64_x86_64-maccatalyst"
+    },
+    {
+      "hash" : "ae8361379921fb57409b0d885c1efb8816e5b9328027cc56adf4d8c5f83971ae",
+      "name" : "leveldb-library",
+      "container" : "leveldb-library.xcframework",
+      "identifier" : "ios-arm64_armv7"
+    }
+  ]
+}
