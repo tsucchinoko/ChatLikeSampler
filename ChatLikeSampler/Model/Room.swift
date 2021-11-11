@@ -8,7 +8,11 @@
 import Foundation
 import Firebase
 
-class Room {
+class Room: Equatable {
+    static func == (lhs: Room, rhs: Room) -> Bool {
+        return lhs.roomId == rhs.roomId
+    }
+    
     let name: String
     let members: [String]
     let messages: Message?
