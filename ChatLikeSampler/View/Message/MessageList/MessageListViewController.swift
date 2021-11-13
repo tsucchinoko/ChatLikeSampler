@@ -95,6 +95,7 @@ class MessageListViewController: UIViewController {
                     guard let roomId = room.roomId else { return }
                     let latestMessageId = room.latestMessageId
                     
+                    // ルーム内の会話履歴がない場合
                     if latestMessageId == "" {
                         self.rooms.append(room)
                         self.messageListTableView.reloadData()
@@ -191,9 +192,7 @@ class MessageListViewController: UIViewController {
                     }
                 }
             }
-            
-            
-            
+
         }
     }
     

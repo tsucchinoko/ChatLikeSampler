@@ -71,9 +71,6 @@ class MessageRoomViewController: UIViewController {
         if uid == roomMessages[indexPath.row].author {
             let myCell = messageRoomTableView.dequeueReusableCell(withIdentifier: myCellId, for: indexPath) as! MyMessageTableViewCell
             myCell.message = roomMessages[indexPath.row]
-            if roomMessages[indexPath.row].read == true {
-                myCell.readLabel.isHidden = false
-            }
             return myCell
         } else {
             let partnerCell = messageRoomTableView.dequeueReusableCell(withIdentifier: partnerCellId, for: indexPath) as! PartnerMessageTableViewCell
@@ -97,7 +94,7 @@ class MessageRoomViewController: UIViewController {
 
                         
                     case .modified:
-                        print("update  label")
+                        self.updateUnreadFlagOfFirestore(documentChange: documentChange)
                         
                     case .removed:
                         print("nothing to do")
@@ -136,6 +133,7 @@ class MessageRoomViewController: UIViewController {
             Firestore.firestore().collection("rooms").document(self.roomId)
                 .collection("messages").document(documentId).updateData(["read": true])
         }
+        self.messageRoomTableView.reloadData()
     }
     
     // 既読ラベルの表示

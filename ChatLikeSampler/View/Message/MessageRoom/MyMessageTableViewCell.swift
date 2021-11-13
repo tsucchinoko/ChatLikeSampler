@@ -26,6 +26,12 @@ class MyMessageTableViewCell: UITableViewCell {
             messageTextView.text = message.text
             
             dateLabel.text = dateFormatterForDateLabel(date: message.created_at.dateValue())
+            // 既読時はラベルを表示
+            if message.read == true {
+                self.readLabel.isHidden = false
+            } else {
+                self.readLabel.isHidden = true
+            }
         }
     }
     
