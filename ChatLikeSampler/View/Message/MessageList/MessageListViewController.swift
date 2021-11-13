@@ -11,13 +11,11 @@ import Firebase
 class MessageListViewController: UIViewController {
     
     private let cellId = "cellId"
-    private var roomMessages = [Message]()
     private var rooms = [Room]()
     private var users = [User]()
-    let myQueue = DispatchQueue(label: "キュー")
     
     @IBOutlet weak var messageListTableView: UITableView!
-    
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,7 +60,6 @@ class MessageListViewController: UIViewController {
             })
         }
         self.messageListTableView.reloadData()
-        print("END!!!")
     }
     
     // ドキュメント追加時のハンドラー
@@ -111,7 +108,6 @@ class MessageListViewController: UIViewController {
                         guard let data = messageSnapshot?.data() else { return }
                         let message = Message(data: data)
                         room.latestMessage = message
-                        print("latestMessage: \(message)")
                         
                         self.messageListTableView.reloadData()
                     }
@@ -131,7 +127,6 @@ class MessageListViewController: UIViewController {
                                 room.unreadCount += 1
                             }
                         }
-                        print("ViewDidLoad時の未読: \(room.unreadCount)")
                         
                         self.rooms.append(room)
                         self.messageListTableView.reloadData()
@@ -174,10 +169,6 @@ class MessageListViewController: UIViewController {
                 // 自分が送信したメッセージの未読をカウントしない
                 if memberUid != uid {
                     for (index, user) in self.users.enumerated() {
-                        print("index!!: \(index)")
-                        print("user!! : \(user)")
-                        print("userUid!! : \(user.uid)")
-                        print("memberUid!! : \(memberUid)")
                         if user.uid == memberUid {
                             changeRoom.partnerUser = user
                         }
@@ -197,7 +188,6 @@ class MessageListViewController: UIViewController {
                             if author != uid {
                                 changeRoom.unreadCount += 1
                             }
-                            print("更新時の未読数:\(changeRoom.unreadCount)")
                         }
                         self.rooms[roomIndex] = changeRoom
                         self.messageListTableView.reloadData()
@@ -207,56 +197,7 @@ class MessageListViewController: UIViewController {
 
         }
     }
-    
-    // 最新メッセージの取得
-    private func fetchLatestMessage(documentChange: DocumentChange){
-        let data = documentChange.document.data()
-        let room = Room(data: data)
-        room.roomId = documentChange.document.documentID
-        
-        guard let roomId = room.roomId else { return }
-        let latestMessageId = room.latestMessageId
-        
-        // 最新メッセージの取得
-        Firestore.firestore().collection("rooms").document(roomId).collection("messages").document(latestMessageId).getDocument{ (messageSnapshot, err) in
-            if let err = err {
-                print("最新メッセージの取得失敗: \(err)")
-                return
-            }
-            guard let data = messageSnapshot?.data() else { return }
-            let message = Message(data: data)
-            room.latestMessage = message
-            print("latestMessage: \(message)")
-            
-            self.rooms.append(room)
-            self.messageListTableView.reloadData()
-        }
-    }
-    
-    // 未読数の取得
-    private func getUnreadCount(documentChange: DocumentChange){
-        let data = documentChange.document.data()
-        let room = Room(data: data)
-        room.roomId = documentChange.document.documentID
-        
-        guard let roomId = room.roomId else { return }
-        
-        // 未読数の取得
-        Firestore.firestore().collection("rooms").document(roomId).collection("messages").whereField("read", isEqualTo: false).getDocuments { (querySnapshot, err) in
-            if let err = err {
-                print("未読数の取得失敗: \(err)")
-                return
-            }
-            
-            for _ in querySnapshot!.documents {
-                room.unreadCount += 1
-            }
-            
-            self.rooms.append(room)
-            self.messageListTableView.reloadData()
-        }
-    }
-    
+     
 }
 
 

@@ -12,7 +12,6 @@ class PartnerMessageTableViewCell: UITableViewCell {
     @IBOutlet weak var messageTextView: UITextView!
     @IBOutlet weak var userImageView: UIImageView!
     @IBOutlet weak var dateLabel: UILabel!
-    
     @IBOutlet weak var messageTextViewWithConstraint: NSLayoutConstraint!
     
     // messageに値がセットされたら呼ばれる
@@ -26,7 +25,6 @@ class PartnerMessageTableViewCell: UITableViewCell {
             messageTextView.text = message.text
             
             // TODO URLをUIImage?にする
-//            userImageView.image = message.image
             dateLabel.text = dateFormatterForDateLabel(date: message.created_at.dateValue())
         }
     }

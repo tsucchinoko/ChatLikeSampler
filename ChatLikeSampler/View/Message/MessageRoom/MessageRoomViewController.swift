@@ -13,17 +13,15 @@ import Nuke
 
 class MessageRoomViewController: UIViewController {
     
-    private let partnerCellId = "partnerCellId"
-    private let myCellId = "myCellId"
-    
     var roomId = ""
     private var roomMessages = [Message]()
+    private let partnerCellId = "partnerCellId"
+    private let myCellId = "myCellId"
     
     private let accessoryHeight: CGFloat = 100
     private let tebleViewContentInset: UIEdgeInsets = .init(top: 0, left: 0, bottom: 90, right: 0)
     private let tableViewIndicatorInset: UIEdgeInsets = .init(top: 0, left: 0, bottom: 90, right: 0)
     private var safeAreaBottom: CGFloat {
-        
         self.view.safeAreaInsets.bottom
     }
     
@@ -34,19 +32,19 @@ class MessageRoomViewController: UIViewController {
         return view
     }()
     
-    @IBOutlet weak var messageRoomTableView: UITableView!
-    
     // messageInputAccessoryViewとキーボードを紐付け
     override var inputAccessoryView: UIView? {
         get {
             return messageInputAccessoryView
         }
     }
-    
     // messageInputAccessoryViewがfirstResponderになれるよう設定
     override var canBecomeFirstResponder: Bool {
         return true
     }
+    
+    @IBOutlet weak var messageRoomTableView: UITableView!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -86,58 +84,6 @@ class MessageRoomViewController: UIViewController {
         
     }
     
-    // キーボード出現時
-    @objc func keyboardWillShow(notification: NSNotification) {
-        guard let userInfo = notification.userInfo else { return }
-        
-        
-        if let keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as AnyObject).cgRectValue {
-            
-            
-            if keyboardFrame.height <= accessoryHeight { return }
-            
-            // キーボードの高さ分messageRoomTableViewを上にずらす
-            let buttom = keyboardFrame.height - safeAreaBottom
-            let moveY = -buttom
-            print("buttom: \(buttom)")
-            print("moveY: \(moveY)")
-            let contentInset = UIEdgeInsets(top: 0, left: 0, bottom: buttom, right: 0)
-            
-            messageRoomTableView.contentInset = contentInset
-            messageRoomTableView.scrollIndicatorInsets = contentInset
-            messageRoomTableView.contentOffset = CGPoint(x: 0, y: moveY)
-            messageRoomTableView.scrollToRow(at: IndexPath(row: self.roomMessages.count - 1, section: 0), at: .bottom, animated: false)
-            
-        }
-        
-    }
-    
-    // キーボードが閉じたとき
-    @objc func keyboardWillHide() {
-        messageRoomTableView.contentInset = tebleViewContentInset
-        messageRoomTableView.scrollIndicatorInsets = tableViewIndicatorInset
-        
-    }
-
-    // キーボードを閉じる
-    @objc func dismissKeyboard() {
-        self.messageInputAccessoryView.textViewDidEndEditing(messageInputAccessoryView.messageTextView)
-    }
-    
-    // メッセージ送信者の判別
-    private func checkWitchUserMessage(indexPath: IndexPath) -> UITableViewCell {
-        guard let uid = Auth.auth().currentUser?.uid else { return UITableViewCell() }
-        
-        if uid == roomMessages[indexPath.row].author {
-            let myCell = messageRoomTableView.dequeueReusableCell(withIdentifier: myCellId, for: indexPath) as! MyMessageTableViewCell
-            myCell.message = roomMessages[indexPath.row]
-            return myCell
-        } else {
-            let partnerCell = messageRoomTableView.dequeueReusableCell(withIdentifier: partnerCellId, for: indexPath) as! PartnerMessageTableViewCell
-            partnerCell.message = roomMessages[indexPath.row]
-            return partnerCell
-        }
-    }
     
     // メッセージ情報を取得
     private func fetchMessageInfoFromFirestore() {
@@ -218,8 +164,6 @@ class MessageRoomViewController: UIViewController {
             .setData(sendData, merge: true){ err in
                 if let err = err {
                     print("Error adding document: \(err)")
-                } else {
-                    print("Document successfully written!")
                 }
             }
         
@@ -251,7 +195,6 @@ class MessageRoomViewController: UIViewController {
                 return
             }
             
-            print("FireStoregeへの保存成功")
             storageRef.downloadURL(completion: {(url, err) in
                 if let err = err {
                     print("FireStorageからのダウンロード失敗: \(err)")
@@ -259,8 +202,6 @@ class MessageRoomViewController: UIViewController {
                 }
                 
                 guard let urlString = url?.absoluteString else { return }
-                print("URLString: \(urlString)")
-                
                 
                 // UID取得
                 guard let uid = Auth.auth().currentUser?.uid else { return }
@@ -276,7 +217,6 @@ class MessageRoomViewController: UIViewController {
                     "created_at": sendTime,
                     "updated_at": sendTime,
                 ] as [String : Any]
-                
                 
                 // Firestoreにメッセージを送信
                 Firestore.firestore().collection("rooms").document(self.roomId).collection("messages").document(messageId)
@@ -296,14 +236,58 @@ class MessageRoomViewController: UIViewController {
                 Firestore.firestore().collection("rooms").document(self.roomId).updateData(latestMessageData) { err in
                     if let err = err {
                         print("Error adding document: \(err)")
-                    } else {
-                        print("Document successfully written!")
                     }
                 }
-                
-                
             })
+        
         }
+    }
+    
+    // メッセージ送信者の判別
+    private func checkWitchUserMessage(indexPath: IndexPath) -> UITableViewCell {
+        guard let uid = Auth.auth().currentUser?.uid else { return UITableViewCell() }
+        
+        if uid == roomMessages[indexPath.row].author {
+            let myCell = messageRoomTableView.dequeueReusableCell(withIdentifier: myCellId, for: indexPath) as! MyMessageTableViewCell
+            myCell.message = roomMessages[indexPath.row]
+            return myCell
+        } else {
+            let partnerCell = messageRoomTableView.dequeueReusableCell(withIdentifier: partnerCellId, for: indexPath) as! PartnerMessageTableViewCell
+            partnerCell.message = roomMessages[indexPath.row]
+            return partnerCell
+        }
+    }
+    
+    // キーボード出現時
+    @objc func keyboardWillShow(notification: NSNotification) {
+        guard let userInfo = notification.userInfo else { return }
+        
+        if let keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as AnyObject).cgRectValue {
+            
+            if keyboardFrame.height <= accessoryHeight { return }
+            
+            // キーボードの高さ分messageRoomTableViewを上にずらす
+            let buttom = keyboardFrame.height - safeAreaBottom
+            let moveY = -buttom
+            let contentInset = UIEdgeInsets(top: 0, left: 0, bottom: buttom, right: 0)
+            
+            messageRoomTableView.contentInset = contentInset
+            messageRoomTableView.scrollIndicatorInsets = contentInset
+            messageRoomTableView.contentOffset = CGPoint(x: 0, y: moveY)
+            messageRoomTableView.scrollToRow(at: IndexPath(row: self.roomMessages.count - 1, section: 0), at: .bottom, animated: false)
+        }
+    }
+    
+    // キーボードが閉じたとき
+    @objc func keyboardWillHide() {
+        messageRoomTableView.contentInset = tebleViewContentInset
+        messageRoomTableView.scrollIndicatorInsets = tableViewIndicatorInset
+        
+    }
+
+    // キーボードを閉じる
+    @objc func dismissKeyboard() {
+        self.messageInputAccessoryView.textViewDidEndEditing(messageInputAccessoryView.messageTextView)
     }
     
     // ランダムな文字列を生成
@@ -326,7 +310,6 @@ extension MessageRoomViewController: MessageInputAccessoryViewDelegate {
     
     // ファイル追加ボタン押下時
     func tappedFileAddButton() {
-        print(#function)
         let imagePickerController = UIImagePickerController()
         imagePickerController.delegate = self
         imagePickerController.allowsEditing = true
