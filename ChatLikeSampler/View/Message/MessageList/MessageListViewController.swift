@@ -26,10 +26,6 @@ class MessageListViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        let email = "dev_tsuchiya04@gmail.com"
-        let password = "123456"
-//        Auth.auth().signIn(withEmail: "dev_tsuchiya@gmail.com", password: "123456", completion: nil)
-        Auth.auth().createUser(withEmail: email, password: password, completion: nil)
     }
     
     // Viewのセットアップ
@@ -127,9 +123,15 @@ class MessageListViewController: UIViewController {
                             return
                         }
                         
-                        for _ in querySnapshot!.documents {
-                            room.unreadCount += 1
+                        for document in querySnapshot!.documents {
+                            let data = document.data()
+                            let message = Message(data: data)
+                            let author = message.author
+                            if author != uid {
+                                room.unreadCount += 1
+                            }
                         }
+                        print("ViewDidLoad時の未読: \(room.unreadCount)")
                         
                         self.rooms.append(room)
                         self.messageListTableView.reloadData()
@@ -188,8 +190,14 @@ class MessageListViewController: UIViewController {
                             return
                         }
                         
-                        for _ in querySnapshot!.documents {
-                            changeRoom.unreadCount += 1
+                        for document in querySnapshot!.documents {
+                            let data = document.data()
+                            let message = Message(data: data)
+                            let author = message.author
+                            if author != uid {
+                                changeRoom.unreadCount += 1
+                            }
+                            print("更新時の未読数:\(changeRoom.unreadCount)")
                         }
                         self.rooms[roomIndex] = changeRoom
                         self.messageListTableView.reloadData()
@@ -281,6 +289,8 @@ extension MessageListViewController: UITableViewDelegate, UITableViewDataSource 
         let messageVC = storyBoard.instantiateViewController(withIdentifier: "MessageRoomViewController") as! MessageRoomViewController
         guard let roomId = rooms[indexPath.row].roomId else { return }
         messageVC.roomId = roomId
+        
+        rooms[indexPath.row].unreadCount = 0
         
         navigationController?.pushViewController(messageVC, animated: true)
     }
