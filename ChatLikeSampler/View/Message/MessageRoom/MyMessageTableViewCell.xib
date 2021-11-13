@@ -38,6 +38,10 @@
                         <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="shareplay" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="Z3k-nT-kQ7">
+                        <rect key="frame" x="0.0" y="1" width="491" height="128"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    </imageView>
                 </subviews>
                 <constraints>
                     <constraint firstItem="ULC-Vy-RC1" firstAttribute="top" secondItem="VuQ-8s-td3" secondAttribute="bottom" constant="5" id="8zW-44-gaC"/>
@@ -55,11 +59,13 @@
                 <outlet property="messageTextView" destination="VuQ-8s-td3" id="xWb-na-pxS"/>
                 <outlet property="messageTextViewWithConstraint" destination="iaY-fW-uLh" id="DrJ-Vm-NXk"/>
                 <outlet property="readLabel" destination="t7P-2f-3FI" id="nBg-mC-7r3"/>
+                <outlet property="sendImageView" destination="Z3k-nT-kQ7" id="yT5-l4-xzh"/>
             </connections>
             <point key="canvasLocation" x="187.68115942028987" y="-157.36607142857142"/>
         </tableViewCell>
     </objects>
     <resources>
+        <image name="shareplay" catalog="system" width="128" height="73"/>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

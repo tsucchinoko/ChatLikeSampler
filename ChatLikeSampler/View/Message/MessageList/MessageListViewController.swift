@@ -26,6 +26,10 @@ class MessageListViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        let email = "dev_tsuchiya04@gmail.com"
+        let password = "123456"
+//        Auth.auth().signIn(withEmail: "dev_tsuchiya@gmail.com", password: "123456", completion: nil)
+        Auth.auth().createUser(withEmail: email, password: password, completion: nil)
     }
     
     // Viewのセットアップ

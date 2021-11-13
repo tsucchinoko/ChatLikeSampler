@@ -8,6 +8,8 @@
 import UIKit
 import Firebase
 import FirebaseAuth
+import FirebaseStorage
+//import Nuke
 
 class MessageRoomViewController: UIViewController {
     
@@ -46,6 +48,7 @@ class MessageRoomViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        
     }
     
     // Viewのセットアップ
@@ -185,12 +188,12 @@ class MessageRoomViewController: UIViewController {
     }
     
     // 画像送信時
-    private func uploadImageToFireStorage(imageView: UIImageView) {
-        guard let image = imageView.image else { return }
+    private func uploadImageToFireStorage(image: UIImage) {
+//        guard let image = image else { return }
         guard let uploadImage = image.jpegData(compressionQuality: 0.3) else { return }
         
         let fileName = NSUUID().uuidString
-        let storageRef = Storage.storage().reference().child("sendImage").child(fileName)
+        let storageRef = Storage.storage().reference().child(roomId).child(fileName)
         
         storageRef.putData(uploadImage, metadata: nil) { (metadata, err) in
             if let err = err {
@@ -273,8 +276,15 @@ extension MessageRoomViewController: UITableViewDelegate, UITableViewDataSource 
 
 extension MessageRoomViewController: UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let origialImage = info[.originalImage] as? UIImage {
-            print("originalImage!!")
+        if let editImage = info[.editedImage] as? UIImage {
+//            let cell = messageRoomTableView.dequeueReusableCell(withIdentifier: myCellId) as! MyMessageTableViewCell
+//            cell.sendImageView.image = editImage
+//            cell.sendImageView.isHidden = false
+            uploadImageToFireStorage(image: editImage)
+        } else if let originalImage = info[.originalImage] as? UIImage {
+//            let cell = messageRoomTableView.dequeueReusableCell(withIdentifier: myCellId) as! MyMessageTableViewCell
+//            cell.sendImageView.image = originalImage
+            uploadImageToFireStorage(image: originalImage)
         }
         
         dismiss(animated: true, completion: nil)

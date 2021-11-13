@@ -16,6 +16,7 @@ class MyMessageTableViewCell: UITableViewCell {
     @IBOutlet weak var readLabel: UILabel!
     @IBOutlet weak var messageTextViewWithConstraint: NSLayoutConstraint!
         
+    @IBOutlet weak var sendImageView: UIImageView!
     // messageに値がセットされたら呼ばれる
     var message: Message? {
         didSet {
