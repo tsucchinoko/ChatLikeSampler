@@ -249,9 +249,10 @@ class MessageRoomViewController: UIViewController {
         guard let uid = Auth.auth().currentUser?.uid else { return UITableViewCell() }
         
         if uid == roomMessages[indexPath.row].author {
-            let myCell = messageRoomTableView.dequeueReusableCell(withIdentifier: myCellId, for: indexPath) as! MyMessageTableViewCell
-            myCell.message = roomMessages[indexPath.row]
-            return myCell
+                let myCell = messageRoomTableView.dequeueReusableCell(withIdentifier: myCellId, for: indexPath) as! MyMessageTableViewCell
+                myCell.message = roomMessages[indexPath.row]
+                return myCell
+            
         } else {
             let partnerCell = messageRoomTableView.dequeueReusableCell(withIdentifier: partnerCellId, for: indexPath) as! PartnerMessageTableViewCell
             partnerCell.message = roomMessages[indexPath.row]

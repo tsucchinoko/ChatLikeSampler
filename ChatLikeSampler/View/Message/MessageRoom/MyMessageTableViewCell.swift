@@ -7,6 +7,7 @@
 
 
 import UIKit
+import Nuke
 
 class MyMessageTableViewCell: UITableViewCell {
     
@@ -22,7 +23,7 @@ class MyMessageTableViewCell: UITableViewCell {
             let width = estimateFrameForTextView(text: message.text).width + 20
             // テキストの長さにより、messageTextViewの幅を変化させる
             messageTextViewWithConstraint.constant = width
-            messageTextView.text = message.text
+            
             
             dateLabel.text = dateFormatterForDateLabel(date: message.created_at.dateValue())
             // 既読時はラベルを表示
@@ -30,6 +31,16 @@ class MyMessageTableViewCell: UITableViewCell {
                 self.readLabel.isHidden = false
             } else {
                 self.readLabel.isHidden = true
+            }
+            
+            if message.text == nil {
+                if let url = URL(string: message.image ?? "") {
+//                    クラッシュするためコメントアウト、、
+//                    Nuke.loadImage(with: url, into: sendImageView)
+                }
+                    
+            } else {
+                messageTextView.text = message.text
             }
         }
     }
