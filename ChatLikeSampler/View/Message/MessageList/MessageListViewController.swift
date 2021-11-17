@@ -97,8 +97,8 @@ class MessageListViewController: UIViewController {
                         self.rooms.append(room)
                         // 日付順にソート
                         self.rooms.sort{ (m1, m2) -> Bool in
-                            let m1Date = m1.created_at.dateValue()
-                            let m2Date = m2.created_at.dateValue()
+                            let m1Date = m1.updated_at.dateValue()
+                            let m2Date = m2.updated_at.dateValue()
                             return m1Date < m2Date
                         }
                         self.messageListTableView.reloadData()
@@ -137,8 +137,8 @@ class MessageListViewController: UIViewController {
                         self.rooms.append(room)
                         // 日付順にソート
                         self.rooms.sort{ (m1, m2) -> Bool in
-                            let m1Date = m1.created_at.dateValue()
-                            let m2Date = m2.created_at.dateValue()
+                            let m1Date = m1.updated_at.dateValue()
+                            let m2Date = m2.updated_at.dateValue()
                             return m1Date < m2Date
                         }
                         self.messageListTableView.reloadData()
