@@ -93,4 +93,8 @@ extension MessageInputAccessoryView: UITextViewDelegate {
             sendButton.isEnabled = true
         }
     }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        self.messageTextView.resignFirstResponder()
+    }
 }

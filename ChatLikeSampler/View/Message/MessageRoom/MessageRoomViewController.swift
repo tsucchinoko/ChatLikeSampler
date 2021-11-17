@@ -8,23 +8,29 @@
 import UIKit
 import Firebase
 import FirebaseAuth
+import FirebaseStorage
+import Nuke
 
 class MessageRoomViewController: UIViewController {
     
+    var roomId = ""
+    private var roomMessages = [Message]()
     private let partnerCellId = "partnerCellId"
     private let myCellId = "myCellId"
     
-    var roomId = ""
-    private var roomMessages = [Message]()
+    private let accessoryHeight: CGFloat = 100
+    private let tebleViewContentInset: UIEdgeInsets = .init(top: 0, left: 0, bottom: 90, right: 0)
+    private let tableViewIndicatorInset: UIEdgeInsets = .init(top: 0, left: 0, bottom: 90, right: 0)
+    private var safeAreaBottom: CGFloat {
+        self.view.safeAreaInsets.bottom
+    }
     
     private lazy var messageInputAccessoryView: MessageInputAccessoryView = {
         let view = MessageInputAccessoryView()
-        view.frame = .init(x: 0, y: 0, width: view.frame.width, height: 100)
+        view.frame = .init(x: 0, y: 0, width: view.frame.width, height: accessoryHeight)
         view.delegate = self
         return view
     }()
-    
-    @IBOutlet weak var messageRoomTableView: UITableView!
     
     // messageInputAccessoryViewとキーボードを紐付け
     override var inputAccessoryView: UIView? {
@@ -32,20 +38,24 @@ class MessageRoomViewController: UIViewController {
             return messageInputAccessoryView
         }
     }
-    
     // messageInputAccessoryViewがfirstResponderになれるよう設定
     override var canBecomeFirstResponder: Bool {
         return true
     }
     
+    @IBOutlet weak var messageRoomTableView: UITableView!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+        setupNotification()
         fetchMessageInfoFromFirestore()
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        
     }
     
     // Viewのセットアップ
@@ -57,30 +67,23 @@ class MessageRoomViewController: UIViewController {
         messageRoomTableView.register(UINib(nibName: "MyMessageTableViewCell", bundle: nil), forCellReuseIdentifier: myCellId)
         
         // セルが見切れないように位置を微調整
-        messageRoomTableView.contentInset = .init(top: 0, left: 0, bottom: 60, right: 0)
+        messageRoomTableView.contentInset = tebleViewContentInset
         // スクロールバーの位置を微調整
-        messageRoomTableView.scrollIndicatorInsets = .init(top: 0, left: 0, bottom: 60, right: 0)
+        messageRoomTableView.scrollIndicatorInsets = tableViewIndicatorInset
         // スクロール時にキーボードを閉じる
         messageRoomTableView.keyboardDismissMode = .interactive
     }
     
-    // メッセージ送信者の判別
-    private func checkWitchUserMessage(indexPath: IndexPath) -> UITableViewCell {
-        guard let uid = Auth.auth().currentUser?.uid else { return UITableViewCell() }
+    // UIResponderオブジェクトのイベントを通知
+    private func setupNotification(){
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         
-        if uid == roomMessages[indexPath.row].author {
-            let myCell = messageRoomTableView.dequeueReusableCell(withIdentifier: myCellId, for: indexPath) as! MyMessageTableViewCell
-            myCell.message = roomMessages[indexPath.row]
-            if roomMessages[indexPath.row].read == true {
-                myCell.readLabel.isHidden = false
-            }
-            return myCell
-        } else {
-            let partnerCell = messageRoomTableView.dequeueReusableCell(withIdentifier: partnerCellId, for: indexPath) as! PartnerMessageTableViewCell
-            partnerCell.message = roomMessages[indexPath.row]
-            return partnerCell
-        }
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        self.view.addGestureRecognizer(tapGesture)
+        
     }
+    
     
     // メッセージ情報を取得
     private func fetchMessageInfoFromFirestore() {
@@ -92,12 +95,11 @@ class MessageRoomViewController: UIViewController {
                 snapshots?.documentChanges.forEach( {(documentChange) in
                     switch documentChange.type {
                     case .added:
-                        self.handleAddedDocumentChange(documentChange: documentChange)
-                        self.updateUnreadFlagOfFirestore(documentChange: documentChange)
-
+                        self.handleAddedDocumentChange(messagesDocumentChanges: documentChange)
+                        self.updateUnreadFlagOfFirestore(messagesDocumentChanges: documentChange)
                         
                     case .modified:
-                        print("update  label")
+                        self.updateUnreadFlagOfFirestore(messagesDocumentChanges: documentChange)
                         
                     case .removed:
                         print("nothing to do")
@@ -110,8 +112,8 @@ class MessageRoomViewController: UIViewController {
     }
     
     // ドキュメント追加時のハンドラー
-    private func handleAddedDocumentChange(documentChange: DocumentChange) {
-        let data = documentChange.document.data()
+    private func handleAddedDocumentChange(messagesDocumentChanges: DocumentChange) {
+        let data = messagesDocumentChanges.document.data()
         let message = Message(data: data)
         self.roomMessages.append(message)
         // 日付順にソート
@@ -123,28 +125,23 @@ class MessageRoomViewController: UIViewController {
     }
     
     // 既読時
-    private func updateUnreadFlagOfFirestore(documentChange: DocumentChange) {
-
+    private func updateUnreadFlagOfFirestore(messagesDocumentChanges: DocumentChange) {
+        
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        let documentId = documentChange.document.documentID
-        let data = documentChange.document.data()
+        let documentId = messagesDocumentChanges.document.documentID
+        let data = messagesDocumentChanges.document.data()
         let message = Message(data: data)
         let author = message.author
-
+        
         // 相手のメッセージの既読フラグをTrueに更新
         if author != uid {
             Firestore.firestore().collection("rooms").document(self.roomId)
                 .collection("messages").document(documentId).updateData(["read": true])
+            self.messageRoomTableView.reloadData()
         }
-    }
-    
-    // 既読ラベルの表示
-    private func showReadLabel(indexPath: IndexPath) {
-//        let indexPath = IndexPath(row: row, section: section)
-//        self.messageRoomTableView.reloadRows(at: [indexPath], with: .fade)
+        
     }
 
-    
     // Firestoreにメッセージを送信
     private func sendMessageToFirestore(text: String) {
         // UID取得
@@ -156,7 +153,7 @@ class MessageRoomViewController: UIViewController {
         let sendData = [
             "author": uid,
             "text": text,
-            "image": "image",
+            "image": "",
             "read": false,
             "created_at": sendTime,
             "updated_at": sendTime,
@@ -167,8 +164,6 @@ class MessageRoomViewController: UIViewController {
             .setData(sendData, merge: true){ err in
                 if let err = err {
                     print("Error adding document: \(err)")
-                } else {
-                    print("Document successfully written!")
                 }
             }
         
@@ -187,12 +182,12 @@ class MessageRoomViewController: UIViewController {
     }
     
     // 画像送信時
-    private func uploadImageToFireStorage(imageView: UIImageView) {
-        guard let image = imageView.image else { return }
+    private func uploadImageToFireStorage(image: UIImage) {
+        //        guard let image = image else { return }
         guard let uploadImage = image.jpegData(compressionQuality: 0.3) else { return }
         
         let fileName = NSUUID().uuidString
-        let storageRef = Storage.storage().reference().child("sendImage").child(fileName)
+        let storageRef = Storage.storage().reference().child(roomId).child(fileName)
         
         storageRef.putData(uploadImage, metadata: nil) { (metadata, err) in
             if let err = err {
@@ -200,7 +195,6 @@ class MessageRoomViewController: UIViewController {
                 return
             }
             
-            print("FireStoregeへの保存成功")
             storageRef.downloadURL(completion: {(url, err) in
                 if let err = err {
                     print("FireStorageからのダウンロード失敗: \(err)")
@@ -208,9 +202,93 @@ class MessageRoomViewController: UIViewController {
                 }
                 
                 guard let urlString = url?.absoluteString else { return }
-                print("URLString: \(urlString)")
+                
+                // UID取得
+                guard let uid = Auth.auth().currentUser?.uid else { return }
+                
+                // 最新メッセージの取得を簡略化するため、アプリ側でIDを生成
+                let messageId = self.randomString(length: 20)
+                let sendTime = Timestamp()
+                let sendData = [
+                    "author": uid,
+                    "text": nil,
+                    "image": urlString,
+                    "read": false,
+                    "created_at": sendTime,
+                    "updated_at": sendTime,
+                ] as [String : Any]
+                
+                // Firestoreにメッセージを送信
+                Firestore.firestore().collection("rooms").document(self.roomId).collection("messages").document(messageId)
+                    .setData(sendData, merge: true){ err in
+                        if let err = err {
+                            print("Error adding document: \(err)")
+                        } else {
+                            print("Document successfully written!")
+                        }
+                    }
+                
+                let latestMessageData = [
+                    "latestMessageId": messageId
+                ]
+                
+                // FirestoreのlatestMessageを更新
+                Firestore.firestore().collection("rooms").document(self.roomId).updateData(latestMessageData) { err in
+                    if let err = err {
+                        print("Error adding document: \(err)")
+                    }
+                }
             })
+        
         }
+    }
+    
+    // メッセージ送信者の判別
+    private func checkWitchUserMessage(indexPath: IndexPath) -> UITableViewCell {
+        guard let uid = Auth.auth().currentUser?.uid else { return UITableViewCell() }
+        
+        if uid == roomMessages[indexPath.row].author {
+                let myCell = messageRoomTableView.dequeueReusableCell(withIdentifier: myCellId, for: indexPath) as! MyMessageTableViewCell
+                myCell.message = roomMessages[indexPath.row]
+                return myCell
+            
+        } else {
+            let partnerCell = messageRoomTableView.dequeueReusableCell(withIdentifier: partnerCellId, for: indexPath) as! PartnerMessageTableViewCell
+            partnerCell.message = roomMessages[indexPath.row]
+            return partnerCell
+        }
+    }
+    
+    // キーボード出現時
+    @objc func keyboardWillShow(notification: NSNotification) {
+        guard let userInfo = notification.userInfo else { return }
+        
+        if let keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as AnyObject).cgRectValue {
+            
+            if keyboardFrame.height <= accessoryHeight { return }
+            
+            // キーボードの高さ分messageRoomTableViewを上にずらす
+            let buttom = keyboardFrame.height - safeAreaBottom
+            let moveY = -buttom
+            let contentInset = UIEdgeInsets(top: 0, left: 0, bottom: buttom, right: 0)
+            
+            messageRoomTableView.contentInset = contentInset
+            messageRoomTableView.scrollIndicatorInsets = contentInset
+            messageRoomTableView.contentOffset = CGPoint(x: 0, y: moveY)
+            messageRoomTableView.scrollToRow(at: IndexPath(row: self.roomMessages.count - 1, section: 0), at: .bottom, animated: false)
+        }
+    }
+    
+    // キーボードが閉じたとき
+    @objc func keyboardWillHide() {
+        messageRoomTableView.contentInset = tebleViewContentInset
+        messageRoomTableView.scrollIndicatorInsets = tableViewIndicatorInset
+        
+    }
+
+    // キーボードを閉じる
+    @objc func dismissKeyboard() {
+        self.messageInputAccessoryView.textViewDidEndEditing(messageInputAccessoryView.messageTextView)
     }
     
     // ランダムな文字列を生成
@@ -233,7 +311,6 @@ extension MessageRoomViewController: MessageInputAccessoryViewDelegate {
     
     // ファイル追加ボタン押下時
     func tappedFileAddButton() {
-        print(#function)
         let imagePickerController = UIImagePickerController()
         imagePickerController.delegate = self
         imagePickerController.allowsEditing = true
@@ -275,8 +352,10 @@ extension MessageRoomViewController: UITableViewDelegate, UITableViewDataSource 
 
 extension MessageRoomViewController: UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let origialImage = info[.originalImage] as? UIImage {
-            print("originalImage!!")
+        if let editImage = info[.editedImage] as? UIImage {
+            uploadImageToFireStorage(image: editImage)
+        } else if let originalImage = info[.originalImage] as? UIImage {
+            uploadImageToFireStorage(image: originalImage)
         }
         
         dismiss(animated: true, completion: nil)

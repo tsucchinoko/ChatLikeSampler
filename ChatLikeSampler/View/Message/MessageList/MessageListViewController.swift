@@ -11,13 +11,11 @@ import Firebase
 class MessageListViewController: UIViewController {
     
     private let cellId = "cellId"
-    private var roomMessages = [Message]()
     private var rooms = [Room]()
     private var users = [User]()
-    let myQueue = DispatchQueue(label: "キュー")
     
     @IBOutlet weak var messageListTableView: UITableView!
-    
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,23 +51,22 @@ class MessageListViewController: UIViewController {
             snapshots?.documentChanges.forEach( { (documentChange) in
                 switch documentChange.type {
                 case .added:
-                    self.handleAddedDocumentChange(documentChange: documentChange)
+                    self.handleAddedDocumentChange(roomsDocumentChanges: documentChange)
                 case .modified:
-                    self.handleUpdatedDocumentChange(documentChange: documentChange)
+                    self.handleUpdatedDocumentChange(roomsDocumentChanges: documentChange)
                 case .removed:
                     print("nothing to do")
                 }
             })
         }
         self.messageListTableView.reloadData()
-        print("END!!!")
     }
     
     // ドキュメント追加時のハンドラー
-    private func handleAddedDocumentChange(documentChange: DocumentChange) {
-        let data = documentChange.document.data()
+    private func handleAddedDocumentChange(roomsDocumentChanges: DocumentChange) {
+        let data = roomsDocumentChanges.document.data()
         let room = Room(data: data)
-        room.roomId = documentChange.document.documentID
+        room.roomId = roomsDocumentChanges.document.documentID
         
         guard let uid = Auth.auth().currentUser?.uid else { return }
         // 自分の参加しているルームのみ表示
@@ -80,53 +77,70 @@ class MessageListViewController: UIViewController {
         room.members.forEach{ (memberUid) in
             if memberUid != uid {
                 // ユーザー情報取得
-                Firestore.firestore().collection("users").document(memberUid).getDocument{ (snapshot, err) in
+                Firestore.firestore().collection("users").document(memberUid).getDocument{ (userDocuments, err) in
                     if let err = err {
                         print("ユーザー情報取得失敗: \(err)")
                         return
                     }
                     
-                    guard let data = snapshot?.data() else { return }
+                    guard let data = userDocuments?.data() else { return }
                     let user = User(data: data)
-                    user.uid = documentChange.document.documentID
-                    room.partnerUser = user
+                    user.uid = memberUid
                     self.users.append(user)
+                    room.partnerUser = user
                     
                     guard let roomId = room.roomId else { return }
                     let latestMessageId = room.latestMessageId
                     
+                    // ルーム内の会話履歴がない場合
                     if latestMessageId == "" {
                         self.rooms.append(room)
+                        // 日付順にソート
+                        self.rooms.sort{ (m1, m2) -> Bool in
+                            let m1Date = m1.updated_at.dateValue()
+                            let m2Date = m2.updated_at.dateValue()
+                            return m1Date < m2Date
+                        }
                         self.messageListTableView.reloadData()
                         return
                     }
                     
                     // 最新メッセージの取得
-                    Firestore.firestore().collection("rooms").document(roomId).collection("messages").document(latestMessageId).getDocument{ (messageSnapshot, err) in
+                    Firestore.firestore().collection("rooms").document(roomId).collection("messages").document(latestMessageId).getDocument{ (latestMessageDocument, err) in
                         if let err = err {
                             print("最新メッセージの取得失敗: \(err)")
                             return
                         }
-                        guard let data = messageSnapshot?.data() else { return }
+                        guard let data = latestMessageDocument?.data() else { return }
                         let message = Message(data: data)
                         room.latestMessage = message
-                        print("latestMessage: \(message)")
                         
                         self.messageListTableView.reloadData()
                     }
                     
                     // 未読数の取得
-                    Firestore.firestore().collection("rooms").document(roomId).collection("messages").whereField("read", isEqualTo: false).getDocuments { (querySnapshot, err) in
+                    Firestore.firestore().collection("rooms").document(roomId).collection("messages").whereField("read", isEqualTo: false).getDocuments { (unreadDocuments, err) in
                         if let err = err {
                             print("未読数の取得失敗: \(err)")
                             return
                         }
                         
-                        for _ in querySnapshot!.documents {
-                            room.unreadCount += 1
+                        for document in unreadDocuments!.documents {
+                            let data = document.data()
+                            let message = Message(data: data)
+                            let author = message.author
+                            if author != uid {
+                                room.unreadCount += 1
+                            }
                         }
                         
                         self.rooms.append(room)
+                        // 日付順にソート
+                        self.rooms.sort{ (m1, m2) -> Bool in
+                            let m1Date = m1.updated_at.dateValue()
+                            let m2Date = m2.updated_at.dateValue()
+                            return m1Date < m2Date
+                        }
                         self.messageListTableView.reloadData()
                     }
                 }
@@ -136,10 +150,10 @@ class MessageListViewController: UIViewController {
     
     
     // ドキュメント更新時のハンドラ
-    private func handleUpdatedDocumentChange(documentChange: DocumentChange) {
-        let data = documentChange.document.data()
+    private func handleUpdatedDocumentChange(roomsDocumentChanges: DocumentChange) {
+        let data = roomsDocumentChanges.document.data()
         let changeRoom = Room(data: data)
-        changeRoom.roomId = documentChange.document.documentID
+        changeRoom.roomId = roomsDocumentChanges.document.documentID
         
         var roomIndex = 0
         
@@ -167,10 +181,6 @@ class MessageListViewController: UIViewController {
                 // 自分が送信したメッセージの未読をカウントしない
                 if memberUid != uid {
                     for (index, user) in self.users.enumerated() {
-                        print("index!!: \(index)")
-                        print("user!! : \(user)")
-                        print("userUid!! : \(user.uid)")
-                        print("memberUid!! : \(memberUid)")
                         if user.uid == memberUid {
                             changeRoom.partnerUser = user
                         }
@@ -183,69 +193,23 @@ class MessageListViewController: UIViewController {
                             return
                         }
                         
-                        for _ in querySnapshot!.documents {
-                            changeRoom.unreadCount += 1
+                        for document in querySnapshot!.documents {
+                            let data = document.data()
+                            let message = Message(data: data)
+                            let author = message.author
+                            if author != uid {
+                                changeRoom.unreadCount += 1
+                            }
                         }
                         self.rooms[roomIndex] = changeRoom
                         self.messageListTableView.reloadData()
                     }
                 }
             }
-            
-            
-            
+
         }
     }
-    
-    // 最新メッセージの取得
-    private func fetchLatestMessage(documentChange: DocumentChange){
-        let data = documentChange.document.data()
-        let room = Room(data: data)
-        room.roomId = documentChange.document.documentID
-        
-        guard let roomId = room.roomId else { return }
-        let latestMessageId = room.latestMessageId
-        
-        // 最新メッセージの取得
-        Firestore.firestore().collection("rooms").document(roomId).collection("messages").document(latestMessageId).getDocument{ (messageSnapshot, err) in
-            if let err = err {
-                print("最新メッセージの取得失敗: \(err)")
-                return
-            }
-            guard let data = messageSnapshot?.data() else { return }
-            let message = Message(data: data)
-            room.latestMessage = message
-            print("latestMessage: \(message)")
-            
-            self.rooms.append(room)
-            self.messageListTableView.reloadData()
-        }
-    }
-    
-    // 未読数の取得
-    private func getUnreadCount(documentChange: DocumentChange){
-        let data = documentChange.document.data()
-        let room = Room(data: data)
-        room.roomId = documentChange.document.documentID
-        
-        guard let roomId = room.roomId else { return }
-        
-        // 未読数の取得
-        Firestore.firestore().collection("rooms").document(roomId).collection("messages").whereField("read", isEqualTo: false).getDocuments { (querySnapshot, err) in
-            if let err = err {
-                print("未読数の取得失敗: \(err)")
-                return
-            }
-            
-            for _ in querySnapshot!.documents {
-                room.unreadCount += 1
-            }
-            
-            self.rooms.append(room)
-            self.messageListTableView.reloadData()
-        }
-    }
-    
+     
 }
 
 
@@ -278,6 +242,8 @@ extension MessageListViewController: UITableViewDelegate, UITableViewDataSource 
         let messageVC = storyBoard.instantiateViewController(withIdentifier: "MessageRoomViewController") as! MessageRoomViewController
         guard let roomId = rooms[indexPath.row].roomId else { return }
         messageVC.roomId = roomId
+        
+        rooms[indexPath.row].unreadCount = 0
         
         navigationController?.pushViewController(messageVC, animated: true)
     }
