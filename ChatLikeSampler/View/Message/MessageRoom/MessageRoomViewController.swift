@@ -98,7 +98,6 @@ class MessageRoomViewController: UIViewController {
                         self.handleAddedDocumentChange(messagesDocumentChanges: documentChange)
                         self.updateUnreadFlagOfFirestore(messagesDocumentChanges: documentChange)
                         
-                        
                     case .modified:
                         self.updateUnreadFlagOfFirestore(messagesDocumentChanges: documentChange)
                         
