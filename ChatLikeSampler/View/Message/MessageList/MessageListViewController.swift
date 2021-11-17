@@ -51,9 +51,9 @@ class MessageListViewController: UIViewController {
             snapshots?.documentChanges.forEach( { (documentChange) in
                 switch documentChange.type {
                 case .added:
-                    self.handleAddedDocumentChange(documentChange: documentChange)
+                    self.handleAddedDocumentChange(roomsDocumentChanges: documentChange)
                 case .modified:
-                    self.handleUpdatedDocumentChange(documentChange: documentChange)
+                    self.handleUpdatedDocumentChange(roomsDocumentChanges: documentChange)
                 case .removed:
                     print("nothing to do")
                 }
@@ -63,10 +63,10 @@ class MessageListViewController: UIViewController {
     }
     
     // ドキュメント追加時のハンドラー
-    private func handleAddedDocumentChange(documentChange: DocumentChange) {
-        let data = documentChange.document.data()
+    private func handleAddedDocumentChange(roomsDocumentChanges: DocumentChange) {
+        let data = roomsDocumentChanges.document.data()
         let room = Room(data: data)
-        room.roomId = documentChange.document.documentID
+        room.roomId = roomsDocumentChanges.document.documentID
         
         guard let uid = Auth.auth().currentUser?.uid else { return }
         // 自分の参加しているルームのみ表示
@@ -77,17 +77,17 @@ class MessageListViewController: UIViewController {
         room.members.forEach{ (memberUid) in
             if memberUid != uid {
                 // ユーザー情報取得
-                Firestore.firestore().collection("users").document(memberUid).getDocument{ (snapshot, err) in
+                Firestore.firestore().collection("users").document(memberUid).getDocument{ (userDocuments, err) in
                     if let err = err {
                         print("ユーザー情報取得失敗: \(err)")
                         return
                     }
                     
-                    guard let data = snapshot?.data() else { return }
+                    guard let data = userDocuments?.data() else { return }
                     let user = User(data: data)
-                    user.uid = documentChange.document.documentID
-                    room.partnerUser = user
+                    user.uid = memberUid
                     self.users.append(user)
+                    room.partnerUser = user
                     
                     guard let roomId = room.roomId else { return }
                     let latestMessageId = room.latestMessageId
@@ -100,12 +100,12 @@ class MessageListViewController: UIViewController {
                     }
                     
                     // 最新メッセージの取得
-                    Firestore.firestore().collection("rooms").document(roomId).collection("messages").document(latestMessageId).getDocument{ (messageSnapshot, err) in
+                    Firestore.firestore().collection("rooms").document(roomId).collection("messages").document(latestMessageId).getDocument{ (latestMessageDocument, err) in
                         if let err = err {
                             print("最新メッセージの取得失敗: \(err)")
                             return
                         }
-                        guard let data = messageSnapshot?.data() else { return }
+                        guard let data = latestMessageDocument?.data() else { return }
                         let message = Message(data: data)
                         room.latestMessage = message
                         
@@ -113,13 +113,13 @@ class MessageListViewController: UIViewController {
                     }
                     
                     // 未読数の取得
-                    Firestore.firestore().collection("rooms").document(roomId).collection("messages").whereField("read", isEqualTo: false).getDocuments { (querySnapshot, err) in
+                    Firestore.firestore().collection("rooms").document(roomId).collection("messages").whereField("read", isEqualTo: false).getDocuments { (unreadDocuments, err) in
                         if let err = err {
                             print("未読数の取得失敗: \(err)")
                             return
                         }
                         
-                        for document in querySnapshot!.documents {
+                        for document in unreadDocuments!.documents {
                             let data = document.data()
                             let message = Message(data: data)
                             let author = message.author
@@ -138,10 +138,10 @@ class MessageListViewController: UIViewController {
     
     
     // ドキュメント更新時のハンドラ
-    private func handleUpdatedDocumentChange(documentChange: DocumentChange) {
-        let data = documentChange.document.data()
+    private func handleUpdatedDocumentChange(roomsDocumentChanges: DocumentChange) {
+        let data = roomsDocumentChanges.document.data()
         let changeRoom = Room(data: data)
-        changeRoom.roomId = documentChange.document.documentID
+        changeRoom.roomId = roomsDocumentChanges.document.documentID
         
         var roomIndex = 0
         

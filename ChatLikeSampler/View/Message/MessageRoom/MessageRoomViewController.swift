@@ -95,12 +95,12 @@ class MessageRoomViewController: UIViewController {
                 snapshots?.documentChanges.forEach( {(documentChange) in
                     switch documentChange.type {
                     case .added:
-                        self.handleAddedDocumentChange(documentChange: documentChange)
-                        self.updateUnreadFlagOfFirestore(documentChange: documentChange)
+                        self.handleAddedDocumentChange(messagesDocumentChanges: documentChange)
+                        self.updateUnreadFlagOfFirestore(messagesDocumentChanges: documentChange)
                         
                         
                     case .modified:
-                        self.updateUnreadFlagOfFirestore(documentChange: documentChange)
+                        self.updateUnreadFlagOfFirestore(messagesDocumentChanges: documentChange)
                         
                     case .removed:
                         print("nothing to do")
@@ -113,8 +113,8 @@ class MessageRoomViewController: UIViewController {
     }
     
     // ドキュメント追加時のハンドラー
-    private func handleAddedDocumentChange(documentChange: DocumentChange) {
-        let data = documentChange.document.data()
+    private func handleAddedDocumentChange(messagesDocumentChanges: DocumentChange) {
+        let data = messagesDocumentChanges.document.data()
         let message = Message(data: data)
         self.roomMessages.append(message)
         // 日付順にソート
@@ -126,11 +126,11 @@ class MessageRoomViewController: UIViewController {
     }
     
     // 既読時
-    private func updateUnreadFlagOfFirestore(documentChange: DocumentChange) {
+    private func updateUnreadFlagOfFirestore(messagesDocumentChanges: DocumentChange) {
         
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        let documentId = documentChange.document.documentID
-        let data = documentChange.document.data()
+        let documentId = messagesDocumentChanges.document.documentID
+        let data = messagesDocumentChanges.document.data()
         let message = Message(data: data)
         let author = message.author
         
@@ -138,8 +138,9 @@ class MessageRoomViewController: UIViewController {
         if author != uid {
             Firestore.firestore().collection("rooms").document(self.roomId)
                 .collection("messages").document(documentId).updateData(["read": true])
+            self.messageRoomTableView.reloadData()
         }
-        self.messageRoomTableView.reloadData()
+        
     }
 
     // Firestoreにメッセージを送信
