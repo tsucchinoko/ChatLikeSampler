@@ -8,22 +8,51 @@
 import UIKit
 
 class TimelineViewController: UIViewController {
+    let cellId = "timelineCell"
 
+    @IBOutlet weak var timelineTableView: UITableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        setupViews()
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    private func setupViews() {
+        navigationController?.navigationBar.barTintColor =  UIColor.rgb(red: 39, green: 49, blue: 69)
+        navigationItem.title = "トーク"
+        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
     }
-    */
 
+}
+
+extension TimelineViewController: UITableViewDelegate, UITableViewDataSource {
+    // セルの高さ
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 80
+    }
+    
+    // セルの数
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 10
+    }
+    
+    // カスタムセルを設定
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = timelineTableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! TimelineCell
+        return cell
+    }
+    
+    // セル選択時
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let storyBoard = UIStoryboard.init(name: "MessageRoom", bundle: nil)
+        // ストーリーボードIDを指定して画面遷移
+        let timelineDetailVC = storyBoard.instantiateViewController(withIdentifier: "TimelineDetailViewController") as! TimelineDetailViewController
+
+        
+        navigationController?.pushViewController(timelineDetailVC, animated: true)
+    }
+    
+    
 }
