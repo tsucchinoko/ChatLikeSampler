@@ -1,5 +1,5 @@
 //
-//  TimelineDetailCell.swift
+//  PostTimelineButtonView.swift
 //  ChatLikeSampler
 //
 //  Created by Daichi Tsuchiya on 2021/11/19.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TimelineDetailCell: UITableViewCell {
+class PostTimelineButtonView: UIView {
     // セルの初期化
     override func awakeFromNib() {
         super.awakeFromNib()
