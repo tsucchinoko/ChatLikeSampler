@@ -13,7 +13,11 @@ class TimelineCell: UITableViewCell {
     @IBOutlet weak var userImageView: UIImageView!
     @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
-    @IBOutlet weak var feedTextView: UITextView!
+    @IBOutlet weak var feedTextView: UITextView! {
+        didSet {
+            feedTextView.isUserInteractionEnabled = false
+        }
+    }
     
     @IBOutlet weak var commentButton: UIButton!
     @IBOutlet weak var commentNumberLabel: UILabel!
