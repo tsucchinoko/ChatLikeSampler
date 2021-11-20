@@ -14,6 +14,7 @@ class TimelineViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print(#function)
 
         setupViews()
     }
@@ -22,6 +23,18 @@ class TimelineViewController: UIViewController {
         navigationController?.navigationBar.barTintColor =  UIColor.rgb(red: 39, green: 49, blue: 69)
         navigationItem.title = "トーク"
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
+        
+        timelineTableView.delegate = self
+        timelineTableView.dataSource = self
+        // tableViewにセルを登録
+        timelineTableView.register(UINib(nibName: "TimelineCell", bundle: nil), forCellReuseIdentifier: cellId)
+        
+        // セルが見切れないように位置を微調整
+//        timelineTableView.contentInset = tebleViewContentInset
+//        // スクロールバーの位置を微調整
+//        timelineTableView.scrollIndicatorInsets = tableViewIndicatorInset
+        // スクロール時にキーボードを閉じる
+        timelineTableView.keyboardDismissMode = .interactive
     }
 
 }
@@ -29,7 +42,7 @@ class TimelineViewController: UIViewController {
 extension TimelineViewController: UITableViewDelegate, UITableViewDataSource {
     // セルの高さ
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 80
+        return 330
     }
     
     // セルの数
