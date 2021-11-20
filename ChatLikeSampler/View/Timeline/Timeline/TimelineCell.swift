@@ -7,6 +7,13 @@
 
 import UIKit
 
+protocol TimelineCellDelegate {
+    func didTappedCommentButton(cell: TimelineCell)
+    func didTappedRetweetButton(cell: TimelineCell)
+    func didTappedLikeButton(cell: TimelineCell)
+    func didTappedFlagButton(cell: TimelineCell)
+}
+
 class TimelineCell: UITableViewCell {
     
     
@@ -28,6 +35,7 @@ class TimelineCell: UITableViewCell {
     @IBOutlet weak var flagButton: UIButton!
     @IBOutlet weak var flagNumberLabel: UILabel!
     
+    var delegate: TimelineCellDelegate?
     
     // セルの初期化
     override func awakeFromNib() {
@@ -42,18 +50,23 @@ class TimelineCell: UITableViewCell {
     
     @IBAction func didTappedCommentButton(_ sender: Any) {
         print(#function)
+        delegate?.didTappedCommentButton(cell: self)
+
     }
     
     @IBAction func didTappedRetweetButton(_ sender: Any) {
         print(#function)
+        delegate?.didTappedRetweetButton(cell: self)
     }
     
     @IBAction func didTappedLikeButton(_ sender: Any) {
         print(#function)
+        delegate?.didTappedLikeButton(cell: self)
     }
     
     @IBAction func didTappedFlagButton(_ sender: Any) {
         print(#function)
+        delegate?.didTappedFlagButton(cell: self)
     }
     
     

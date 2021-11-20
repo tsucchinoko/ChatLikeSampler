@@ -22,6 +22,7 @@ class TimelineDetailViewController: UIViewController {
         navigationController?.navigationBar.barTintColor =  UIColor.rgb(red: 39, green: 49, blue: 69)
         navigationItem.title = "タイムライン詳細画面"
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
+        navigationController?.setNavigationBarHidden(false, animated: false)
         
         timelineDetailTableView.delegate = self
         timelineDetailTableView.dataSource = self

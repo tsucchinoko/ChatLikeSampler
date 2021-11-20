@@ -23,6 +23,7 @@ class CommentDetailViewController: UIViewController {
         navigationController?.navigationBar.barTintColor =  UIColor.rgb(red: 39, green: 49, blue: 69)
         navigationItem.title = "コメント詳細画面"
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
+        navigationController?.setNavigationBarHidden(false, animated: false)
         
         commentDetailTableView.delegate = self
         commentDetailTableView.dataSource = self
@@ -66,5 +67,6 @@ extension CommentDetailViewController: UITableViewDelegate,UITableViewDataSource
 //
 //
 //        navigationController?.pushViewController(timelineDetailVC, animated: true)
+        commentDetailTableView.deselectRow(at: indexPath, animated: true)
     }
 }

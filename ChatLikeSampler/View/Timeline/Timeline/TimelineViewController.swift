@@ -23,6 +23,7 @@ class TimelineViewController: UIViewController {
         navigationController?.navigationBar.barTintColor =  UIColor.rgb(red: 39, green: 49, blue: 69)
         navigationItem.title = "タイムライン画面"
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
+        navigationController?.setNavigationBarHidden(false, animated: false)
         
         timelineTableView.delegate = self
         timelineTableView.dataSource = self
@@ -53,6 +54,7 @@ extension TimelineViewController: UITableViewDelegate, UITableViewDataSource {
     // カスタムセルを設定
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = timelineTableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! TimelineCell
+        cell.delegate = self
         return cell
     }
     
@@ -69,4 +71,35 @@ extension TimelineViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     
+}
+
+
+extension TimelineViewController: TimelineCellDelegate {
+    func didTappedCommentButton(cell: TimelineCell) {
+        print(#function)
+        let backImage = UIImage(systemName: "bubble.left.fill")?.withRenderingMode(.alwaysTemplate)
+        cell.commentButton.setImage(backImage, for: .normal)
+        cell.commentButton.tintColor = .blue
+    }
+    
+    func didTappedRetweetButton(cell: TimelineCell) {
+        print(#function)
+        let backImage = UIImage(systemName: "repeat")?.withRenderingMode(.alwaysTemplate)
+        cell.retweetButton.setImage(backImage, for: .normal)
+        cell.retweetButton.tintColor = .green
+    }
+    
+    func didTappedLikeButton(cell: TimelineCell) {
+        print(#function)
+        let backImage = UIImage(systemName: "heart.fill")?.withRenderingMode(.alwaysTemplate)
+        cell.likeButton.setImage(backImage, for: .normal)
+        cell.likeButton.tintColor = .systemPink
+    }
+    
+    func didTappedFlagButton(cell: TimelineCell) {
+        print(#function)
+        let backImage = UIImage(systemName: "flag.fill")?.withRenderingMode(.alwaysTemplate)
+        cell.flagButton.setImage(backImage, for: .normal)
+        cell.flagButton.tintColor = .red
+    }
 }
