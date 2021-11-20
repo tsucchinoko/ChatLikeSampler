@@ -8,15 +8,15 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Timeline Detail View Controller-->
+        <!--Comment Detail View Controller-->
         <scene sceneID="s0d-6b-0kx">
             <objects>
-                <viewController storyboardIdentifier="TimelineDetailViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Y6W-OH-hqX" customClass="TimelineDetailViewController" customModule="ChatLikeSampler" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CommentDetailViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Y6W-OH-hqX" customClass="CommentDetailViewController" customModule="ChatLikeSampler" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="5EZ-qb-Rvc">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="ieX-1k-uTz">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="QCp-am-IGY">
                                 <rect key="frame" x="0.0" y="44" width="414" height="818"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
@@ -24,19 +24,19 @@
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="ieX-1k-uTz" secondAttribute="bottom" id="3AR-bB-4oW"/>
-                            <constraint firstItem="ieX-1k-uTz" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="m73-8f-ABf"/>
-                            <constraint firstItem="ieX-1k-uTz" firstAttribute="trailing" secondItem="vDu-zF-Fre" secondAttribute="trailing" id="puj-Z1-2Eg"/>
-                            <constraint firstItem="ieX-1k-uTz" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="vG6-UO-xPE"/>
+                            <constraint firstItem="QCp-am-IGY" firstAttribute="trailing" secondItem="vDu-zF-Fre" secondAttribute="trailing" id="J2o-4S-gYi"/>
+                            <constraint firstItem="QCp-am-IGY" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="RjA-wB-Z3s"/>
+                            <constraint firstItem="QCp-am-IGY" firstAttribute="bottom" secondItem="vDu-zF-Fre" secondAttribute="bottom" id="fGX-D9-ShF"/>
+                            <constraint firstItem="QCp-am-IGY" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="g9N-rI-wYs"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="timelineDetailTableView" destination="ieX-1k-uTz" id="gBI-Hs-36O"/>
+                        <outlet property="commentDetailTableView" destination="QCp-am-IGY" id="dj6-PI-9M4"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="131.8840579710145" y="75.669642857142847"/>
+            <point key="canvasLocation" x="73.913043478260875" y="75.669642857142847"/>
         </scene>
     </scenes>
     <resources>

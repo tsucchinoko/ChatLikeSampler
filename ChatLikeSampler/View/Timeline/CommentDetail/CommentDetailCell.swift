@@ -8,6 +8,21 @@
 import UIKit
 
 class CommentDetailCell: UITableViewCell {
+    
+    @IBOutlet weak var userImageView: UIImageView!
+    @IBOutlet weak var userNameLabel: UILabel!
+    @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var feedTextView: UITextView!
+    
+    @IBOutlet weak var commentButton: UIButton!
+    @IBOutlet weak var commentNumberLabel: UILabel!
+    @IBOutlet weak var retweetButton: UIButton!
+    @IBOutlet weak var retweetNumberLabel: UILabel!
+    @IBOutlet weak var likeButton: UIButton!
+    @IBOutlet weak var likeNumberLabel: UILabel!
+    @IBOutlet weak var flagButton: UIButton!
+    @IBOutlet weak var flagNumberLabel: UILabel!
+    
     // セルの初期化
     override func awakeFromNib() {
         super.awakeFromNib()

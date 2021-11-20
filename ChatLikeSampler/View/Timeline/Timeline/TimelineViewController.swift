@@ -21,7 +21,7 @@ class TimelineViewController: UIViewController {
     
     private func setupViews() {
         navigationController?.navigationBar.barTintColor =  UIColor.rgb(red: 39, green: 49, blue: 69)
-        navigationItem.title = "トーク"
+        navigationItem.title = "タイムライン画面"
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
         
         timelineTableView.delegate = self
@@ -59,12 +59,13 @@ extension TimelineViewController: UITableViewDelegate, UITableViewDataSource {
     // セル選択時
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let storyBoard = UIStoryboard.init(name: "MessageRoom", bundle: nil)
+        let storyBoard = UIStoryboard.init(name: "TimelineDetailViewController", bundle: nil)
         // ストーリーボードIDを指定して画面遷移
         let timelineDetailVC = storyBoard.instantiateViewController(withIdentifier: "TimelineDetailViewController") as! TimelineDetailViewController
 
         
         navigationController?.pushViewController(timelineDetailVC, animated: true)
+        timelineTableView.deselectRow(at: indexPath, animated: true)
     }
     
     
