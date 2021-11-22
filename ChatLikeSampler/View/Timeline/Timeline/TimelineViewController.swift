@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Firebase
 
 class TimelineViewController: UIViewController {
     let cellId = "timelineCell"
@@ -19,6 +20,7 @@ class TimelineViewController: UIViewController {
         print(#function)
 
         setupViews()
+        fetchTimelineInfoFromFirestore()
     }
     
     private func setupViews() {
@@ -38,6 +40,26 @@ class TimelineViewController: UIViewController {
 //        timelineTableView.scrollIndicatorInsets = tableViewIndicatorInset
         // スクロール時にキーボードを閉じる
         timelineTableView.keyboardDismissMode = .interactive
+    }
+    
+    private func fetchTimelineInfoFromFirestore(){
+        // Tweetを取得
+        Firestore.firestore().collection("tweets").getDocuments { tweetsSnapshots, err in
+            if let err = err {
+                print("Tweet情報の取得失敗: \(err)")
+                return
+            }
+            
+            guard let snapshots = tweetsSnapshots?.documents else { return }
+            for snapshot in snapshots {
+                let data = snapshot.data()
+                let tweet = Tweet(data: data)
+                print("#tweet: \(tweet.creator)")
+                self.tweets.append(tweet)
+            }
+            
+        }
+        
     }
 
 }
