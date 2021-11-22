@@ -9,6 +9,8 @@ import UIKit
 
 class TimelineViewController: UIViewController {
     let cellId = "timelineCell"
+    
+    var tweets = [Tweet]()
 
     @IBOutlet weak var timelineTableView: UITableView!
     
