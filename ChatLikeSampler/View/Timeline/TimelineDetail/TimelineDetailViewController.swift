@@ -104,10 +104,14 @@ extension TimelineDetailViewController: UITableViewDelegate, UITableViewDataSour
         let storyBoard = UIStoryboard.init(name: "CommentDetailViewController", bundle: nil)
         // ストーリーボードIDを指定して画面遷移
         let commentDetailVC = storyBoard.instantiateViewController(withIdentifier: "CommentDetailViewController") as! CommentDetailViewController
-        commentDetailVC.selectedComment = comments[indexPath.row - 1]
-
         
-        navigationController?.pushViewController(commentDetailVC, animated: true)
-        timelineDetailTableView.deselectRow(at: indexPath, animated: true)
+        if indexPath.row == 0 {
+            timelineDetailTableView.deselectRow(at: indexPath, animated: true)
+            return
+        } else {
+            commentDetailVC.selectedComment = comments[indexPath.row - 1]
+            navigationController?.pushViewController(commentDetailVC, animated: true)
+            timelineDetailTableView.deselectRow(at: indexPath, animated: true)
+        }
     }
 }

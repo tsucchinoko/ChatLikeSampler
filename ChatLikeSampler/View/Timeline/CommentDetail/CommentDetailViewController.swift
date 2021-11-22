@@ -98,12 +98,17 @@ extension CommentDetailViewController: UITableViewDelegate,UITableViewDataSource
     // セル選択時
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-//        let storyBoard = UIStoryboard.init(name: "TimelineDetailViewController", bundle: nil)
-//        // ストーリーボードIDを指定して画面遷移
-//        let timelineDetailVC = storyBoard.instantiateViewController(withIdentifier: "TimelineDetailViewController") as! TimelineDetailViewController
-//
-//
-//        navigationController?.pushViewController(timelineDetailVC, animated: true)
-        commentDetailTableView.deselectRow(at: indexPath, animated: true)
+        let storyBoard = UIStoryboard.init(name: "CommentDetailViewController", bundle: nil)
+        // ストーリーボードIDを指定して画面遷移
+        let commentDetailVC = storyBoard.instantiateViewController(withIdentifier: "CommentDetailViewController") as! CommentDetailViewController
+        
+        if indexPath.row == 0 {
+            commentDetailTableView.deselectRow(at: indexPath, animated: true)
+            return
+        } else {
+            commentDetailVC.selectedComment = threadComments[indexPath.row - 1]
+            navigationController?.pushViewController(commentDetailVC, animated: true)
+            commentDetailTableView.deselectRow(at: indexPath, animated: true)
+        }
     }
 }

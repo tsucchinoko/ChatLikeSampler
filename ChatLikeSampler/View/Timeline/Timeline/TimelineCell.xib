@@ -40,7 +40,7 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="最近何してる？" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="oR6-x1-W5E">
+                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="最近何してる？" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oR6-x1-W5E">
                         <rect key="frame" x="88" y="76" width="424" height="171"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <color key="textColor" systemColor="labelColor"/>
