@@ -48,7 +48,7 @@
                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                     </textView>
                     <stackView opaque="NO" contentMode="scaleToFill" spacing="11" translatesAutoresizingMaskIntoConstraints="NO" id="ZB0-Sc-wv5">
-                        <rect key="frame" x="111.5" y="286" width="339.5" height="31"/>
+                        <rect key="frame" x="126.5" y="286" width="309.5" height="31"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="96L-w4-4OD">
                                 <rect key="frame" x="0.0" y="0.0" width="75.5" height="31"/>
@@ -115,7 +115,7 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NcS-1l-pGX">
-                                <rect key="frame" x="266.5" y="0.0" width="73" height="31"/>
+                                <rect key="frame" x="266.5" y="0.0" width="43" height="31"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FFr-vh-fb1">
                                         <rect key="frame" x="0.0" y="0.0" width="43" height="31"/>
@@ -127,12 +127,6 @@
                                             <action selector="didTappedFlagButton:" destination="asS-6p-kSL" eventType="touchUpInside" id="VHa-r4-GhW"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="255" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FgH-Ni-CJD">
-                                        <rect key="frame" x="43" y="0.0" width="30" height="31"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
                                 </subviews>
                             </stackView>
                         </subviews>
@@ -159,11 +153,10 @@
                 <outlet property="commentButton" destination="or6-Ic-uQh" id="yBQ-yx-vUC"/>
                 <outlet property="commentNumberLabel" destination="wxG-f1-d1U" id="9sZ-yv-uKv"/>
                 <outlet property="dateLabel" destination="p2b-qU-YIb" id="nwJ-Qu-emh"/>
-                <outlet property="feedTextView" destination="oR6-x1-W5E" id="dsy-aB-WrD"/>
                 <outlet property="flagButton" destination="FFr-vh-fb1" id="Qww-n0-Bet"/>
-                <outlet property="flagNumberLabel" destination="FgH-Ni-CJD" id="Cua-wc-9Es"/>
                 <outlet property="likeButton" destination="uKf-tE-3He" id="96G-x2-vRD"/>
                 <outlet property="likeNumberLabel" destination="bwf-27-9De" id="uwj-ng-9cY"/>
+                <outlet property="messageTextView" destination="oR6-x1-W5E" id="dsy-aB-WrD"/>
                 <outlet property="retweetButton" destination="1fA-rn-ZcN" id="tZZ-iy-yVH"/>
                 <outlet property="retweetNumberLabel" destination="Y6O-he-a8b" id="uOS-ik-KRA"/>
                 <outlet property="userImageView" destination="2Tj-p4-XY6" id="YcC-TX-pVE"/>

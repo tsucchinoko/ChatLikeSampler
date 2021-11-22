@@ -54,9 +54,9 @@ class TimelineViewController: UIViewController {
             for snapshot in snapshots {
                 let data = snapshot.data()
                 let tweet = Tweet(data: data)
-                print("#tweet: \(tweet.creator)")
                 self.tweets.append(tweet)
             }
+            self.timelineTableView.reloadData()
             
         }
         
@@ -72,13 +72,14 @@ extension TimelineViewController: UITableViewDelegate, UITableViewDataSource {
     
     // セルの数
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return tweets.count
     }
     
     // カスタムセルを設定
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = timelineTableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! TimelineCell
         cell.delegate = self
+        cell.tweet = tweets[indexPath.row]
         return cell
     }
     

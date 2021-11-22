@@ -20,9 +20,9 @@ class TimelineCell: UITableViewCell {
     @IBOutlet weak var userImageView: UIImageView!
     @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
-    @IBOutlet weak var feedTextView: UITextView! {
+    @IBOutlet weak var messageTextView: UITextView! {
         didSet {
-            feedTextView.isUserInteractionEnabled = false
+            messageTextView.isUserInteractionEnabled = false
         }
     }
     
@@ -33,9 +33,17 @@ class TimelineCell: UITableViewCell {
     @IBOutlet weak var likeButton: UIButton!
     @IBOutlet weak var likeNumberLabel: UILabel!
     @IBOutlet weak var flagButton: UIButton!
-    @IBOutlet weak var flagNumberLabel: UILabel!
     
     var delegate: TimelineCellDelegate?
+    
+    var tweet: Tweet? {
+        didSet {
+            guard let tweet = tweet else { return }
+            userNameLabel.text = tweet.creator
+            dateLabel.text = dateFormatterForDateLabel(date: tweet.created_at.dateValue())
+            messageTextView.text = tweet.text
+        }
+    }
     
     // セルの初期化
     override func awakeFromNib() {
@@ -46,6 +54,16 @@ class TimelineCell: UITableViewCell {
     // カスタムセルが選択されたことを検知
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
+    }
+    
+    // 日付をフォーマットする
+    private func dateFormatterForDateLabel(date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .full
+        formatter.timeStyle = .short
+        formatter.locale = Locale(identifier: "ja_JP")
+        
+        return formatter.string(from: date)
     }
     
     @IBAction func didTappedCommentButton(_ sender: Any) {
