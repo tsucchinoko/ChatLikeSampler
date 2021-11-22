@@ -19,6 +19,8 @@ class Tweet {
     
     let created_at: Timestamp
     
+    var documentId: String?
+    
     init(data: [String: Any]) {
         self.text = data["text"] as? String ?? ""
         self.image = data["image"] as? String ?? ""

@@ -17,6 +17,8 @@ class Comment {
     let created_at: Timestamp
     let updated_at: Timestamp
     
+    var documentId: String?
+    
     init(data: [String: Any]) {
         self.profile_icon = data["profile_icon"] as? String ?? ""
         self.email = data["email"] as? String ?? ""
