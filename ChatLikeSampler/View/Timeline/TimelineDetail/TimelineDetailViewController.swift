@@ -88,11 +88,14 @@ extension TimelineDetailViewController: UITableViewDelegate, UITableViewDataSour
         if indexPath.row == 0 {
             let cell = timelineDetailTableView.dequeueReusableCell(withIdentifier: timelineCellId, for: indexPath) as! TimelineCell
             cell.tweet = tweet
+            cell.delegate = self
+            
             return cell
         } else {
             let cell = timelineDetailTableView.dequeueReusableCell(withIdentifier: commentDetailCellId, for: indexPath) as! CommentDetailCell
-            print("#indexPath.row: \(indexPath.row - 1)")
             cell.comment = comments[indexPath.row - 1]
+            cell.delegate = self
+            
             return cell
         }
         
@@ -115,3 +118,80 @@ extension TimelineDetailViewController: UITableViewDelegate, UITableViewDataSour
         }
     }
 }
+
+
+extension TimelineDetailViewController: TimelineCellDelegate {
+    func didTappedCommentButton(cell: TimelineCell) {
+        print(#function)
+        // TODO 選択されたセルのタイムライン詳細画面に画面遷移
+    }
+    
+    func didTappedRetweetButton(cell: TimelineCell) {
+        print(#function)
+        let backImage = UIImage(systemName: "repeat")?.withRenderingMode(.alwaysTemplate)
+        cell.retweetButton.setImage(backImage, for: .normal)
+        cell.retweetButton.tintColor = .green
+        
+        // TODO リツイート数+1
+        // TODO 自分の投稿に追加
+    }
+    
+    func didTappedLikeButton(cell: TimelineCell) {
+        print(#function)
+        let backImage = UIImage(systemName: "heart.fill")?.withRenderingMode(.alwaysTemplate)
+        cell.likeButton.setImage(backImage, for: .normal)
+        cell.likeButton.tintColor = .systemPink
+        
+        // TODO いいね数+1
+        // TODO 自分のいいねしたリストに追加
+    }
+    
+    func didTappedFlagButton(cell: TimelineCell) {
+        print(#function)
+        let backImage = UIImage(systemName: "flag.fill")?.withRenderingMode(.alwaysTemplate)
+        cell.flagButton.setImage(backImage, for: .normal)
+        cell.flagButton.tintColor = .red
+        
+        // TODO ポップアップ表示
+        // TODO 報告処理
+    }
+}
+
+extension TimelineDetailViewController: CommentDetailCellDelegate {
+    func didTappedCommentButton(cell: CommentDetailCell) {
+        print(#function)
+        // TODO 選択されたセルのタイムライン詳細画面に画面遷移
+    }
+    
+    func didTappedRetweetButton(cell: CommentDetailCell) {
+        print(#function)
+        let backImage = UIImage(systemName: "repeat")?.withRenderingMode(.alwaysTemplate)
+        cell.retweetButton.setImage(backImage, for: .normal)
+        cell.retweetButton.tintColor = .green
+        
+        // TODO リツイート数+1
+        // TODO 自分の投稿に追加
+    }
+    
+    func didTappedLikeButton(cell: CommentDetailCell) {
+        print(#function)
+        let backImage = UIImage(systemName: "heart.fill")?.withRenderingMode(.alwaysTemplate)
+        cell.likeButton.setImage(backImage, for: .normal)
+        cell.likeButton.tintColor = .systemPink
+        
+        // TODO いいね数+1
+        // TODO 自分のいいねしたリストに追加
+    }
+    
+    func didTappedFlagButton(cell: CommentDetailCell) {
+        print(#function)
+        let backImage = UIImage(systemName: "flag.fill")?.withRenderingMode(.alwaysTemplate)
+        cell.flagButton.setImage(backImage, for: .normal)
+        cell.flagButton.tintColor = .red
+        
+        // TODO ポップアップ表示
+        // TODO 報告処理
+    }
+    
+}
+

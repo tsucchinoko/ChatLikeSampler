@@ -7,6 +7,14 @@
 
 import UIKit
 
+
+protocol CommentDetailCellDelegate {
+    func didTappedCommentButton(cell: CommentDetailCell)
+    func didTappedRetweetButton(cell: CommentDetailCell)
+    func didTappedLikeButton(cell: CommentDetailCell)
+    func didTappedFlagButton(cell: CommentDetailCell)
+}
+
 class CommentDetailCell: UITableViewCell {
     
     @IBOutlet weak var userImageView: UIImageView!
@@ -25,6 +33,8 @@ class CommentDetailCell: UITableViewCell {
     @IBOutlet weak var likeButton: UIButton!
     @IBOutlet weak var likeNumberLabel: UILabel!
     @IBOutlet weak var flagButton: UIButton!
+    
+    var delegate: CommentDetailCellDelegate?
     
     var comment: Comment? {
         didSet {
@@ -54,5 +64,24 @@ class CommentDetailCell: UITableViewCell {
         formatter.locale = Locale(identifier: "ja_JP")
         
         return formatter.string(from: date)
+    }
+    
+    
+    @IBAction func didTappedCommentButton(_ sender: Any) {
+        delegate?.didTappedCommentButton(cell: self)
+    }
+    
+    @IBAction func didTapedRetweetButton(_ sender: Any) {
+        delegate?.didTappedRetweetButton(cell: self)
+    }
+    
+    
+    @IBAction func didTappedLikeButton(_ sender: Any) {
+        delegate?.didTappedLikeButton(cell: self)
+    }
+    
+    
+    @IBAction func didTappedFlagButton(_ sender: Any) {
+        delegate?.didTappedFlagButton(cell: self)
     }
 }

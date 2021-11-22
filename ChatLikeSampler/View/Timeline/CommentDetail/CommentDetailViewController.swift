@@ -86,10 +86,14 @@ extension CommentDetailViewController: UITableViewDelegate,UITableViewDataSource
         if indexPath.row == 0 {
             let cell = commentDetailTableView.dequeueReusableCell(withIdentifier: commentDetailCellId, for: indexPath) as! CommentDetailCell
             cell.comment = selectedComment
+            cell.delegate = self
+
             return cell
         } else {
             let cell = commentDetailTableView.dequeueReusableCell(withIdentifier: commentDetailCellId, for: indexPath) as! CommentDetailCell
             cell.comment = threadComments[indexPath.row - 1]
+            cell.delegate = self
+            
             return cell
         }
         
@@ -110,5 +114,43 @@ extension CommentDetailViewController: UITableViewDelegate,UITableViewDataSource
             navigationController?.pushViewController(commentDetailVC, animated: true)
             commentDetailTableView.deselectRow(at: indexPath, animated: true)
         }
+    }
+}
+
+
+extension CommentDetailViewController: CommentDetailCellDelegate {
+    func didTappedCommentButton(cell: CommentDetailCell) {
+        print(#function)
+        // TODO 選択されたセルのタイムライン詳細画面に画面遷移
+    }
+    
+    func didTappedRetweetButton(cell: CommentDetailCell) {
+        print(#function)
+        let backImage = UIImage(systemName: "repeat")?.withRenderingMode(.alwaysTemplate)
+        cell.retweetButton.setImage(backImage, for: .normal)
+        cell.retweetButton.tintColor = .green
+        
+        // TODO リツイート数+1
+        // TODO 自分の投稿に追加
+    }
+    
+    func didTappedLikeButton(cell: CommentDetailCell) {
+        print(#function)
+        let backImage = UIImage(systemName: "heart.fill")?.withRenderingMode(.alwaysTemplate)
+        cell.likeButton.setImage(backImage, for: .normal)
+        cell.likeButton.tintColor = .systemPink
+        
+        // TODO いいね数+1
+        // TODO 自分のいいねしたリストに追加
+    }
+    
+    func didTappedFlagButton(cell: CommentDetailCell) {
+        print(#function)
+        let backImage = UIImage(systemName: "flag.fill")?.withRenderingMode(.alwaysTemplate)
+        cell.flagButton.setImage(backImage, for: .normal)
+        cell.flagButton.tintColor = .red
+        
+        // TODO ポップアップ表示
+        // TODO 報告処理
     }
 }
