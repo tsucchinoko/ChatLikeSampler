@@ -42,6 +42,7 @@ class TimelineViewController: UIViewController {
         timelineTableView.keyboardDismissMode = .interactive
     }
     
+    // タイムライン情報の取得
     private func fetchTimelineInfoFromFirestore(){
         // Tweetを取得
         Firestore.firestore().collection("tweets").getDocuments { tweetsSnapshots, err in

@@ -6,10 +6,16 @@
 //
 
 import UIKit
+import Firebase
 
 class CommentDetailViewController: UIViewController {
     let timelineCellId = "timelineCell"
     let commentDetailCellId = "commentDetailCell"
+    
+    var selectedComment: Comment?
+    var threadComments = [Comment]()
+    var likes = [Like]()
+    var retweets = [Retweet]()
 
     @IBOutlet weak var commentDetailTableView: UITableView!
     override func viewDidLoad() {
@@ -38,6 +44,29 @@ class CommentDetailViewController: UIViewController {
         // スクロール時にキーボードを閉じる
         commentDetailTableView.keyboardDismissMode = .interactive
     }
+    
+    // スレッド内のコメント情報の取得
+    private func fetchThreadCommentInfoFromFirestore(){
+        guard let documentId = selectedComment?.documentId else { return }
+        // Tweetを取得
+        Firestore.firestore().collection("comments").document(documentId).collection("comment").getDocuments { commentSnapshots, err in
+            if let err = err {
+                print("コメント情報の取得失敗: \(err)")
+                return
+            }
+            
+            guard let snapshots = commentSnapshots?.documents else { return }
+            for snapshot in snapshots {
+                let data = snapshot.data()
+                let threadComment = Comment(data: data)
+                threadComment.documentId = snapshot.documentID
+                
+                self.threadComments.append(threadComment)
+            }
+            self.commentDetailTableView.reloadData()
+        }
+        
+    }
 
 }
 
@@ -49,13 +78,21 @@ extension CommentDetailViewController: UITableViewDelegate,UITableViewDataSource
     
     // セルの数
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return threadComments.count + 1
     }
     
     // カスタムセルを設定
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = commentDetailTableView.dequeueReusableCell(withIdentifier: commentDetailCellId, for: indexPath) as! CommentDetailCell
-        return cell
+        if indexPath.row == 0 {
+            let cell = commentDetailTableView.dequeueReusableCell(withIdentifier: commentDetailCellId, for: indexPath) as! CommentDetailCell
+            cell.comment = selectedComment
+            return cell
+        } else {
+            let cell = commentDetailTableView.dequeueReusableCell(withIdentifier: commentDetailCellId, for: indexPath) as! CommentDetailCell
+            cell.comment = threadComments[indexPath.row - 1]
+            return cell
+        }
+        
     }
     
     // セル選択時
