@@ -89,6 +89,7 @@ extension TimelineViewController: UITableViewDelegate, UITableViewDataSource {
         let storyBoard = UIStoryboard.init(name: "TimelineDetailViewController", bundle: nil)
         // ストーリーボードIDを指定して画面遷移
         let timelineDetailVC = storyBoard.instantiateViewController(withIdentifier: "TimelineDetailViewController") as! TimelineDetailViewController
+        timelineDetailVC.tweet = tweets[indexPath.row]
 
         
         navigationController?.pushViewController(timelineDetailVC, animated: true)

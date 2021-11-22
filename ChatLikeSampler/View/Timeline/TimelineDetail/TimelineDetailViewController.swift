@@ -11,6 +11,8 @@ class TimelineDetailViewController: UIViewController {
     let timelineCellId = "timelineCell"
     let commentDetailCellId = "commentDetailCell"
     
+    var tweet: Tweet?
+    
     @IBOutlet weak var timelineDetailTableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,6 +58,7 @@ extension TimelineDetailViewController: UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row == 0 {
             let cell = timelineDetailTableView.dequeueReusableCell(withIdentifier: timelineCellId, for: indexPath) as! TimelineCell
+            cell.tweet = tweet
             return cell
         } else {
             let cell = timelineDetailTableView.dequeueReusableCell(withIdentifier: commentDetailCellId, for: indexPath) as! CommentDetailCell
