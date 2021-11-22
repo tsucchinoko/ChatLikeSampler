@@ -54,6 +54,8 @@ class TimelineViewController: UIViewController {
             for snapshot in snapshots {
                 let data = snapshot.data()
                 let tweet = Tweet(data: data)
+                tweet.documentId = snapshot.documentID
+                
                 self.tweets.append(tweet)
             }
             self.timelineTableView.reloadData()

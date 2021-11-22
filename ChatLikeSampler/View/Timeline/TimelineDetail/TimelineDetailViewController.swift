@@ -6,17 +6,22 @@
 //
 
 import UIKit
+import Firebase
 
 class TimelineDetailViewController: UIViewController {
     let timelineCellId = "timelineCell"
     let commentDetailCellId = "commentDetailCell"
     
     var tweet: Tweet?
+    var comments = [Comment]()
+    var likes = [Like]()
+    var retweets = [Retweet]()
     
     @IBOutlet weak var timelineDetailTableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+        fetchCommentInfoFromFirestore()
     }
     
 
@@ -39,6 +44,29 @@ class TimelineDetailViewController: UIViewController {
         // スクロール時にキーボードを閉じる
         timelineDetailTableView.keyboardDismissMode = .interactive
     }
+    
+    // コメント情報の取得
+    private func fetchCommentInfoFromFirestore(){
+        guard let documentId = tweet?.documentId else { return }
+        // Tweetを取得
+        Firestore.firestore().collection("tweets").document(documentId).collection("comments").getDocuments { commentSnapshots, err in
+            if let err = err {
+                print("コメント情報の取得失敗: \(err)")
+                return
+            }
+            
+            guard let snapshots = commentSnapshots?.documents else { return }
+            for snapshot in snapshots {
+                let data = snapshot.data()
+                let comment = Comment(data: data)
+                comment.documentId = snapshot.documentID
+                
+                self.comments.append(comment)
+            }
+            self.timelineDetailTableView.reloadData()
+        }
+        
+    }
 
 }
 
@@ -51,7 +79,8 @@ extension TimelineDetailViewController: UITableViewDelegate, UITableViewDataSour
     
     // セルの数
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        print("#comments.count: \(comments.count)")
+        return comments.count + 1
     }
     
     // カスタムセルを設定
@@ -62,6 +91,8 @@ extension TimelineDetailViewController: UITableViewDelegate, UITableViewDataSour
             return cell
         } else {
             let cell = timelineDetailTableView.dequeueReusableCell(withIdentifier: commentDetailCellId, for: indexPath) as! CommentDetailCell
+            print("#indexPath.row: \(indexPath.row - 1)")
+            cell.comment = comments[indexPath.row - 1]
             return cell
         }
         
