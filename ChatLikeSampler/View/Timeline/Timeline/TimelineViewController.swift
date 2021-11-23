@@ -133,8 +133,10 @@ extension TimelineViewController: TimelineCellDelegate {
         cell.retweetButton.setImage(backImage, for: .normal)
         cell.retweetButton.tintColor = .green
         
-        // TODO リツイート数+1
-        print(cell.tag)
+        // リツイート数の更新
+        var count = tweets[cell.tag].retweets?.count ?? 0
+        count += 1
+        cell.retweetNumberLabel.text = String(count)
         
         // TODO 自分の投稿に追加
     }
@@ -145,8 +147,11 @@ extension TimelineViewController: TimelineCellDelegate {
         cell.likeButton.setImage(backImage, for: .normal)
         cell.likeButton.tintColor = .systemPink
         
-        // TODO いいね数+1
-        print(cell.tag)
+        // いいね数の更新
+        var count = tweets[cell.tag].likes?.count ?? 0
+        count += 1
+        cell.likeNumberLabel.text = String(count)
+        print(count)
         // TODO 自分のいいねしたリストに追加
     }
     
