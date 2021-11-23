@@ -42,6 +42,15 @@ class TimelineCell: UITableViewCell {
             userNameLabel.text = tweet.creator
             dateLabel.text = dateFormatterForDateLabel(date: tweet.created_at.dateValue())
             messageTextView.text = tweet.text
+            
+            let commentsNum = tweet.comments?.count ?? 0
+            commentNumberLabel.text = String(commentsNum)
+            
+            let retweetsNum = tweet.retweets?.count ?? 0
+            retweetNumberLabel.text = String(retweetsNum)
+            
+            let likesNum = tweet.likes?.count ?? 0
+            likeNumberLabel.text = String(likesNum)
         }
     }
     
