@@ -42,6 +42,16 @@ class CommentDetailCell: UITableViewCell {
             userNameLabel.text = comment.username
             dateLabel.text = dateFormatterForDateLabel(date: comment.created_at.dateValue())
             messageTextView.text = comment.text
+            
+//            TODO: commentsのフィールドにプロパティ追加?; comments, retweets, likes
+//            let commentsNum = comment.comments?.count ?? 0
+//            commentNumberLabel.text = String(commentsNum)
+//
+//            let retweetsNum = comment.retweets?.count ?? 0
+//            retweetNumberLabel.text = String(retweetsNum)
+//
+//            let likesNum = comment.likes?.count ?? 0
+//            likeNumberLabel.text = String(likesNum)
         }
     }
     
