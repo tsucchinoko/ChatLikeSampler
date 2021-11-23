@@ -40,6 +40,9 @@ class TimelineViewController: UIViewController {
 //        timelineTableView.scrollIndicatorInsets = tableViewIndicatorInset
         // スクロール時にキーボードを閉じる
         timelineTableView.keyboardDismissMode = .interactive
+        timelineTableView.refreshControl = UIRefreshControl()
+        timelineTableView.refreshControl?.addTarget(self, action: #selector(refreshTableView), for: .valueChanged)
+
     }
     
     // タイムライン情報の取得
@@ -63,6 +66,13 @@ class TimelineViewController: UIViewController {
             
         }
         
+    }
+    
+    @objc func refreshTableView() {
+        // TODO 値が取得できるまで待機
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            self.timelineTableView.refreshControl?.endRefreshing()
+        }
     }
 
 }
