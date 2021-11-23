@@ -68,6 +68,7 @@ class TimelineViewController: UIViewController {
         
     }
     
+    // tableViewを下に引っ張ったときにインジケーターを表示
     @objc func refreshTableView() {
         // TODO 値が取得できるまで待機
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
