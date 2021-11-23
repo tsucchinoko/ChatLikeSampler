@@ -94,6 +94,9 @@ extension TimelineViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = timelineTableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! TimelineCell
         cell.delegate = self
         cell.tweet = tweets[indexPath.row]
+        // tagを追加し、どのセルのボタンか判別
+        cell.tag = indexPath.row
+
         return cell
     }
     
@@ -117,7 +120,11 @@ extension TimelineViewController: UITableViewDelegate, UITableViewDataSource {
 extension TimelineViewController: TimelineCellDelegate {
     func didTappedCommentButton(cell: TimelineCell) {
         print(#function)
-        // TODO 選択されたセルのタイムライン詳細画面に画面遷移
+        // ストーリーボードIDを指定して画面遷移
+        let storyBoard = UIStoryboard.init(name: "TimelineDetailViewController", bundle: nil)
+        let timelineDetailVC = storyBoard.instantiateViewController(withIdentifier: "TimelineDetailViewController") as! TimelineDetailViewController
+        timelineDetailVC.tweet = tweets[cell.tag]
+        navigationController?.pushViewController(timelineDetailVC, animated: true)
     }
     
     func didTappedRetweetButton(cell: TimelineCell) {
@@ -127,6 +134,8 @@ extension TimelineViewController: TimelineCellDelegate {
         cell.retweetButton.tintColor = .green
         
         // TODO リツイート数+1
+        print(cell.tag)
+        
         // TODO 自分の投稿に追加
     }
     
@@ -137,6 +146,7 @@ extension TimelineViewController: TimelineCellDelegate {
         cell.likeButton.tintColor = .systemPink
         
         // TODO いいね数+1
+        print(cell.tag)
         // TODO 自分のいいねしたリストに追加
     }
     
@@ -148,5 +158,6 @@ extension TimelineViewController: TimelineCellDelegate {
         
         // TODO ポップアップ表示
         // TODO 報告処理
+        print(cell.tag)
     }
 }
