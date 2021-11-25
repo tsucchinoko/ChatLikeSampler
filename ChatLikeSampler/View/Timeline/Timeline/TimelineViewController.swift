@@ -138,7 +138,45 @@ extension TimelineViewController: TimelineCellDelegate {
         count += 1
         cell.retweetNumberLabel.text = String(count)
         
-        // TODO 自分の投稿に追加
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        guard let email = Auth.auth().currentUser?.email else { return }
+        Firestore.firestore().collection("users").whereField("email", isEqualTo: email).getDocuments { userSnapshots, err in
+            if let err = err {
+                print("ユーザ情報の取得に失敗しました: \(err)")
+                return
+            }
+            
+            guard let snapshots = userSnapshots?.documents else { return }
+            for snapshot in snapshots {
+                print("#snapshot.documentID: \(snapshot.documentID)")
+                print("#uid: \(uid)")
+                if snapshot.documentID == uid {
+                    let data = snapshot.data()
+                    let userInfo = User(data: data)
+                    let likeTime = Timestamp()
+                    let retweetData = [
+                        "profile_icon": userInfo.profile_icon,
+                        "email": userInfo.email,
+                        "username": userInfo.username,
+                        "about": userInfo.about,
+                        "created_at": likeTime,
+                        "updated_at": likeTime
+                    ] as! [String: Any]
+                    
+                    guard let documentId = self.tweets[cell.tag].documentId else { return }
+                    Firestore.firestore().collection("tweets").document(documentId).collection("retweets").addDocument(data: retweetData) { err in
+                        if let err = err {
+                            print("リツイート情報の追加に失敗しました: \(err)")
+                            return
+                        }
+                        // TODO: 自分の投稿に追加
+                        print("#リツイートしました！")
+                    }
+                    
+                }
+            }
+        }
+        
     }
     
     func didTappedLikeButton(cell: TimelineCell) {
@@ -152,7 +190,7 @@ extension TimelineViewController: TimelineCellDelegate {
         count += 1
         cell.likeNumberLabel.text = String(count)
         print(count)
-
+        
         // TODO ローカルDBから自分のユーザ情報とってきたい
         guard let uid = Auth.auth().currentUser?.uid else { return }
         guard let email = Auth.auth().currentUser?.email else { return }
@@ -182,9 +220,10 @@ extension TimelineViewController: TimelineCellDelegate {
                     guard let documentId = self.tweets[cell.tag].documentId else { return }
                     Firestore.firestore().collection("tweets").document(documentId).collection("likes").addDocument(data: likeData) { err in
                         if let err = err {
-                            print("いいねの追加に失敗しました: \(err)")
+                            print("いいね情報の追加に失敗しました: \(err)")
                             return
                         }
+                        // TODO: いいねした一覧に追加
                         print("#いいねしました！")
                     }
                     
