@@ -12,13 +12,13 @@ class TimelineViewController: UIViewController {
     let cellId = "timelineCell"
     
     var tweets = [Tweet]()
-
+    
     @IBOutlet weak var timelineTableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         print(#function)
-
+        
         setupViews()
         fetchTimelineInfoFromFirestore()
     }
@@ -35,14 +35,14 @@ class TimelineViewController: UIViewController {
         timelineTableView.register(UINib(nibName: "TimelineCell", bundle: nil), forCellReuseIdentifier: cellId)
         
         // セルが見切れないように位置を微調整
-//        timelineTableView.contentInset = tebleViewContentInset
-//        // スクロールバーの位置を微調整
-//        timelineTableView.scrollIndicatorInsets = tableViewIndicatorInset
+        //        timelineTableView.contentInset = tebleViewContentInset
+        //        // スクロールバーの位置を微調整
+        //        timelineTableView.scrollIndicatorInsets = tableViewIndicatorInset
         // スクロール時にキーボードを閉じる
         timelineTableView.keyboardDismissMode = .interactive
         timelineTableView.refreshControl = UIRefreshControl()
         timelineTableView.refreshControl?.addTarget(self, action: #selector(refreshTableView), for: .valueChanged)
-
+        
     }
     
     // タイムライン情報の取得
@@ -75,7 +75,7 @@ class TimelineViewController: UIViewController {
             self.timelineTableView.refreshControl?.endRefreshing()
         }
     }
-
+    
 }
 
 extension TimelineViewController: UITableViewDelegate, UITableViewDataSource {
@@ -96,7 +96,7 @@ extension TimelineViewController: UITableViewDelegate, UITableViewDataSource {
         cell.tweet = tweets[indexPath.row]
         // tagを追加し、どのセルのボタンか判別
         cell.tag = indexPath.row
-
+        
         return cell
     }
     
@@ -107,7 +107,7 @@ extension TimelineViewController: UITableViewDelegate, UITableViewDataSource {
         // ストーリーボードIDを指定して画面遷移
         let timelineDetailVC = storyBoard.instantiateViewController(withIdentifier: "TimelineDetailViewController") as! TimelineDetailViewController
         timelineDetailVC.tweet = tweets[indexPath.row]
-
+        
         
         navigationController?.pushViewController(timelineDetailVC, animated: true)
         timelineTableView.deselectRow(at: indexPath, animated: true)
@@ -152,7 +152,48 @@ extension TimelineViewController: TimelineCellDelegate {
         count += 1
         cell.likeNumberLabel.text = String(count)
         print(count)
-        // TODO 自分のいいねしたリストに追加
+
+        // TODO ローカルDBから自分のユーザ情報とってきたい
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        guard let email = Auth.auth().currentUser?.email else { return }
+        Firestore.firestore().collection("users").whereField("email", isEqualTo: email).getDocuments { userSnapshots, err in
+            if let err = err {
+                print("ユーザ情報の取得に失敗しました: \(err)")
+                return
+            }
+            
+            guard let snapshots = userSnapshots?.documents else { return }
+            for snapshot in snapshots {
+                print("#snapshot.documentID: \(snapshot.documentID)")
+                print("#uid: \(uid)")
+                if snapshot.documentID == uid {
+                    let data = snapshot.data()
+                    let userInfo = User(data: data)
+                    let likeTime = Timestamp()
+                    let likeData = [
+                        "profile_icon": userInfo.profile_icon,
+                        "email": userInfo.email,
+                        "username": userInfo.username,
+                        "about": userInfo.about,
+                        "created_at": likeTime,
+                        "updated_at": likeTime
+                    ] as! [String: Any]
+                    
+                    guard let documentId = self.tweets[cell.tag].documentId else { return }
+                    Firestore.firestore().collection("tweets").document(documentId).collection("likes").addDocument(data: likeData) { err in
+                        if let err = err {
+                            print("いいねの追加に失敗しました: \(err)")
+                            return
+                        }
+                        print("#いいねしました！")
+                    }
+                    
+                }
+            }
+            
+        }
+        
+        
     }
     
     func didTappedFlagButton(cell: TimelineCell) {
