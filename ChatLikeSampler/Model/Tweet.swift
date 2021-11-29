@@ -11,15 +11,15 @@ import Firebase
 class Tweet {
     let text: String
     let image: String
-    let likes: [Like]?
-    let retweets: [Retweet]?
-    let comments: [Comment]?
     let creator: String
     let is_deleted: Bool
     
     let created_at: Timestamp
     
     var documentId: String?
+    var likes: [Like]?
+    var retweets: [Retweet]?
+    var comments: [Comment]?
     
     init(data: [String: Any]) {
         self.text = data["text"] as? String ?? ""

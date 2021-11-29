@@ -58,12 +58,60 @@ class TimelineViewController: UIViewController {
             guard let snapshots = tweetsSnapshots?.documents else { return }
             for snapshot in snapshots {
                 let data = snapshot.data()
-                let tweet = Tweet(data: data)
+                var tweet = Tweet(data: data)
                 tweet.documentId = snapshot.documentID
-                
                 self.tweets.append(tweet)
+                
+                // コメント情報取得
+                self.db.collection("tweets").document(tweet.documentId!).collection("comments").getDocuments { commentSnapshots, err in
+                    if let err = err {
+                        print("コメント情報の取得失敗: \(err)")
+                        return
+                    }
+                    
+                    guard let commentSnapshots = commentSnapshots?.documents else { return }
+                    for commentSnapshot in commentSnapshots {
+                        let commentData = commentSnapshot.data()
+                        let comment = Comment(data: commentData)
+                        comment.documentId = commentSnapshot.documentID
+                        tweet.comments?.append(comment)
+                    }
+                }
+                
+                // リツイート情報取得
+                self.db.collection("tweets").document(tweet.documentId!).collection("retweets").getDocuments { retweetSnapshots, err in
+                    if let err = err {
+                        print("コメント情報の取得失敗: \(err)")
+                        return
+                    }
+                    
+                    guard let retweetSnapshots = retweetSnapshots?.documents else { return }
+                    for retweetSnapshot in retweetSnapshots {
+                        let retweetData = retweetSnapshot.data()
+                        let retweet = Retweet(data: retweetData)
+                        retweet.documentId = retweetSnapshot.documentID
+                        tweet.retweets?.append(retweet)
+                    }
+                }
+                
+                // いいね情報取得
+                self.db.collection("tweets").document(tweet.documentId!).collection("likes").getDocuments { likeSnapshots, err in
+                    if let err = err {
+                        print("コメント情報の取得失敗: \(err)")
+                        return
+                    }
+                    
+                    guard let likeSnapshots = likeSnapshots?.documents else { return }
+                    for likeSnapshot in likeSnapshots {
+                        let likeData = likeSnapshot.data()
+                        let like = Like(data: likeData)
+                        like.documentId = likeSnapshot.documentID
+                        tweet.likes?.append(like)
+                    }
+                }
+                self.timelineTableView.reloadData()
             }
-            self.timelineTableView.reloadData()
+            
             
         }
         
