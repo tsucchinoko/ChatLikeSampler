@@ -12,13 +12,14 @@ class TimelineViewController: UIViewController {
     let cellId = "timelineCell"
     
     var tweets = [Tweet]()
+    var db: Firestore!
     
     @IBOutlet weak var timelineTableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         print(#function)
-        
+        db = Firestore.firestore()
         setupViews()
         fetchTimelineInfoFromFirestore()
     }
@@ -48,7 +49,7 @@ class TimelineViewController: UIViewController {
     // タイムライン情報の取得
     private func fetchTimelineInfoFromFirestore(){
         // Tweetを取得
-        Firestore.firestore().collection("tweets").getDocuments { tweetsSnapshots, err in
+        db.collection("tweets").getDocuments { tweetsSnapshots, err in
             if let err = err {
                 print("Tweet情報の取得失敗: \(err)")
                 return
@@ -94,6 +95,7 @@ extension TimelineViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = timelineTableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! TimelineCell
         cell.delegate = self
         cell.tweet = tweets[indexPath.row]
+        print("#tweets[indexPath.row].likes: \(tweets[indexPath.row].likes!)")
         // tagを追加し、どのセルのボタンか判別
         cell.tag = indexPath.row
         
@@ -140,7 +142,7 @@ extension TimelineViewController: TimelineCellDelegate {
         
         guard let uid = Auth.auth().currentUser?.uid else { return }
         guard let email = Auth.auth().currentUser?.email else { return }
-        Firestore.firestore().collection("users").whereField("email", isEqualTo: email).getDocuments { userSnapshots, err in
+        db.collection("users").whereField("email", isEqualTo: email).getDocuments { userSnapshots, err in
             if let err = err {
                 print("ユーザ情報の取得に失敗しました: \(err)")
                 return
@@ -164,7 +166,7 @@ extension TimelineViewController: TimelineCellDelegate {
                     ] as! [String: Any]
                     
                     guard let documentId = self.tweets[cell.tag].documentId else { return }
-                    Firestore.firestore().collection("tweets").document(documentId).collection("retweets").addDocument(data: retweetData) { err in
+                    self.db.collection("tweets").document(documentId).collection("retweets").addDocument(data: retweetData) { err in
                         if let err = err {
                             print("リツイート情報の追加に失敗しました: \(err)")
                             return
@@ -194,7 +196,7 @@ extension TimelineViewController: TimelineCellDelegate {
         // TODO ローカルDBから自分のユーザ情報とってきたい
         guard let uid = Auth.auth().currentUser?.uid else { return }
         guard let email = Auth.auth().currentUser?.email else { return }
-        Firestore.firestore().collection("users").whereField("email", isEqualTo: email).getDocuments { userSnapshots, err in
+        db.collection("users").whereField("email", isEqualTo: email).getDocuments { userSnapshots, err in
             if let err = err {
                 print("ユーザ情報の取得に失敗しました: \(err)")
                 return
@@ -218,7 +220,7 @@ extension TimelineViewController: TimelineCellDelegate {
                     ] as! [String: Any]
                     
                     guard let documentId = self.tweets[cell.tag].documentId else { return }
-                    Firestore.firestore().collection("tweets").document(documentId).collection("likes").addDocument(data: likeData) { err in
+                    self.db.collection("tweets").document(documentId).collection("likes").addDocument(data: likeData) { err in
                         if let err = err {
                             print("いいね情報の追加に失敗しました: \(err)")
                             return

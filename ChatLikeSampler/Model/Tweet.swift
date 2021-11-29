@@ -24,9 +24,9 @@ class Tweet {
     init(data: [String: Any]) {
         self.text = data["text"] as? String ?? ""
         self.image = data["image"] as? String ?? ""
-        self.likes = data["likes"] as? [Like]
-        self.retweets = data["retweets"] as? [Retweet]
-        self.comments = data["comments"] as? [Comment]
+        self.likes = data["likes"] as? [Like] ?? [Like]()
+        self.retweets = data["retweets"] as? [Retweet] ?? [Retweet]()
+        self.comments = data["comments"] as? [Comment] ?? [Comment]()
         self.creator = data["creator"] as? String ?? ""
         self.is_deleted = data["is_deleted"] as? Bool ?? false
         self.created_at = data["created_at"] as? Timestamp ?? Timestamp()

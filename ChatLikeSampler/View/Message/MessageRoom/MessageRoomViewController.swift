@@ -9,7 +9,6 @@ import UIKit
 import Firebase
 import FirebaseAuth
 import FirebaseStorage
-import Nuke
 
 class MessageRoomViewController: UIViewController {
     
