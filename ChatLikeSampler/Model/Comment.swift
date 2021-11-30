@@ -8,14 +8,14 @@
 import Foundation
 import Firebase
 
-class Comment {
-    let profile_icon: String
-    let email: String
-    let username: String
-    let text: String
-    let is_deleted: Bool
-    let created_at: Timestamp
-    let updated_at: Timestamp
+class Comment: NSObject {
+    var profile_icon: String?
+    var email: String?
+    var username: String?
+    var text: String?
+    var is_deleted: Bool?
+    var created_at: Timestamp?
+    var updated_at: Timestamp?
     
     var documentId: String?
     var likes: [Like]?
@@ -23,7 +23,9 @@ class Comment {
     var comments: [Comment]?
 
     
-    init(data: [String: Any]) {
+    init(document: QueryDocumentSnapshot) {
+        self.documentId = document.documentID
+        let data = document.data()
         self.profile_icon = data["profile_icon"] as? String ?? ""
         self.email = data["email"] as? String ?? ""
         self.username = data["username"] as? String ?? ""

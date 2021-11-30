@@ -11,7 +11,7 @@ import Firebase
 class TimelineViewController: UIViewController {
     let cellId = "timelineCell"
     
-    var tweets = [Tweet]()
+    var tweets: [Tweet] = []
     var db: Firestore!
     
     @IBOutlet weak var timelineTableView: UITableView!
@@ -55,66 +55,68 @@ class TimelineViewController: UIViewController {
                 return
             }
             
+            // Tweet情報を配列に格納
             guard let snapshots = tweetsSnapshots?.documents else { return }
-            for snapshot in snapshots {
-                let data = snapshot.data()
-                let tweet = Tweet(data: data)
-                tweet.documentId = snapshot.documentID
-                self.tweets.append(tweet)
-                
-                // コメント情報取得
-                self.db.collection("tweets").document(tweet.documentId!).collection("comments").getDocuments { commentSnapshots, err in
-                    if let err = err {
-                        print("コメント情報の取得失敗: \(err)")
-                        return
-                    }
-                    
-                    guard let commentSnapshots = commentSnapshots?.documents else { return }
-                    for commentSnapshot in commentSnapshots {
-                        let commentData = commentSnapshot.data()
-                        let comment = Comment(data: commentData)
-                        comment.documentId = commentSnapshot.documentID
-                        tweet.comments?.append(comment)
-                    }
-                }
-                
-                // リツイート情報取得
-                self.db.collection("tweets").document(tweet.documentId!).collection("retweets").getDocuments { retweetSnapshots, err in
-                    if let err = err {
-                        print("コメント情報の取得失敗: \(err)")
-                        return
-                    }
-                    
-                    guard let retweetSnapshots = retweetSnapshots?.documents else { return }
-                    for retweetSnapshot in retweetSnapshots {
-                        let retweetData = retweetSnapshot.data()
-                        let retweet = Retweet(data: retweetData)
-                        retweet.documentId = retweetSnapshot.documentID
-                        tweet.retweets?.append(retweet)
-                    }
-                }
-                
-                // いいね情報取得
-                self.db.collection("tweets").document(tweet.documentId!).collection("likes").getDocuments { likeSnapshots, err in
-                    if let err = err {
-                        print("コメント情報の取得失敗: \(err)")
-                        return
-                    }
-                    
-                    guard let likeSnapshots = likeSnapshots?.documents else { return }
-                    for likeSnapshot in likeSnapshots {
-                        let likeData = likeSnapshot.data()
-                        let like = Like(data: likeData)
-                        like.documentId = likeSnapshot.documentID
-                        tweet.likes?.append(like)
-                    }
-                }
-                self.timelineTableView.reloadData()
+            self.tweets = snapshots.map { document in
+                let tweet = Tweet(document: document)
+                tweet.comments = self.fetchCommentInfoFromFirestore(tweet: tweet)
+                tweet.retweets = self.fetchRetweetInfoFromFireStore(tweet: tweet)
+                tweet.likes = self.fetchLikeInfoFromFireStore(tweet: tweet)
+                return tweet
+            }
+            self.timelineTableView.reloadData()
+        }
+    }
+    
+    private func fetchCommentInfoFromFirestore(tweet: Tweet) -> [Comment]? {
+        // コメント情報取得
+        self.db.collection("tweets").document(tweet.documentId!).collection("comments").getDocuments { commentSnapshots, err in
+            if let err = err {
+                print("コメント情報の取得失敗: \(err)")
+                return
             }
             
-            
+            guard let commentSnapshots = commentSnapshots?.documents else { return }
+            tweet.comments = commentSnapshots.map { document in
+                let comment = Comment(document: document)
+                return comment
+            }
         }
-        
+        return tweet.comments
+    }
+    
+    private func fetchRetweetInfoFromFireStore(tweet: Tweet) -> [Retweet]? {
+        // リツイート情報取得
+        self.db.collection("tweets").document(tweet.documentId!).collection("retweets").getDocuments { retweetSnapshots, err in
+            if let err = err {
+                print("コメント情報の取得失敗: \(err)")
+                return
+            }
+            
+            guard let retweetSnapshots = retweetSnapshots?.documents else { return }
+            tweet.retweets = retweetSnapshots.map { document in
+                let retweet = Retweet(document: document)
+                return retweet
+            }
+        }
+        return tweet.retweets
+    }
+    
+    private func fetchLikeInfoFromFireStore(tweet: Tweet) -> [Like]? {
+        // いいね情報取得
+        self.db.collection("tweets").document(tweet.documentId!).collection("likes").getDocuments { likeSnapshots, err in
+            if let err = err {
+                print("コメント情報の取得失敗: \(err)")
+                return
+            }
+            
+            guard let likeSnapshots = likeSnapshots?.documents else { return }
+            tweet.likes = likeSnapshots.map { document in
+                let like = Like(document: document)
+                return like
+            }
+        }
+        return tweet.likes
     }
     
     // tableViewを下に引っ張ったときにインジケーターを表示

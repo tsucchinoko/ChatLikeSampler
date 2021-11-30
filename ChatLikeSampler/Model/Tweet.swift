@@ -8,20 +8,22 @@
 import Foundation
 import Firebase
 
-class Tweet {
-    let text: String
-    let image: String
-    let creator: String
-    let is_deleted: Bool
+class Tweet: NSObject {
+    var text: String?
+    var image: String?
+    var creator: String?
+    var is_deleted: Bool?
     
-    let created_at: Timestamp
+    var created_at: Timestamp?
     
     var documentId: String?
     var likes: [Like]?
     var retweets: [Retweet]?
     var comments: [Comment]?
     
-    init(data: [String: Any]) {
+    init(document: QueryDocumentSnapshot) {
+        self.documentId = document.documentID
+        let data = document.data()
         self.text = data["text"] as? String ?? ""
         self.image = data["image"] as? String ?? ""
         self.likes = data["likes"] as? [Like] ?? [Like]()

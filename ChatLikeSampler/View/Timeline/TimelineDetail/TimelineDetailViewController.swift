@@ -15,9 +15,8 @@ class TimelineDetailViewController: UIViewController {
     let commentDetailCellId = "commentDetailCell"
     
     var tweet: Tweet?
-    var comments = [Comment]()
-    var likes = [Like]()
-    var retweets = [Retweet]()
+    
+    var db: Firestore!
     
     private let tebleViewContentInset: UIEdgeInsets = .init(top: 0, left: 0, bottom: 90, right: 0)
     private let tableViewIndicatorInset: UIEdgeInsets = .init(top: 0, left: 0, bottom: 90, right: 0)
@@ -46,8 +45,8 @@ class TimelineDetailViewController: UIViewController {
     @IBOutlet weak var timelineDetailTableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
+        db = Firestore.firestore()
         setupViews()
-        fetchCommentInfoFromFirestore()
     }
     
 
@@ -71,29 +70,6 @@ class TimelineDetailViewController: UIViewController {
         timelineDetailTableView.keyboardDismissMode = .interactive
     }
     
-    // コメント情報の取得
-    private func fetchCommentInfoFromFirestore(){
-        guard let documentId = tweet?.documentId else { return }
-        // Tweetを取得
-        Firestore.firestore().collection("tweets").document(documentId).collection("comments").getDocuments { commentSnapshots, err in
-            if let err = err {
-                print("コメント情報の取得失敗: \(err)")
-                return
-            }
-            
-            guard let snapshots = commentSnapshots?.documents else { return }
-            for snapshot in snapshots {
-                let data = snapshot.data()
-                let comment = Comment(data: data)
-                comment.documentId = snapshot.documentID
-                
-                self.comments.append(comment)
-            }
-            self.timelineDetailTableView.reloadData()
-        }
-        
-    }
-    
     // Firestoreにコメントを送信
     private func sendMessageToFirestore(text: String){
         // UID取得
@@ -112,15 +88,11 @@ class TimelineDetailViewController: UIViewController {
         
         // Firestoreにコメントを送信
         guard let documentId = tweet?.documentId else { return }
-        Firestore.firestore().collection("tweets").document(documentId).collection("comments").addDocument(data: sendData, completion: { err in
+        db.collection("tweets").document(documentId).collection("comments").addDocument(data: sendData, completion: { err in
             if let err = err {
                 print("コメント情報の保存に失敗しました: \(err)")
                 return
             }
-            
-            let comment = Comment(data: sendData)
-            self.comments.append(comment)
-            self.tweet?.comments?.append(comment)
             self.timelineDetailTableView.reloadData()
         })
     }

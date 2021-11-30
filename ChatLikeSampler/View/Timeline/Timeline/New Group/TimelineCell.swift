@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Firebase
 
 protocol TimelineCellDelegate {
     func didTappedCommentButton(cell: TimelineCell)
@@ -40,7 +41,7 @@ class TimelineCell: UITableViewCell {
         didSet {
             guard let tweet = tweet else { return }
             userNameLabel.text = tweet.creator
-            dateLabel.text = dateFormatterForDateLabel(date: tweet.created_at.dateValue())
+            dateLabel.text = dateFormatterForDateLabel(date: tweet.created_at?.dateValue() ?? Date())
             messageTextView.text = tweet.text
             
             let commentsNum = tweet.comments?.count ?? 0

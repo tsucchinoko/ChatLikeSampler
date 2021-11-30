@@ -25,6 +25,8 @@ extension TimelineViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = timelineTableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! TimelineCell
         cell.delegate = self
         cell.tweet = tweets[indexPath.row]
+        print("### cell.tweet = tweets[indexPath.row] ###")
+        print(cell.tweet?.likes?.count)
         print("#tweets[indexPath.row].likes: \(tweets[indexPath.row].likes!)")
         // tagを追加し、どのセルのボタンか判別
         cell.tag = indexPath.row

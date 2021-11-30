@@ -8,17 +8,19 @@
 import Foundation
 import Firebase
 
-class Like {
-    let profile_icon: String
-    let email: String
-    let username: String
-    let abount: String
-    let created_at: Timestamp
-    let updated_at: Timestamp
+class Like: NSObject {
+    var profile_icon: String?
+    var email: String?
+    var username: String?
+    var abount: String?
+    var created_at: Timestamp?
+    var updated_at: Timestamp?
     
     var documentId: String?
     
-    init(data: [String: Any]) {
+    init(document: QueryDocumentSnapshot) {
+        self.documentId = document.documentID
+        let data = document.data()
         self.profile_icon = data["profile_icon"] as? String ?? ""
         self.email = data["email"] as? String ?? ""
         self.username = data["username"] as? String ?? ""
