@@ -9,6 +9,8 @@ import UIKit
 import Firebase
 
 class TimelineDetailViewController: UIViewController {
+
+    
     let timelineCellId = "timelineCell"
     let commentDetailCellId = "commentDetailCell"
     
@@ -16,6 +18,25 @@ class TimelineDetailViewController: UIViewController {
     var comments = [Comment]()
     var likes = [Like]()
     var retweets = [Retweet]()
+    
+    private let accessoryHeight: CGFloat = 100
+    private lazy var messageInputAccessoryView: TimelineMessageInputAccessoryView = {
+        let view = TimelineMessageInputAccessoryView()
+        view.frame = .init(x: 0, y: 0, width: view.frame.width, height: accessoryHeight)
+        view.delegate = self
+        return view
+    }()
+    
+    // messageInputAccessoryViewとキーボードを紐付け
+    override var inputAccessoryView: UIView? {
+        get {
+            return messageInputAccessoryView
+        }
+    }
+    // messageInputAccessoryViewがfirstResponderになれるよう設定
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
     
     @IBOutlet weak var timelineDetailTableView: UITableView!
     override func viewDidLoad() {
@@ -68,6 +89,12 @@ class TimelineDetailViewController: UIViewController {
         
     }
 
+}
+
+extension TimelineDetailViewController: TimelineMessageInputAccessoryViewDelegate {
+    func tappedSendButton(text: String) {
+        print("#text: \(text)")
+    }
 }
 
 
