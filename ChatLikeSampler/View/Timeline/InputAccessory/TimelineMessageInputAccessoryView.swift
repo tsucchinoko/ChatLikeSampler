@@ -89,6 +89,7 @@ extension TimelineMessageInputAccessoryView: UITextViewDelegate {
         }
     }
     
+    // テキストの編集終了時
     func textViewDidEndEditing(_ textView: UITextView) {
         self.messageTextView.resignFirstResponder()
     }
