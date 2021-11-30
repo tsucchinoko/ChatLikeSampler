@@ -14,8 +14,6 @@ class CommentDetailViewController: UIViewController {
     
     var selectedComment: Comment?
     var threadComments = [Comment]()
-    var likes = [Like]()
-    var retweets = [Retweet]()
     
     
     private let tebleViewContentInset: UIEdgeInsets = .init(top: 0, left: 0, bottom: 90, right: 0)
@@ -72,24 +70,24 @@ class CommentDetailViewController: UIViewController {
     
     // スレッド内のコメント情報の取得
     private func fetchThreadCommentInfoFromFirestore(){
-        guard let documentId = selectedComment?.documentId else { return }
-        // Tweetを取得
-        Firestore.firestore().collection("comments").document(documentId).collection("comment").getDocuments { commentSnapshots, err in
-            if let err = err {
-                print("コメント情報の取得失敗: \(err)")
-                return
-            }
-            
-            guard let snapshots = commentSnapshots?.documents else { return }
-            for snapshot in snapshots {
-                let data = snapshot.data()
-                let threadComment = Comment(data: data)
-                threadComment.documentId = snapshot.documentID
-                
-                self.threadComments.append(threadComment)
-            }
-            self.commentDetailTableView.reloadData()
-        }
+//        guard let documentId = selectedComment?.documentId else { return }
+//        // Tweetを取得
+//        Firestore.firestore().collection("comments").document(documentId).collection("comment").getDocuments { commentSnapshots, err in
+//            if let err = err {
+//                print("コメント情報の取得失敗: \(err)")
+//                return
+//            }
+//            
+//            guard let snapshots = commentSnapshots?.documents else { return }
+//            for snapshot in snapshots {
+//                let data = snapshot.data()
+//                let threadComment = Comment(data: data)
+//                threadComment.documentId = snapshot.documentID
+//                
+//                self.threadComments.append(threadComment)
+//            }
+//            self.commentDetailTableView.reloadData()
+//        }
         
     }
     
@@ -117,10 +115,10 @@ class CommentDetailViewController: UIViewController {
                 return
             }
             
-            let comment = Comment(data: sendData)
-            self.threadComments.append(comment)
-            self.selectedComment?.comments?.append(comment)
-            self.commentDetailTableView.reloadData()
+//            let comment = Comment(data: sendData)
+//            self.threadComments.append(comment)
+//            self.selectedComment?.comments?.append(comment)
+//            self.commentDetailTableView.reloadData()
         })
     }
     

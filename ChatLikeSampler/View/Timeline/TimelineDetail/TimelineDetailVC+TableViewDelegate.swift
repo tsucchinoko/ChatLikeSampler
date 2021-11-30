@@ -20,7 +20,7 @@ extension TimelineDetailViewController: UITableViewDelegate, UITableViewDataSour
     
     // セルの数
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print("#comments.count: \(comments.count)")
+        guard let comments = tweet?.comments else { return 0}
         return comments.count + 1
     }
     
@@ -34,7 +34,7 @@ extension TimelineDetailViewController: UITableViewDelegate, UITableViewDataSour
             return cell
         } else {
             let cell = timelineDetailTableView.dequeueReusableCell(withIdentifier: commentDetailCellId, for: indexPath) as! CommentDetailCell
-            cell.comment = comments[indexPath.row - 1]
+            cell.comment = tweet?.comments?[indexPath.row - 1]
             cell.delegate = self
             
             return cell
@@ -53,7 +53,7 @@ extension TimelineDetailViewController: UITableViewDelegate, UITableViewDataSour
             timelineDetailTableView.deselectRow(at: indexPath, animated: true)
             return
         } else {
-            commentDetailVC.selectedComment = comments[indexPath.row - 1]
+            commentDetailVC.selectedComment = tweet?.comments?[indexPath.row - 1]
             navigationController?.pushViewController(commentDetailVC, animated: true)
             timelineDetailTableView.deselectRow(at: indexPath, animated: true)
         }
