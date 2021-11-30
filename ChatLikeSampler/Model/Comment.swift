@@ -18,6 +18,10 @@ class Comment {
     let updated_at: Timestamp
     
     var documentId: String?
+    var likes: [Like]?
+    var retweets: [Retweet]?
+    var comments: [Comment]?
+
     
     init(data: [String: Any]) {
         self.profile_icon = data["profile_icon"] as? String ?? ""
