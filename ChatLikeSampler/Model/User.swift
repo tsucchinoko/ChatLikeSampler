@@ -9,31 +9,33 @@ import Foundation
 import Firebase
 
 class User {
-    let email: String
-    let password: String
-    let username: String
-    let university_name: String
-    let undergraduate_and_department: String
-    let graduation_year: String
-    let about: String
-    let desired_industry: [String]
-    let desired_occupation: [String]
-    let desired_job_area: [String]
-    let student_card: String
-    let id_card: String
-    let profile_icon: String
-    let header_img: String
-    let is_activated: Bool
-    let is_deleted: Bool
-    let is_follow_notification: Bool
-    let is_comment_notification: Bool
-    let is_message_notification: Bool
-    let is_retweet_notification: Bool
-    let logined_at: Timestamp
+    var email: String?
+    var password: String?
+    var username: String?
+    var university_name: String?
+    var undergraduate_and_department: String?
+    var graduation_year: String?
+    var about: String?
+    var desired_industry: [String]?
+    var desired_occupation: [String]?
+    var desired_job_area: [String]?
+    var student_card: String?
+    var id_card: String?
+    var profile_icon: String?
+    var header_img: String?
+    var is_activated: Bool?
+    var is_deleted: Bool?
+    var is_follow_notification: Bool?
+    var is_comment_notification: Bool?
+    var is_message_notification: Bool?
+    var is_retweet_notification: Bool?
+    var logined_at: Timestamp?
     
     var uid: String?
     
-    init(data: [String: Any]) {
+    init(document: QueryDocumentSnapshot) {
+        self.uid = document.documentID
+        let data = document.data()
         self.email = data["email"] as? String ?? ""
         self.password = data["password"] as? String ?? ""
         self.username = data["username"] as? String ?? ""

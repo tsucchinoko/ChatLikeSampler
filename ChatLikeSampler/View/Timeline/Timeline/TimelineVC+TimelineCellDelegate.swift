@@ -22,7 +22,6 @@ extension TimelineViewController: TimelineCellDelegate {
     
     // リツイートボタン押下時
     func didTappedRetweetButton(cell: TimelineCell) {
-        print(#function)
         let backImage = UIImage(systemName: "repeat")?.withRenderingMode(.alwaysTemplate)
         cell.retweetButton.setImage(backImage, for: .normal)
         cell.retweetButton.tintColor = .green
@@ -42,20 +41,17 @@ extension TimelineViewController: TimelineCellDelegate {
             
             guard let snapshots = userSnapshots?.documents else { return }
             for snapshot in snapshots {
-                print("#snapshot.documentID: \(snapshot.documentID)")
-                print("#uid: \(uid)")
                 if snapshot.documentID == uid {
-                    let data = snapshot.data()
-                    let userInfo = User(data: data)
+                    let userInfo = User(document: snapshot)
                     let likeTime = Timestamp()
                     let retweetData = [
-                        "profile_icon": userInfo.profile_icon,
-                        "email": userInfo.email,
-                        "username": userInfo.username,
-                        "about": userInfo.about,
+                        "profile_icon": userInfo.profile_icon!,
+                        "email": userInfo.email!,
+                        "username": userInfo.username!,
+                        "about": userInfo.about!,
                         "created_at": likeTime,
                         "updated_at": likeTime
-                    ] as! [String: Any]
+                    ] as [String: Any]
                     
                     guard let documentId = self.tweets[cell.tag].documentId else { return }
                     self.db.collection("tweets").document(documentId).collection("retweets").addDocument(data: retweetData) { err in
@@ -75,7 +71,6 @@ extension TimelineViewController: TimelineCellDelegate {
     
     // いいねボタン押下時
     func didTappedLikeButton(cell: TimelineCell) {
-        print(#function)
         let backImage = UIImage(systemName: "heart.fill")?.withRenderingMode(.alwaysTemplate)
         cell.likeButton.setImage(backImage, for: .normal)
         cell.likeButton.tintColor = .systemPink
@@ -84,7 +79,6 @@ extension TimelineViewController: TimelineCellDelegate {
         var count = tweets[cell.tag].likes?.count ?? 0
         count += 1
         cell.likeNumberLabel.text = String(count)
-        print(count)
         
         // TODO ローカルDBから自分のユーザ情報とってきたい
         guard let uid = Auth.auth().currentUser?.uid else { return }
@@ -97,20 +91,17 @@ extension TimelineViewController: TimelineCellDelegate {
             
             guard let snapshots = userSnapshots?.documents else { return }
             for snapshot in snapshots {
-                print("#snapshot.documentID: \(snapshot.documentID)")
-                print("#uid: \(uid)")
                 if snapshot.documentID == uid {
-                    let data = snapshot.data()
-                    let userInfo = User(data: data)
+                    let userInfo = User(document: snapshot)
                     let likeTime = Timestamp()
                     let likeData = [
-                        "profile_icon": userInfo.profile_icon,
-                        "email": userInfo.email,
-                        "username": userInfo.username,
-                        "about": userInfo.about,
+                        "profile_icon": userInfo.profile_icon!,
+                        "email": userInfo.email!,
+                        "username": userInfo.username!,
+                        "about": userInfo.about!,
                         "created_at": likeTime,
                         "updated_at": likeTime
-                    ] as! [String: Any]
+                    ] as [String: Any]
                     
                     guard let documentId = self.tweets[cell.tag].documentId else { return }
                     self.db.collection("tweets").document(documentId).collection("likes").addDocument(data: likeData) { err in
