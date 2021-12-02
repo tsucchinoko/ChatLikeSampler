@@ -33,5 +33,8 @@ class Comment: NSObject {
         self.is_deleted = data["is_deleted"] as? Bool ?? false
         self.created_at = data["created_at"] as? Timestamp ?? Timestamp()
         self.updated_at = data["updated_at"] as? Timestamp ?? Timestamp()
+        self.likes = data["likes"] as? [Like] ?? [Like]()
+        self.retweets = data["retweets"] as? [Retweet] ?? [Retweet]()
+        self.comments = data["comments"] as? [Comment] ?? [Comment]()
     }
 }
