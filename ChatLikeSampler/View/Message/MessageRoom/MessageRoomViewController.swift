@@ -16,6 +16,7 @@ class MessageRoomViewController: UIViewController {
     private var roomMessages = [Message]()
     private let partnerCellId = "partnerCellId"
     private let myCellId = "myCellId"
+    var db: Firestore!
     
     private let accessoryHeight: CGFloat = 100
     private let tebleViewContentInset: UIEdgeInsets = .init(top: 0, left: 0, bottom: 90, right: 0)
@@ -47,6 +48,7 @@ class MessageRoomViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        db = Firestore.firestore()
         setupViews()
         setupNotification()
         fetchMessageInfoFromFirestore()
@@ -86,7 +88,7 @@ class MessageRoomViewController: UIViewController {
     
     // メッセージ情報を取得
     private func fetchMessageInfoFromFirestore() {
-        Firestore.firestore().collection("rooms").document(roomId).collection("messages")
+        db.collection("rooms").document(roomId).collection("messages")
             .addSnapshotListener{ (snapshots, err) in
                 if let err = err {
                     print("メッセージ取得失敗: \(err)")
@@ -134,7 +136,7 @@ class MessageRoomViewController: UIViewController {
         
         // 相手のメッセージの既読フラグをTrueに更新
         if author != uid {
-            Firestore.firestore().collection("rooms").document(self.roomId)
+            db.collection("rooms").document(self.roomId)
                 .collection("messages").document(documentId).updateData(["read": true])
             self.messageRoomTableView.reloadData()
         }
@@ -159,7 +161,7 @@ class MessageRoomViewController: UIViewController {
         ] as [String : Any]
         
         // Firestoreにメッセージを送信
-        Firestore.firestore().collection("rooms").document(roomId).collection("messages").document(messageId)
+        db.collection("rooms").document(roomId).collection("messages").document(messageId)
             .setData(sendData, merge: true){ err in
                 if let err = err {
                     print("Error adding document: \(err)")
@@ -171,7 +173,7 @@ class MessageRoomViewController: UIViewController {
         ]
         
         // FirestoreのlatestMessageを更新
-        Firestore.firestore().collection("rooms").document(roomId).updateData(latestMessageData) { err in
+        db.collection("rooms").document(roomId).updateData(latestMessageData) { err in
             if let err = err {
                 print("Error adding document: \(err)")
             } else {
@@ -218,7 +220,7 @@ class MessageRoomViewController: UIViewController {
                 ] as [String : Any]
                 
                 // Firestoreにメッセージを送信
-                Firestore.firestore().collection("rooms").document(self.roomId).collection("messages").document(messageId)
+                self.db.collection("rooms").document(self.roomId).collection("messages").document(messageId)
                     .setData(sendData, merge: true){ err in
                         if let err = err {
                             print("Error adding document: \(err)")
@@ -232,7 +234,7 @@ class MessageRoomViewController: UIViewController {
                 ]
                 
                 // FirestoreのlatestMessageを更新
-                Firestore.firestore().collection("rooms").document(self.roomId).updateData(latestMessageData) { err in
+                self.db.collection("rooms").document(self.roomId).updateData(latestMessageData) { err in
                     if let err = err {
                         print("Error adding document: \(err)")
                     }

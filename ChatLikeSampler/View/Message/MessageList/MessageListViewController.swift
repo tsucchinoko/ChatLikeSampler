@@ -13,12 +13,14 @@ class MessageListViewController: UIViewController {
     private let cellId = "cellId"
     private var rooms = [Room]()
     private var users = [User]()
+    var db: Firestore!
     
     @IBOutlet weak var messageListTableView: UITableView!
 
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        db = Firestore.firestore()
         setupViews()
         fetchMessageRoomInfoFromFirestore()
     }
@@ -41,7 +43,7 @@ class MessageListViewController: UIViewController {
     // メッセージ一覧画面の情報を取得
     private func fetchMessageRoomInfoFromFirestore() {
         // ルーム情報の取得
-        Firestore.firestore().collection("rooms").addSnapshotListener { (snapshots, err) in
+        db.collection("rooms").addSnapshotListener { (snapshots, err) in
             if let err = err {
                 print("ルーム情報の取得失敗: \(err)")
                 return
@@ -77,17 +79,18 @@ class MessageListViewController: UIViewController {
         room.members.forEach{ (memberUid) in
             if memberUid != uid {
                 // ユーザー情報取得
-                Firestore.firestore().collection("users").document(memberUid).getDocument{ (userDocuments, err) in
+                db.collection("users").document(memberUid).getDocument{ (userDocument, err) in
                     if let err = err {
                         print("ユーザー情報取得失敗: \(err)")
                         return
                     }
                     
-                    guard let data = userDocuments?.data() else { return }
-                    let user = User(data: data)
+                    guard let userDocument = userDocument else { return }
+                    let user = User(document: userDocument as! QueryDocumentSnapshot)
                     user.uid = memberUid
                     self.users.append(user)
                     room.partnerUser = user
+                    
                     
                     guard let roomId = room.roomId else { return }
                     let latestMessageId = room.latestMessageId
@@ -106,7 +109,7 @@ class MessageListViewController: UIViewController {
                     }
                     
                     // 最新メッセージの取得
-                    Firestore.firestore().collection("rooms").document(roomId).collection("messages").document(latestMessageId).getDocument{ (latestMessageDocument, err) in
+                    self.db.collection("rooms").document(roomId).collection("messages").document(latestMessageId).getDocument{ (latestMessageDocument, err) in
                         if let err = err {
                             print("最新メッセージの取得失敗: \(err)")
                             return
@@ -119,7 +122,7 @@ class MessageListViewController: UIViewController {
                     }
                     
                     // 未読数の取得
-                    Firestore.firestore().collection("rooms").document(roomId).collection("messages").whereField("read", isEqualTo: false).getDocuments { (unreadDocuments, err) in
+                    self.db.collection("rooms").document(roomId).collection("messages").whereField("read", isEqualTo: false).getDocuments { (unreadDocuments, err) in
                         if let err = err {
                             print("未読数の取得失敗: \(err)")
                             return
@@ -166,7 +169,7 @@ class MessageListViewController: UIViewController {
         }
         
         // 最新メッセージの取得
-        Firestore.firestore().collection("rooms").document(changeRoom.roomId!).collection("messages").document(changeRoom.latestMessageId).getDocument{ (messageSnapshot, err) in
+        db.collection("rooms").document(changeRoom.roomId!).collection("messages").document(changeRoom.latestMessageId).getDocument{ (messageSnapshot, err) in
             if let err = err {
                 print("最新メッセージの取得失敗: \(err)")
                 return
@@ -187,7 +190,7 @@ class MessageListViewController: UIViewController {
                     }
                     
                     // 未読数の取得
-                    Firestore.firestore().collection("rooms").document(changeRoom.roomId!).collection("messages").whereField("read", isEqualTo: false).getDocuments { (querySnapshot, err) in
+                    self.db.collection("rooms").document(changeRoom.roomId!).collection("messages").whereField("read", isEqualTo: false).getDocuments { (querySnapshot, err) in
                         if let err = err {
                             print("未読数の取得失敗: \(err)")
                             return

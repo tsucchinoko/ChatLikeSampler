@@ -16,6 +16,8 @@ class Message {
     let created_at: Timestamp
     let updated_at: Timestamp
     
+    var documentId: String?
+    
     init(data: [String: Any]) {
         self.author = data["author"] as? String ?? ""
         self.image = data["image"] as? String ?? ""

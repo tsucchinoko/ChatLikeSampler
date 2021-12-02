@@ -40,7 +40,7 @@ class CommentDetailCell: UITableViewCell {
         didSet {
             guard let comment = comment else { return }
             userNameLabel.text = comment.username
-            dateLabel.text = dateFormatterForDateLabel(date: comment.created_at.dateValue())
+            dateLabel.text = dateFormatterForDateLabel(date: comment.created_at?.dateValue() ?? Date())
             messageTextView.text = comment.text
             
 //            TODO: commentsのフィールドにプロパティ追加?; comments, retweets, likes
