@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Post Modal View Controller-->
+        <scene sceneID="s0d-6b-0kx">
+            <objects>
+                <viewController storyboardIdentifier="PostModalViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Y6W-OH-hqX" customClass="PostModalViewController" customModule="ChatLikeSampler" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="5EZ-qb-Rvc">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person.circle.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="Mzc-nb-Q98">
+                                <rect key="frame" x="10" y="144.5" width="50" height="49"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="Mzc-nb-Q98" secondAttribute="height" multiplier="1:1" id="k3r-A7-dun"/>
+                                    <constraint firstAttribute="width" constant="50" id="pwi-xJ-9cc"/>
+                                </constraints>
+                            </imageView>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="08o-5N-w8o">
+                                <rect key="frame" x="82" y="144" width="250" height="128"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="250" id="NL1-P8-mWD"/>
+                                    <constraint firstAttribute="height" constant="128" id="ZDv-Be-5Ri"/>
+                                </constraints>
+                                <color key="textColor" systemColor="labelColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="q9i-cX-eyS">
+                                <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <color key="barTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <items>
+                                    <navigationItem title="投稿" id="glM-u6-nLr">
+                                        <barButtonItem key="leftBarButtonItem" image="chevron.backward" catalog="system" id="ntP-Ka-Dnq">
+                                            <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <connections>
+                                                <action selector="didTappedBackButton:" destination="Y6W-OH-hqX" id="e3u-i5-2Td"/>
+                                            </connections>
+                                        </barButtonItem>
+                                        <barButtonItem key="rightBarButtonItem" image="paperplane.fill" catalog="system" id="Zad-RJ-IDh">
+                                            <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <connections>
+                                                <action selector="didTappedPostButton:" destination="Y6W-OH-hqX" id="b70-xe-vSQ"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ijv-ma-rqm">
+                                <rect key="frame" x="82" y="302" width="250" height="129"/>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="Ijv-ma-rqm" firstAttribute="top" secondItem="08o-5N-w8o" secondAttribute="bottom" constant="30" id="I5d-Ga-wzv"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="Ijv-ma-rqm" secondAttribute="bottom" constant="431" id="JEr-5R-mHl"/>
+                            <constraint firstItem="Ijv-ma-rqm" firstAttribute="centerX" secondItem="5EZ-qb-Rvc" secondAttribute="centerX" id="N1O-ge-Uff"/>
+                            <constraint firstItem="Mzc-nb-Q98" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="10" id="Pyu-eS-ZCE"/>
+                            <constraint firstItem="08o-5N-w8o" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="100" id="lxI-zV-jpV"/>
+                            <constraint firstItem="Mzc-nb-Q98" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="100" id="rBd-Zh-wLN"/>
+                            <constraint firstItem="08o-5N-w8o" firstAttribute="centerX" secondItem="5EZ-qb-Rvc" secondAttribute="centerX" id="xgl-Ja-ELk"/>
+                            <constraint firstItem="Ijv-ma-rqm" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="82" id="xqO-sc-W4Y"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="postImageView" destination="Ijv-ma-rqm" id="97N-Nw-hG7"/>
+                        <outlet property="postTextView" destination="08o-5N-w8o" id="8QR-7X-vKy"/>
+                        <outlet property="userImageView" destination="Mzc-nb-Q98" id="nZB-Q1-aUj"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="63.768115942028992" y="76.339285714285708"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="chevron.backward" catalog="system" width="96" height="128"/>
+        <image name="paperplane.fill" catalog="system" width="128" height="118"/>
+        <image name="person.circle.fill" catalog="system" width="128" height="121"/>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

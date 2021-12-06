@@ -13,11 +13,11 @@
             <objects>
                 <viewController storyboardIdentifier="TimelineViewContoroller" id="Y6W-OH-hqX" customClass="TimelineViewController" customModule="ChatLikeSampler" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="5EZ-qb-Rvc">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="862"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="snQ-81-ZGW">
-                                <rect key="frame" x="0.0" y="88" width="414" height="774"/>
+                                <rect key="frame" x="0.0" y="44" width="414" height="818"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                         </subviews>
@@ -37,7 +37,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1042.0289855072465" y="114.50892857142857"/>
+            <point key="canvasLocation" x="1472" y="106"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="0BQ-yS-0a2">
@@ -50,15 +50,64 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="Y6W-OH-hqX" kind="relationship" relationship="rootViewController" id="Pzs-ia-IrL"/>
+                        <segue destination="zSf-Dy-HjZ" kind="relationship" relationship="rootViewController" id="9rk-rv-mFb"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="32X-0J-7C9" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="131.8840579710145" y="114.50892857142857"/>
+            <point key="canvasLocation" x="-358" y="95"/>
+        </scene>
+        <!--Post Timeline View Controller-->
+        <scene sceneID="Dg0-Q8-wN5">
+            <objects>
+                <viewController id="zSf-Dy-HjZ" customClass="PostTimelineViewController" customModule="ChatLikeSampler" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="bCg-Rj-KPr">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OTg-X0-rKn">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="862"/>
+                                <connections>
+                                    <segue destination="Y6W-OH-hqX" kind="embed" id="iK0-6M-WRk"/>
+                                </connections>
+                            </containerView>
+                            <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7fB-tk-ezy">
+                                <rect key="frame" x="334" y="762" width="60" height="60"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="60" id="uQX-eP-by1"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" image="paperplane.fill" catalog="system" title=""/>
+                                <connections>
+                                    <action selector="didTappedPostViewButton:" destination="zSf-Dy-HjZ" eventType="touchUpInside" id="ba9-oF-98I"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="9l3-Dp-3pB"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="OTg-X0-rKn" firstAttribute="top" secondItem="bCg-Rj-KPr" secondAttribute="topMargin" constant="-88" id="ENd-dd-VAk"/>
+                            <constraint firstItem="OTg-X0-rKn" firstAttribute="leading" secondItem="9l3-Dp-3pB" secondAttribute="leading" id="FsR-yF-fyi"/>
+                            <constraint firstItem="9l3-Dp-3pB" firstAttribute="bottom" secondItem="7fB-tk-ezy" secondAttribute="bottom" constant="40" id="NdP-Ed-JPX"/>
+                            <constraint firstItem="7fB-tk-ezy" firstAttribute="width" secondItem="7fB-tk-ezy" secondAttribute="height" multiplier="1:1" id="Va5-dl-S9A"/>
+                            <constraint firstItem="OTg-X0-rKn" firstAttribute="leading" secondItem="9l3-Dp-3pB" secondAttribute="leading" id="XWZ-7n-u6s"/>
+                            <constraint firstItem="OTg-X0-rKn" firstAttribute="bottom" secondItem="9l3-Dp-3pB" secondAttribute="bottom" id="Xaf-JK-CLr"/>
+                            <constraint firstItem="9l3-Dp-3pB" firstAttribute="trailing" secondItem="7fB-tk-ezy" secondAttribute="trailing" constant="20" id="g0l-j4-mPD"/>
+                            <constraint firstItem="OTg-X0-rKn" firstAttribute="trailing" secondItem="9l3-Dp-3pB" secondAttribute="trailing" id="sL2-8E-AwY"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="oA9-LA-8C6"/>
+                    <connections>
+                        <outlet property="postViewButton" destination="7fB-tk-ezy" id="PhF-R2-MWG"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="rxy-cq-dax" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="327.536231884058" y="107.8125"/>
         </scene>
     </scenes>
     <resources>
+        <image name="paperplane.fill" catalog="system" width="128" height="118"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

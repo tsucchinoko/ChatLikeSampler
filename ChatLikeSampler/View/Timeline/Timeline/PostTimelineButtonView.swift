@@ -7,27 +7,26 @@
 
 import UIKit
 
-class PostTimelineButtonView: UIView {
-    // コードから生成したカスタムビューの初期化
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        nibInit()
-        autoresizingMask = .flexibleHeight
+class PostTimelineViewController: UIViewController {
+    
+    @IBOutlet weak var postViewButton: UIButton!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupViews()
     }
     
-    // ストーリーボードから生成時
-    required init?(coder: NSCoder) {
-        fatalError("init(corder:) has not been implemented")
+    private func setupViews(){
+        let width = postViewButton.frame.width
+        postViewButton.layer.cornerRadius = width / 2
     }
     
-    // カスタムビューの初期化
-    private func nibInit() {
-        let nib = UINib(nibName: "MessageInputAccessoryView", bundle: nil)
-        guard let view = nib.instantiate(withOwner: self, options: nil).first as? UIView else { return }
-        view.frame = self.bounds
-        view.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-        self.addSubview(view)
+    @IBAction func didTappedPostViewButton(_ sender: Any) {
+        let storyboard: UIStoryboard = UIStoryboard.init(name: "PostModalViewController", bundle: nil)
+        let postView = storyboard.instantiateViewController(withIdentifier: "PostModalViewController") as! PostModalViewController
+        postView.modalPresentationStyle = .fullScreen
+        self.present(postView, animated: true, completion: nil)
     }
+    
 
 }
