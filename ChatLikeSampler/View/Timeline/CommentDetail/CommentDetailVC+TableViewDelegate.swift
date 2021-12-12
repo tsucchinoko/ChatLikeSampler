@@ -12,7 +12,10 @@ import Firebase
 extension CommentDetailViewController: UITableViewDelegate,UITableViewDataSource {
     // セルの高さ
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 330
+        // 高さ(min)を設定
+        commentDetailTableView.estimatedRowHeight = 20
+        // テキストビューの高さによってセルの高さを自動で変化させる
+        return UITableView.automaticDimension
     }
     
     // セルの数

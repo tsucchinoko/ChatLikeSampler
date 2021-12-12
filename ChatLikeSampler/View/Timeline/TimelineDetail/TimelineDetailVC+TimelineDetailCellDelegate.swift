@@ -37,6 +37,44 @@ extension TimelineDetailViewController: TimelineCellDelegate {
         count += 1
         cell.likeNumberLabel.text = String(count)
         // TODO 自分のいいねしたリストに追加
+        
+        // TODO ローカルDBから自分のユーザ情報とってきたい
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        guard let email = Auth.auth().currentUser?.email else { return }
+        db.collection("users").whereField("email", isEqualTo: email).getDocuments { userSnapshots, err in
+            if let err = err {
+                print("ユーザ情報の取得に失敗しました: \(err)")
+                return
+            }
+            
+            guard let snapshots = userSnapshots?.documents else { return }
+            for snapshot in snapshots {
+                if snapshot.documentID == uid {
+                    let userInfo = User(document: snapshot)
+                    let likeTime = Timestamp()
+                    let likeData = [
+                        "profile_icon": userInfo.profile_icon!,
+                        "email": userInfo.email!,
+                        "username": userInfo.username!,
+                        "about": userInfo.about!,
+                        "created_at": likeTime,
+                        "updated_at": likeTime
+                    ] as [String: Any]
+                    
+                    guard let documentId = self.tweet?.documentId else { return }
+                    self.db.collection("tweets").document(documentId).collection("likes").addDocument(data: likeData) { err in
+                        if let err = err {
+                            print("いいね情報の追加に失敗しました: \(err)")
+                            return
+                        }
+                        // TODO: いいねした一覧に追加
+                        print("#いいねしました！")
+                    }
+                    
+                }
+            }
+            
+        }
     }
 
     func didTappedFlagButton(cell: TimelineCell) {

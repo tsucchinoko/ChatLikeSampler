@@ -26,6 +26,10 @@ class TimelineViewController: UIViewController {
         db = Firestore.firestore()
         setupViews()
         fetchTimelineInfoFromFirestore()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         refreshTableView()
     }
     
@@ -136,6 +140,7 @@ class TimelineViewController: UIViewController {
         // 応急処置のため非同期処理用に修正
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             self.timelineTableView.reloadData()
+            print("isMainThread??: \(Thread.current.isMainThread)")
             self.timelineTableView.refreshControl?.endRefreshing()
         }
     }

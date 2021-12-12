@@ -12,7 +12,10 @@ import Firebase
 extension TimelineViewController: UITableViewDelegate, UITableViewDataSource {
     // セルの高さ
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 330
+        // 高さ(min)を設定
+        timelineTableView.estimatedRowHeight = 20
+        // テキストビューの高さによってセルの高さを自動で変化させる
+        return UITableView.automaticDimension
     }
     
     // セルの数
@@ -26,7 +29,6 @@ extension TimelineViewController: UITableViewDelegate, UITableViewDataSource {
         cell.delegate = self
         cell.tweet = tweets[indexPath.row]
         print("### cell.tweet = tweets[indexPath.row] ###")
-        print(cell.tweet?.likes?.count)
         print("#tweets[indexPath.row].likes: \(tweets[indexPath.row].likes!)")
         // tagを追加し、どのセルのボタンか判別
         cell.tag = indexPath.row
