@@ -8,7 +8,7 @@
 import UIKit
 import Firebase
 
-class PostModalViewController: UIViewController {
+class PostModalViewController: UIViewController, UINavigationControllerDelegate{
     
     
     @IBOutlet weak var userImageView: UIImageView!
@@ -25,6 +25,7 @@ class PostModalViewController: UIViewController {
         super.viewDidLoad()
         db = Firestore.firestore()
         setupViews()
+        setupNotifications()
     }
     
     private func setupViews(){
@@ -36,9 +37,61 @@ class PostModalViewController: UIViewController {
         postButton.isEnabled = false
     }
     
+    private func setupNotifications(){
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        self.view.addGestureRecognizer(tapGesture)
+    }
+    
     @IBAction func didTappedBackButton(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
     }
+    
+    // 画像送信時
+    private func uploadImageToFireStorage(image: UIImage) {
+        //        guard let image = image else { return }
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        guard let uploadImage = image.jpegData(compressionQuality: 0.3) else { return }
+        
+        let fileName = NSUUID().uuidString
+        let storageRef = Storage.storage().reference().child(uid).child("tweet").child(fileName)
+        
+        storageRef.putData(uploadImage, metadata: nil) { (metadata, err) in
+            if let err = err {
+                print("FireStorageへの保存失敗: \(err)")
+                return
+            }
+            
+            storageRef.downloadURL(completion: {(url, err) in
+                if let err = err {
+                    print("FireStorageからのダウンロード失敗: \(err)")
+                    return
+                }
+                
+                guard let urlString = url?.absoluteString else { return }
+                
+                // UID取得
+                guard let uid = Auth.auth().currentUser?.uid else { return }
+                
+            })
+            
+        }
+    }
+    
+    
+    // ランダムな文字列を生成
+    func randomString(length: Int) -> String {
+        let letters : NSString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        let len = UInt32(letters.length)
+        
+        var randomString = ""
+        for _ in 0 ..< length {
+            let rand = arc4random_uniform(len)
+            var nextChar = letters.character(at: Int(rand))
+            randomString += NSString(characters: &nextChar, length: 1) as String
+        }
+        return randomString
+    }
+    
     
     @IBAction func didTappedPostButton(_ sender: Any) {
         guard let uid = Auth.auth().currentUser?.uid else { return }
@@ -75,6 +128,14 @@ class PostModalViewController: UIViewController {
         }
         self.dismiss(animated: true, completion: nil)
     }
+    
+    @IBAction func didTappedImageView(_ sender: Any) {
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.delegate = self
+        imagePickerController.allowsEditing = true
+        
+        self.present(imagePickerController, animated: true, completion: nil)
+    }
 }
 
 extension PostModalViewController: UITextViewDelegate {
@@ -85,4 +146,29 @@ extension PostModalViewController: UITextViewDelegate {
             postButton.isEnabled = true
         }
     }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        self.postTextView.resignFirstResponder()
+    }
+    
+    // キーボードを閉じる
+    @objc func dismissKeyboard() {
+        self.postTextView.resignFirstResponder()
+    }
 }
+
+
+extension PostModalViewController: UIImagePickerControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let editImage = info[.editedImage] as? UIImage {
+            uploadImageToFireStorage(image: editImage)
+        } else if let originalImage = info[.originalImage] as? UIImage {
+            uploadImageToFireStorage(image: originalImage)
+        }
+        
+        dismiss(animated: true, completion: nil)
+    }
+}
+//
+//extension MessageRoomViewController: UINavigationControllerDelegate {
+//}

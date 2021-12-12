@@ -58,12 +58,24 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QIQ-3b-Bhj">
+                                <rect key="frame" x="0.0" y="279" width="74" height="58"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="QIQ-3b-Bhj" secondAttribute="height" multiplier="37:29" id="hyt-gq-hRU"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" image="photo.fill" catalog="system"/>
+                                <connections>
+                                    <action selector="didTappedImageView:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="K2e-Mw-aeb"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="Mzc-nb-Q98" firstAttribute="top" secondItem="q9i-cX-eyS" secondAttribute="bottom" constant="30" id="0R4-qD-ch7"/>
                             <constraint firstItem="q9i-cX-eyS" firstAttribute="centerX" secondItem="Ijv-ma-rqm" secondAttribute="centerX" id="Em2-BL-udp"/>
+                            <constraint firstItem="Ijv-ma-rqm" firstAttribute="leading" secondItem="QIQ-3b-Bhj" secondAttribute="trailing" constant="8" symbolic="YES" id="EyG-j3-pkI"/>
                             <constraint firstItem="08o-5N-w8o" firstAttribute="leading" secondItem="Mzc-nb-Q98" secondAttribute="trailing" constant="22" id="MDY-sZ-bI5"/>
                             <constraint firstItem="Ijv-ma-rqm" firstAttribute="centerX" secondItem="5EZ-qb-Rvc" secondAttribute="centerX" id="N1O-ge-Uff"/>
                             <constraint firstItem="q9i-cX-eyS" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="3" id="PjY-S2-rvz"/>
@@ -73,6 +85,8 @@
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="08o-5N-w8o" secondAttribute="trailing" constant="20" id="iii-du-SoV"/>
                             <constraint firstItem="q9i-cX-eyS" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="jnp-cf-YiD"/>
                             <constraint firstItem="Ijv-ma-rqm" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="82" id="xqO-sc-W4Y"/>
+                            <constraint firstItem="QIQ-3b-Bhj" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="yj5-s2-2lJ"/>
+                            <constraint firstItem="QIQ-3b-Bhj" firstAttribute="top" secondItem="Ijv-ma-rqm" secondAttribute="top" id="zsK-0f-UFZ"/>
                         </constraints>
                     </view>
                     <connections>
@@ -91,6 +105,7 @@
         <image name="chevron.backward" catalog="system" width="96" height="128"/>
         <image name="paperplane.fill" catalog="system" width="128" height="118"/>
         <image name="person.circle.fill" catalog="system" width="128" height="121"/>
+        <image name="photo.fill" catalog="system" width="128" height="93"/>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
