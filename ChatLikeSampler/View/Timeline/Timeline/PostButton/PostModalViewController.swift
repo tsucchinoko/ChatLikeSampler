@@ -17,6 +17,8 @@ class PostModalViewController: UIViewController {
     
     @IBOutlet weak var postImageView: UIImageView!
     
+    @IBOutlet weak var postButton: UIBarButtonItem!
+    
     var db: Firestore!
     
     override func viewDidLoad() {
@@ -30,6 +32,8 @@ class PostModalViewController: UIViewController {
         postTextView.text = ""
         postTextView.layer.borderColor = UIColor.systemGray6.cgColor
         postTextView.layer.borderWidth = 1
+        
+        postButton.isEnabled = false
     }
     
     @IBAction func didTappedBackButton(_ sender: Any) {
@@ -75,6 +79,10 @@ class PostModalViewController: UIViewController {
 
 extension PostModalViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
-        
+        if postTextView.text.isEmpty {
+            postButton.isEnabled = false
+        } else {
+            postButton.isEnabled = true
+        }
     }
 }
