@@ -7,6 +7,7 @@
 
 import UIKit
 import Firebase
+import Dispatch
 
 class TimelineViewController: UIViewController {
     let cellId = "timelineCell"
@@ -16,12 +17,16 @@ class TimelineViewController: UIViewController {
     
     @IBOutlet weak var timelineTableView: UITableView!
     
+    // メインキューを取得
+    let mainQueue = DispatchQueue.main
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(#function)
+        
         db = Firestore.firestore()
         setupViews()
         fetchTimelineInfoFromFirestore()
+        refreshTableView()
     }
     
     private func setupViews() {
@@ -48,6 +53,8 @@ class TimelineViewController: UIViewController {
     
     // タイムライン情報の取得
     private func fetchTimelineInfoFromFirestore(){
+//        let semaphore  = DispatchSemaphore(value: 1)
+        
         // Tweetを取得
         db.collection("tweets").getDocuments { tweetsSnapshots, err in
             if let err = err {
@@ -64,24 +71,29 @@ class TimelineViewController: UIViewController {
                 tweet.likes = self.fetchLikeInfoFromFireStore(tweet: tweet)
                 return tweet
             }
-            self.timelineTableView.reloadData()
         }
+        
+        
     }
     
     private func fetchCommentInfoFromFirestore(tweet: Tweet) -> [Comment]? {
+        
+//        let semaphore  = DispatchSemaphore(value: 1)
         // コメント情報取得
-        self.db.collection("tweets").document(tweet.documentId!).collection("comments").getDocuments { commentSnapshots, err in
-            if let err = err {
-                print("コメント情報の取得失敗: \(err)")
-                return
+            self.db.collection("tweets").document(tweet.documentId!).collection("comments").getDocuments { commentSnapshots, err in
+                if let err = err {
+                    print("コメント情報の取得失敗: \(err)")
+                    return
+                }
+                
+                guard let commentSnapshots = commentSnapshots?.documents else { return }
+                tweet.comments = commentSnapshots.map { document in
+                    let comment = Comment(document: document)
+                    return comment
+                }
+//                semaphore.signal()
             }
-            
-            guard let commentSnapshots = commentSnapshots?.documents else { return }
-            tweet.comments = commentSnapshots.map { document in
-                let comment = Comment(document: document)
-                return comment
-            }
-        }
+//        semaphore.wait()
         return tweet.comments
     }
     
@@ -121,8 +133,9 @@ class TimelineViewController: UIViewController {
     
     // tableViewを下に引っ張ったときにインジケーターを表示
     @objc func refreshTableView() {
-        // TODO 値が取得できるまで待機
+        // 応急処置のため非同期処理用に修正
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            self.timelineTableView.reloadData()
             self.timelineTableView.refreshControl?.endRefreshing()
         }
     }

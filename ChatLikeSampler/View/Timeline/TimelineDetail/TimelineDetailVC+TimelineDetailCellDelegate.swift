@@ -12,12 +12,10 @@ import Firebase
 // MARK: - TimelineCellDelegate
 extension TimelineDetailViewController: TimelineCellDelegate {
     func didTappedCommentButton(cell: TimelineCell) {
-        print(#function)
         // TODO 選択されたセルのタイムライン詳細画面に画面遷移
     }
 
     func didTappedRetweetButton(cell: TimelineCell) {
-        print(#function)
         let backImage = UIImage(systemName: "repeat")?.withRenderingMode(.alwaysTemplate)
         cell.retweetButton.setImage(backImage, for: .normal)
         cell.retweetButton.tintColor = .green
@@ -30,7 +28,6 @@ extension TimelineDetailViewController: TimelineCellDelegate {
     }
 
     func didTappedLikeButton(cell: TimelineCell) {
-        print(#function)
         let backImage = UIImage(systemName: "heart.fill")?.withRenderingMode(.alwaysTemplate)
         cell.likeButton.setImage(backImage, for: .normal)
         cell.likeButton.tintColor = .systemPink
@@ -43,7 +40,6 @@ extension TimelineDetailViewController: TimelineCellDelegate {
     }
 
     func didTappedFlagButton(cell: TimelineCell) {
-        print(#function)
         let backImage = UIImage(systemName: "flag.fill")?.withRenderingMode(.alwaysTemplate)
         cell.flagButton.setImage(backImage, for: .normal)
         cell.flagButton.tintColor = .red
@@ -55,12 +51,10 @@ extension TimelineDetailViewController: TimelineCellDelegate {
 
 extension TimelineDetailViewController: CommentDetailCellDelegate {
     func didTappedCommentButton(cell: CommentDetailCell) {
-        print(#function)
         // TODO 選択されたセルのタイムライン詳細画面に画面遷移
     }
     
     func didTappedRetweetButton(cell: CommentDetailCell) {
-        print(#function)
         let backImage = UIImage(systemName: "repeat")?.withRenderingMode(.alwaysTemplate)
         cell.retweetButton.setImage(backImage, for: .normal)
         cell.retweetButton.tintColor = .green
@@ -70,8 +64,6 @@ extension TimelineDetailViewController: CommentDetailCellDelegate {
     }
     
     func didTappedLikeButton(cell: CommentDetailCell) {
-        print(#function)
-        print("########")
         let backImage = UIImage(systemName: "heart.fill")?.withRenderingMode(.alwaysTemplate)
         cell.likeButton.setImage(backImage, for: .normal)
         cell.likeButton.tintColor = .systemPink
@@ -81,7 +73,6 @@ extension TimelineDetailViewController: CommentDetailCellDelegate {
     }
     
     func didTappedFlagButton(cell: CommentDetailCell) {
-        print(#function)
         let backImage = UIImage(systemName: "flag.fill")?.withRenderingMode(.alwaysTemplate)
         cell.flagButton.setImage(backImage, for: .normal)
         cell.flagButton.tintColor = .red
