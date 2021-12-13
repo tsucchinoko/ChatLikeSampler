@@ -31,33 +31,35 @@ class SearchUserViewController: UIViewController {
         super.viewDidLoad()
         db = Firestore.firestore()
         setupViews()
-        fetchUserInfoFromFirestore()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        refreshTableView()
     }
     
     private func setupViews(){
         userSearchBar.backgroundImage = UIImage()
+        userSearchBar.delegate = self
         userListTableView.tableFooterView = UIView()
         userListTableView.delegate = self
         userListTableView.dataSource = self
         
     }
     
-    private func fetchUserInfoFromFirestore(){
-        db.collection("users").getDocuments { userSnapshots, err in
+    private func fetchUserInfoFromFirestore(text: String){
+        db.collection("users").order(by: "username").start(at: [text]).end(at: [text + "\u{f8ff}"]).getDocuments { userSnapshots, err in
             if let err = err {
                 print("ユーザー情報の取得に失敗しました: \(err)")
                 return
             }
             
+            if text == "" { return }
+            self.users.removeAll()
             // Tweet情報を配列に格納
             guard let snapshots = userSnapshots?.documents else { return }
             self.users = snapshots.map { document in
                 let user = User(document: document)
+                print("##user!!: \(user)")
                 return user
             }
         }
@@ -72,10 +74,16 @@ class SearchUserViewController: UIViewController {
         // 応急処置のため非同期処理用に修正
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             self.userListTableView.reloadData()
-            print("isMainThread??: \(Thread.current.isMainThread)")
         }
     }
     
+}
+
+extension SearchUserViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        fetchUserInfoFromFirestore(text: searchText)
+        refreshTableView()
+    }
 }
 
 extension SearchUserViewController: UITableViewDelegate, UITableViewDataSource {
