@@ -123,6 +123,10 @@ class PostModalViewController: UIViewController, UINavigationControllerDelegate{
                         }
                         print("#ツイートしました！")
                     }
+                    
+                    if self.postImageView.image != nil {
+                        self.uploadImageToFireStorage(image: self.postImageView.image!)
+                    }
                 }
             }
         }
@@ -161,9 +165,9 @@ extension PostModalViewController: UITextViewDelegate {
 extension PostModalViewController: UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let editImage = info[.editedImage] as? UIImage {
-            uploadImageToFireStorage(image: editImage)
+            postImageView.image = editImage
         } else if let originalImage = info[.originalImage] as? UIImage {
-            uploadImageToFireStorage(image: originalImage)
+            postImageView.image = originalImage
         }
         
         dismiss(animated: true, completion: nil)
