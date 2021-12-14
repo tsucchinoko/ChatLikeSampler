@@ -114,8 +114,7 @@ class MessageRoomViewController: UIViewController {
     
     // ドキュメント追加時のハンドラー
     private func handleAddedDocumentChange(messagesDocumentChanges: DocumentChange) {
-        let data = messagesDocumentChanges.document.data()
-        let message = Message(data: data)
+        let message = Message(document: messagesDocumentChanges.document)
         self.roomMessages.append(message)
         // 日付順にソート
         self.roomMessages.sort{ (m1, m2) -> Bool in
@@ -130,8 +129,7 @@ class MessageRoomViewController: UIViewController {
         
         guard let uid = Auth.auth().currentUser?.uid else { return }
         let documentId = messagesDocumentChanges.document.documentID
-        let data = messagesDocumentChanges.document.data()
-        let message = Message(data: data)
+        let message = Message(document: messagesDocumentChanges.document)
         let author = message.author
         
         // 相手のメッセージの既読フラグをTrueに更新

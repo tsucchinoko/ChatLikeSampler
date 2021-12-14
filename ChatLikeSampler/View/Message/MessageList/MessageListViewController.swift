@@ -66,10 +66,12 @@ class MessageListViewController: UIViewController {
     
     // ドキュメント追加時のハンドラー
     private func handleAddedDocumentChange(roomsDocumentChanges: DocumentChange) {
-        let data = roomsDocumentChanges.document.data()
-        let room = Room(data: data)
-        room.roomId = roomsDocumentChanges.document.documentID
+//        let data = roomsDocumentChanges.document.data()
+//        let room = Room(data: data)
+//        room.roomId = roomsDocumentChanges.document.documentID
         
+        let room = Room(document: roomsDocumentChanges.document)
+
         guard let uid = Auth.auth().currentUser?.uid else { return }
         // 自分の参加しているルームのみ表示
         let isContain = room.members.contains(uid)
@@ -86,7 +88,7 @@ class MessageListViewController: UIViewController {
                     }
                     
                     guard let userDocument = userDocument else { return }
-                    let user = User(document: userDocument as! QueryDocumentSnapshot)
+                    let user = User(document: userDocument)
                     user.uid = memberUid
                     self.users.append(user)
                     room.partnerUser = user
@@ -114,8 +116,8 @@ class MessageListViewController: UIViewController {
                             print("最新メッセージの取得失敗: \(err)")
                             return
                         }
-                        guard let data = latestMessageDocument?.data() else { return }
-                        let message = Message(data: data)
+                        guard let document = latestMessageDocument else { return }
+                        let message = Message(document: document)
                         room.latestMessage = message
                         
                         self.messageListTableView.reloadData()
@@ -129,8 +131,7 @@ class MessageListViewController: UIViewController {
                         }
                         
                         for document in unreadDocuments!.documents {
-                            let data = document.data()
-                            let message = Message(data: data)
+                            let message = Message(document: document)
                             let author = message.author
                             if author != uid {
                                 room.unreadCount += 1
@@ -154,9 +155,7 @@ class MessageListViewController: UIViewController {
     
     // ドキュメント更新時のハンドラ
     private func handleUpdatedDocumentChange(roomsDocumentChanges: DocumentChange) {
-        let data = roomsDocumentChanges.document.data()
-        let changeRoom = Room(data: data)
-        changeRoom.roomId = roomsDocumentChanges.document.documentID
+        let changeRoom = Room(document: roomsDocumentChanges.document)
         
         var roomIndex = 0
         
@@ -174,8 +173,8 @@ class MessageListViewController: UIViewController {
                 print("最新メッセージの取得失敗: \(err)")
                 return
             }
-            guard let data = messageSnapshot?.data() else { return }
-            let message = Message(data: data)
+            guard let document = messageSnapshot else { return }
+            let message = Message(document: document as! QueryDocumentSnapshot)
             changeRoom.latestMessage = message
             
             guard let uid = Auth.auth().currentUser?.uid else { return }
@@ -197,8 +196,7 @@ class MessageListViewController: UIViewController {
                         }
                         
                         for document in querySnapshot!.documents {
-                            let data = document.data()
-                            let message = Message(data: data)
+                            let message = Message(document: document)
                             let author = message.author
                             if author != uid {
                                 changeRoom.unreadCount += 1

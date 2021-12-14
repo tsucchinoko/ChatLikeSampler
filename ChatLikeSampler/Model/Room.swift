@@ -26,7 +26,9 @@ class Room: Equatable {
     let latestMessageId: String
     var unreadCount  =  0
         
-    init(data: [String: Any]) {
+    init(document: QueryDocumentSnapshot) {
+        self.roomId = document.documentID
+        let data = document.data()
         self.name = data["name"] as? String ?? ""
         self.members = data["members"] as? [String] ?? [String]()
         self.messages = data["messages"] as? Message
