@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -43,12 +43,6 @@
                                     </navigationItem>
                                 </items>
                             </navigationBar>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ijv-ma-rqm">
-                                <rect key="frame" x="82" y="279" width="250" height="129"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="129" id="s6T-Iy-wkz"/>
-                                </constraints>
-                            </imageView>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="08o-5N-w8o">
                                 <rect key="frame" x="82" y="121" width="312" height="128"/>
                                 <constraints>
@@ -59,7 +53,7 @@
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QIQ-3b-Bhj">
-                                <rect key="frame" x="0.0" y="279" width="74" height="58"/>
+                                <rect key="frame" x="0.0" y="279" width="50" height="39"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="QIQ-3b-Bhj" secondAttribute="height" multiplier="37:29" id="hyt-gq-hRU"/>
                                 </constraints>
@@ -69,27 +63,48 @@
                                     <action selector="didTappedImageView:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="K2e-Mw-aeb"/>
                                 </connections>
                             </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GH9-JO-dIT">
+                                <rect key="frame" x="100" y="279" width="31" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="31" id="C49-jq-ekH"/>
+                                    <constraint firstAttribute="width" secondItem="GH9-JO-dIT" secondAttribute="height" multiplier="1:1" id="Ldh-f0-MKt"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" image="clear.fill" catalog="system"/>
+                                <connections>
+                                    <action selector="didTappedImageClearButton:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="Blk-9y-Bjd"/>
+                                </connections>
+                            </button>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ijv-ma-rqm">
+                                <rect key="frame" x="90" y="279" width="234" height="129"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="129" id="s6T-Iy-wkz"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="Mzc-nb-Q98" firstAttribute="top" secondItem="q9i-cX-eyS" secondAttribute="bottom" constant="30" id="0R4-qD-ch7"/>
-                            <constraint firstItem="q9i-cX-eyS" firstAttribute="centerX" secondItem="Ijv-ma-rqm" secondAttribute="centerX" id="Em2-BL-udp"/>
-                            <constraint firstItem="Ijv-ma-rqm" firstAttribute="leading" secondItem="QIQ-3b-Bhj" secondAttribute="trailing" constant="8" symbolic="YES" id="EyG-j3-pkI"/>
+                            <constraint firstItem="Ijv-ma-rqm" firstAttribute="leading" secondItem="QIQ-3b-Bhj" secondAttribute="trailing" constant="40" id="EyG-j3-pkI"/>
                             <constraint firstItem="08o-5N-w8o" firstAttribute="leading" secondItem="Mzc-nb-Q98" secondAttribute="trailing" constant="22" id="MDY-sZ-bI5"/>
                             <constraint firstItem="Ijv-ma-rqm" firstAttribute="centerX" secondItem="5EZ-qb-Rvc" secondAttribute="centerX" id="N1O-ge-Uff"/>
                             <constraint firstItem="q9i-cX-eyS" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="3" id="PjY-S2-rvz"/>
                             <constraint firstItem="Mzc-nb-Q98" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="10" id="Pyu-eS-ZCE"/>
+                            <constraint firstItem="q9i-cX-eyS" firstAttribute="trailing" secondItem="vDu-zF-Fre" secondAttribute="trailing" id="X2X-vD-zoc"/>
                             <constraint firstItem="08o-5N-w8o" firstAttribute="top" secondItem="Mzc-nb-Q98" secondAttribute="top" id="Zn0-tG-oeg"/>
+                            <constraint firstItem="GH9-JO-dIT" firstAttribute="leading" secondItem="Ijv-ma-rqm" secondAttribute="leading" constant="10" id="d1A-MB-YQk"/>
+                            <constraint firstItem="q9i-cX-eyS" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="dcS-uX-LYh"/>
                             <constraint firstItem="Ijv-ma-rqm" firstAttribute="top" secondItem="08o-5N-w8o" secondAttribute="bottom" constant="30" id="fyx-49-Bnj"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="08o-5N-w8o" secondAttribute="trailing" constant="20" id="iii-du-SoV"/>
                             <constraint firstItem="q9i-cX-eyS" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="jnp-cf-YiD"/>
-                            <constraint firstItem="Ijv-ma-rqm" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="82" id="xqO-sc-W4Y"/>
+                            <constraint firstItem="GH9-JO-dIT" firstAttribute="top" secondItem="Ijv-ma-rqm" secondAttribute="top" id="w9W-wB-n4j"/>
                             <constraint firstItem="QIQ-3b-Bhj" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="yj5-s2-2lJ"/>
                             <constraint firstItem="QIQ-3b-Bhj" firstAttribute="top" secondItem="Ijv-ma-rqm" secondAttribute="top" id="zsK-0f-UFZ"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="imageClearButton" destination="GH9-JO-dIT" id="wmt-33-Sya"/>
                         <outlet property="postButton" destination="Zad-RJ-IDh" id="JzG-a1-yRH"/>
                         <outlet property="postImageView" destination="Ijv-ma-rqm" id="97N-Nw-hG7"/>
                         <outlet property="postTextView" destination="08o-5N-w8o" id="8QR-7X-vKy"/>
@@ -103,6 +118,7 @@
     </scenes>
     <resources>
         <image name="chevron.backward" catalog="system" width="96" height="128"/>
+        <image name="clear.fill" catalog="system" width="128" height="114"/>
         <image name="paperplane.fill" catalog="system" width="128" height="118"/>
         <image name="person.circle.fill" catalog="system" width="128" height="121"/>
         <image name="photo.fill" catalog="system" width="128" height="93"/>

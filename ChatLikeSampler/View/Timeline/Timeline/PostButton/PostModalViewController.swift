@@ -19,6 +19,8 @@ class PostModalViewController: UIViewController, UINavigationControllerDelegate{
     
     @IBOutlet weak var postButton: UIBarButtonItem!
     
+    @IBOutlet weak var imageClearButton: UIButton!
+    
     var db: Firestore!
     
     override func viewDidLoad() {
@@ -140,6 +142,12 @@ class PostModalViewController: UIViewController, UINavigationControllerDelegate{
         
         self.present(imagePickerController, animated: true, completion: nil)
     }
+    
+    @IBAction func didTappedImageClearButton(_ sender: Any) {
+        postImageView.image = nil
+        imageClearButton.isHidden = true
+    }
+    
 }
 
 extension PostModalViewController: UITextViewDelegate {
@@ -166,8 +174,10 @@ extension PostModalViewController: UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let editImage = info[.editedImage] as? UIImage {
             postImageView.image = editImage
+            imageClearButton.isHidden = false
         } else if let originalImage = info[.originalImage] as? UIImage {
             postImageView.image = originalImage
+            imageClearButton.isHidden = false
         }
         
         dismiss(animated: true, completion: nil)
