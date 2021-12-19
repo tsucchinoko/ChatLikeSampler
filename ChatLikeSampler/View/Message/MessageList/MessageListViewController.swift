@@ -23,6 +23,7 @@ class MessageListViewController: UIViewController {
         db = Firestore.firestore()
         setupViews()
         fetchMessageRoomInfoFromFirestore()
+        refreshTableView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -61,7 +62,7 @@ class MessageListViewController: UIViewController {
                 }
             })
         }
-        self.messageListTableView.reloadData()
+//        self.messageListTableView.reloadData()
     }
     
     // ドキュメント追加時のハンドラー
@@ -106,7 +107,7 @@ class MessageListViewController: UIViewController {
                             let m2Date = m2.updated_at.dateValue()
                             return m1Date < m2Date
                         }
-                        self.messageListTableView.reloadData()
+//                        self.messageListTableView.reloadData()
                         return
                     }
                     
@@ -120,7 +121,7 @@ class MessageListViewController: UIViewController {
                         let message = Message(document: document)
                         room.latestMessage = message
                         
-                        self.messageListTableView.reloadData()
+//                        self.messageListTableView.reloadData()
                     }
                     
                     // 未読数の取得
@@ -145,7 +146,8 @@ class MessageListViewController: UIViewController {
                             let m2Date = m2.updated_at.dateValue()
                             return m1Date < m2Date
                         }
-                        self.messageListTableView.reloadData()
+//                        self.messageListTableView.reloadData()
+                        self.refreshTableView()
                     }
                 }
             }
@@ -203,11 +205,18 @@ class MessageListViewController: UIViewController {
                             }
                         }
                         self.rooms[roomIndex] = changeRoom
-                        self.messageListTableView.reloadData()
+//                        self.messageListTableView.reloadData()
                     }
                 }
             }
 
+        }
+    }
+    
+    func refreshTableView() {
+        // 応急処置のため非同期処理用に修正
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            self.messageListTableView.reloadData()
         }
     }
      

@@ -107,7 +107,8 @@ class MessageRoomViewController: UIViewController {
                     }
                 })
                 
-                self.messageRoomTableView.reloadData()
+//                self.messageRoomTableView.reloadData()
+                self.refreshTableView()
                 self.messageRoomTableView.scrollToRow(at: IndexPath(row: self.roomMessages.count - 1, section: 0), at: .bottom, animated: false)
             }
     }
@@ -136,7 +137,8 @@ class MessageRoomViewController: UIViewController {
         if author != uid {
             db.collection("rooms").document(self.roomId)
                 .collection("messages").document(documentId).updateData(["read": true])
-            self.messageRoomTableView.reloadData()
+//            self.messageRoomTableView.reloadData()
+            refreshTableView()
         }
         
     }
@@ -303,6 +305,13 @@ class MessageRoomViewController: UIViewController {
         }
         return randomString
     }
+    
+    func refreshTableView() {
+        // 応急処置のため非同期処理用に修正
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            self.messageRoomTableView.reloadData()
+        }
+    }
 }
 
 
@@ -322,7 +331,8 @@ extension MessageRoomViewController: MessageInputAccessoryViewDelegate {
         
         sendMessageToFirestore(text: text)
         messageInputAccessoryView.removeText()
-        messageRoomTableView.reloadData()
+//        messageRoomTableView.reloadData()
+        refreshTableView()
     }
 }
 
