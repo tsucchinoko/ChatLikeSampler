@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Y6W-OH-hqX">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Y6W-OH-hqX">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -23,7 +23,7 @@
                                 <textInputTraits key="textInputTraits"/>
                             </searchBar>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xtD-3F-p6V">
-                                <rect key="frame" x="350" y="52" width="45" height="31"/>
+                                <rect key="frame" x="350" y="52" width="46" height="31"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="gearshape" catalog="system">
                                     <color key="baseForegroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -32,8 +32,60 @@
                                     <action selector="didTappedPreferenceButton:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="Io2-yM-TBS"/>
                                 </connections>
                             </button>
+                            <pickerView contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="zeg-fE-iM8">
+                                <rect key="frame" x="20" y="155" width="100" height="80"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="80" id="3FX-rr-a7j"/>
+                                    <constraint firstAttribute="width" constant="100" id="RnX-69-Mlw"/>
+                                </constraints>
+                            </pickerView>
+                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gwz-mv-sfi">
+                                <rect key="frame" x="157" y="155" width="100" height="80"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="80" id="Fjy-o6-EAp"/>
+                                    <constraint firstAttribute="width" constant="100" id="cmg-zA-3R4"/>
+                                </constraints>
+                            </pickerView>
+                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="u7c-GL-Rs7">
+                                <rect key="frame" x="294" y="155" width="100" height="80"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="80" id="mGk-fN-J1t"/>
+                                    <constraint firstAttribute="width" constant="100" id="o3F-56-Jmi"/>
+                                </constraints>
+                            </pickerView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="希望業界" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ieh-Da-O7U">
+                                <rect key="frame" x="20" y="125" width="100" height="21"/>
+                                <color key="backgroundColor" systemColor="systemGray4Color"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="J26-Y6-ORY"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="希望職種" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vSX-01-Rxr">
+                                <rect key="frame" x="157" y="125" width="100" height="21"/>
+                                <color key="backgroundColor" systemColor="systemGray4Color"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="2mA-dM-7oj"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="希望地域" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="l1E-mU-Qm2">
+                                <rect key="frame" x="294" y="125" width="100" height="21"/>
+                                <color key="backgroundColor" systemColor="systemGray4Color"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="vHH-lZ-rfH"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="100" id="za2-c5-JZs"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="FUr-eP-WLf">
-                                <rect key="frame" x="0.0" y="195" width="414" height="701"/>
+                                <rect key="frame" x="0.0" y="245" width="414" height="651"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="userListCellId" rowHeight="120" id="Ljp-wo-pym" customClass="UserListTableViewCell" customModule="ChatLikeSampler" customModuleProvider="target">
@@ -51,13 +103,13 @@
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="テストユーザー" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f8c-Me-SjX">
-                                                    <rect key="frame" x="100" y="10" width="122" height="21"/>
+                                                    <rect key="frame" x="100" y="10" width="121.5" height="20.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="AWS11冠目指してます" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="ZhX-5u-QU9">
-                                                    <rect key="frame" x="100" y="41" width="304" height="80"/>
+                                                    <rect key="frame" x="100" y="40.5" width="304" height="80"/>
                                                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="80" id="I6w-nN-MOm"/>
@@ -89,18 +141,33 @@
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="zeg-fE-iM8" firstAttribute="top" secondItem="aMq-4X-xPa" secondAttribute="bottom" constant="60" id="30x-OD-ieK"/>
                             <constraint firstItem="aMq-4X-xPa" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="38S-fT-4rf"/>
                             <constraint firstAttribute="bottom" secondItem="FUr-eP-WLf" secondAttribute="bottom" id="3l9-wU-i1M"/>
+                            <constraint firstItem="gwz-mv-sfi" firstAttribute="top" secondItem="aMq-4X-xPa" secondAttribute="bottom" constant="60" id="5el-iQ-dKn"/>
+                            <constraint firstItem="gwz-mv-sfi" firstAttribute="centerX" secondItem="5EZ-qb-Rvc" secondAttribute="centerX" id="FIu-a2-ZXE"/>
+                            <constraint firstItem="vSX-01-Rxr" firstAttribute="centerX" secondItem="5EZ-qb-Rvc" secondAttribute="centerX" id="GUT-Gz-YkY"/>
                             <constraint firstItem="FUr-eP-WLf" firstAttribute="trailing" secondItem="vDu-zF-Fre" secondAttribute="trailing" id="H5V-at-g48"/>
-                            <constraint firstItem="FUr-eP-WLf" firstAttribute="top" secondItem="aMq-4X-xPa" secondAttribute="bottom" constant="100" id="Ye5-bk-09d"/>
+                            <constraint firstItem="Ieh-Da-O7U" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="20" id="LK8-dL-rXu"/>
+                            <constraint firstItem="zeg-fE-iM8" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="20" id="NLu-f1-WsB"/>
+                            <constraint firstItem="FUr-eP-WLf" firstAttribute="top" secondItem="aMq-4X-xPa" secondAttribute="bottom" constant="150" id="Ye5-bk-09d"/>
+                            <constraint firstItem="l1E-mU-Qm2" firstAttribute="top" secondItem="aMq-4X-xPa" secondAttribute="bottom" constant="30" id="b7R-Bf-o8I"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="l1E-mU-Qm2" secondAttribute="trailing" constant="20" id="bOi-sE-dJO"/>
                             <constraint firstItem="xtD-3F-p6V" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="8" id="cC1-he-ZWS"/>
+                            <constraint firstItem="u7c-GL-Rs7" firstAttribute="top" secondItem="aMq-4X-xPa" secondAttribute="bottom" constant="60" id="guK-Xk-bwd"/>
+                            <constraint firstItem="vSX-01-Rxr" firstAttribute="top" secondItem="aMq-4X-xPa" secondAttribute="bottom" constant="30" id="hou-EA-Qov"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="u7c-GL-Rs7" secondAttribute="trailing" constant="20" id="ipJ-hx-Oet"/>
                             <constraint firstItem="FUr-eP-WLf" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="ity-DC-POX"/>
                             <constraint firstItem="xtD-3F-p6V" firstAttribute="leading" secondItem="aMq-4X-xPa" secondAttribute="trailing" constant="20" id="nde-si-qqF"/>
+                            <constraint firstItem="Ieh-Da-O7U" firstAttribute="top" secondItem="aMq-4X-xPa" secondAttribute="bottom" constant="30" id="t1q-bt-BgK"/>
                             <constraint firstItem="aMq-4X-xPa" firstAttribute="centerX" secondItem="5EZ-qb-Rvc" secondAttribute="centerX" id="uiz-Ry-32s"/>
                             <constraint firstItem="aMq-4X-xPa" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="84" id="yyW-PZ-4CT"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="desiredAreaPicker" destination="u7c-GL-Rs7" id="a4g-ks-Bx8"/>
+                        <outlet property="desiredIndustryPicker" destination="zeg-fE-iM8" id="yTL-AK-vJI"/>
+                        <outlet property="desiredOccupationPicker" destination="gwz-mv-sfi" id="jtg-pu-jX4"/>
                         <outlet property="preferenceButton" destination="xtD-3F-p6V" id="pM4-Dt-3ce"/>
                         <outlet property="userListTableView" destination="FUr-eP-WLf" id="HbT-T8-5Nt"/>
                         <outlet property="userSearchBar" destination="aMq-4X-xPa" id="b7g-Is-hDk"/>
@@ -119,6 +186,9 @@
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGray4Color">
+            <color red="0.81960784313725488" green="0.81960784313725488" blue="0.83921568627450982" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
