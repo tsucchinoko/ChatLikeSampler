@@ -72,6 +72,7 @@ class MessageListViewController: UIViewController {
 //        room.roomId = roomsDocumentChanges.document.documentID
         
         let room = Room(document: roomsDocumentChanges.document)
+        print("###room: \(room)")
 
         guard let uid = Auth.auth().currentUser?.uid else { return }
         // 自分の参加しているルームのみ表示
@@ -233,6 +234,7 @@ extension MessageListViewController: UITableViewDelegate, UITableViewDataSource 
     
     // セルの数
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        print("### rooms.count : \(rooms.count)")
         return rooms.count
     }
     

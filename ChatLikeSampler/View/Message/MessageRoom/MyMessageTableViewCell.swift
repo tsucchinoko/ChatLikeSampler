@@ -32,12 +32,12 @@ class MyMessageTableViewCell: UITableViewCell {
                 self.readLabel.isHidden = true
             }
             
-            if message.text == nil {
-                if let url = URL(string: message.image ?? "") {
-//                    クラッシュするためコメントアウト、、
-//                    Nuke.loadImage(with: url, into: sendImageView)
-                }
-                    
+            if message.text == "" {
+                let url = message.image
+                let image = UIImage(url: url)
+                sendImageView.isHidden = false
+                sendImageView.image = image
+                messageTextView.backgroundColor = .clear
             } else {
                 messageTextView.text = message.text
             }

@@ -17,6 +17,8 @@ class MessageRoomViewController: UIViewController {
     private let partnerCellId = "partnerCellId"
     private let myCellId = "myCellId"
     var db: Firestore!
+    // セルのオブジェクトを格納する配列
+    var cellArray : NSMutableArray = NSMutableArray.init()
     
     private let accessoryHeight: CGFloat = 100
     private let tebleViewContentInset: UIEdgeInsets = .init(top: 0, left: 0, bottom: 90, right: 0)
@@ -184,7 +186,6 @@ class MessageRoomViewController: UIViewController {
     
     // 画像送信時
     private func uploadImageToFireStorage(image: UIImage) {
-        //        guard let image = image else { return }
         guard let uploadImage = image.jpegData(compressionQuality: 0.3) else { return }
         
         let fileName = NSUUID().uuidString
@@ -354,7 +355,7 @@ extension MessageRoomViewController: UITableViewDelegate, UITableViewDataSource 
     // カスタムセルを設定
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = checkWitchUserMessage(indexPath: indexPath)
-        
+        cellArray.add(cell)
         return cell
     }
 }
@@ -362,9 +363,23 @@ extension MessageRoomViewController: UITableViewDelegate, UITableViewDataSource 
 extension MessageRoomViewController: UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let editImage = info[.editedImage] as? UIImage {
+            // 編集したイメージをセルに追加
             uploadImageToFireStorage(image: editImage)
+            let cell = self.messageRoomTableView.dequeueReusableCell(withIdentifier: self.myCellId) as! MyMessageTableViewCell
+            cell.imageView?.isHidden = false
+            cell.imageView?.image = editImage
+            cell.messageTextView.backgroundColor = .clear
+            cellArray.add(cell)
+            refreshTableView()
         } else if let originalImage = info[.originalImage] as? UIImage {
+            // オリジナルイメージをセルに追加
             uploadImageToFireStorage(image: originalImage)
+            let cell = self.messageRoomTableView.dequeueReusableCell(withIdentifier: self.myCellId) as! MyMessageTableViewCell
+            cell.imageView?.isHidden = false
+            cell.imageView?.image = originalImage
+            cell.messageTextView.backgroundColor = .clear
+            cellArray.add(cell)
+            refreshTableView()
         }
         
         dismiss(animated: true, completion: nil)
