@@ -59,8 +59,6 @@ extension TimelineViewController: TimelineCellDelegate {
                             print("リツイート情報の追加に失敗しました: \(err)")
                             return
                         }
-                        // TODO: 自分の投稿に追加
-                        print("#リツイートしました！")
                     }
                     
                 }
@@ -80,7 +78,7 @@ extension TimelineViewController: TimelineCellDelegate {
         count += 1
         cell.likeNumberLabel.text = String(count)
         
-        // TODO ローカルDBから自分のユーザ情報とってきたい
+
         guard let uid = Auth.auth().currentUser?.uid else { return }
         guard let email = Auth.auth().currentUser?.email else { return }
         db.collection("users").whereField("email", isEqualTo: email).getDocuments { userSnapshots, err in
@@ -109,8 +107,7 @@ extension TimelineViewController: TimelineCellDelegate {
                             print("いいね情報の追加に失敗しました: \(err)")
                             return
                         }
-                        // TODO: いいねした一覧に追加
-                        print("#いいねしました！")
+
                     }
                     
                 }

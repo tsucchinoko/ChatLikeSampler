@@ -15,6 +15,8 @@ class CommentDetailViewController: UIViewController {
     var selectedComment: Comment?
     var threadComments = [Comment]()
     
+    var db: Firestore!
+    
     
     private let tebleViewContentInset: UIEdgeInsets = .init(top: 0, left: 0, bottom: 90, right: 0)
     private let tableViewIndicatorInset: UIEdgeInsets = .init(top: 0, left: 0, bottom: 90, right: 0)
@@ -43,7 +45,7 @@ class CommentDetailViewController: UIViewController {
     @IBOutlet weak var commentDetailTableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        db = Firestore.firestore()
         setupViews()
     }
     
